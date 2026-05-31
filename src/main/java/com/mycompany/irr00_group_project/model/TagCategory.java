@@ -10,5 +10,6 @@ public enum TagCategory {
     COLOR,
     WEATHER,
     EVENT,
+    DETAIL,
     OTHER
 }

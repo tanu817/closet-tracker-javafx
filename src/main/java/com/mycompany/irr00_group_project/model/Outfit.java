@@ -14,9 +14,10 @@ import java.time.LocalDate;
  * @author Priyanshu Guha
  */
 public class Outfit {
-    private int id;
+    private final int id;
     private String name;
-    private Set<ClothingItem> items;
+    private final Set<ClothingItem> items;
+    private final User user;
     private int wornCount;
     private LocalDate lastWornDate;
     
@@ -26,11 +27,13 @@ public class Outfit {
      * @param id is the ID number for this outfit.
      * @param name is the name by which this outfit could be known.
      * @param items is the set of items this outfit is made of.
+     * @param user is the user who owns this outfit.
      */
-    public Outfit(int id, String name, Set<ClothingItem> items) {
+    public Outfit(int id, String name, Set<ClothingItem> items, User user) {
         this.id = id;
         this.name = name;
         this.items = items;
+        this.user = user;
         this.wornCount = 0;
         this.lastWornDate = null;
     }
@@ -41,10 +44,14 @@ public class Outfit {
      * 
      * @param id is the ID number for this outfit.
      * @param items is the set of items this outfit is made of.
+     * @param user is the user who owns this outfit.
      */
-    public Outfit(int id, Set<ClothingItem> items) {
+    public Outfit(int id, Set<ClothingItem> items, User user) {
         this.id = id;
         this.items = items;
+        this.user = user;
+        this.wornCount = 0;
+        this.lastWornDate = null;
         
         List<String> itemNames = new ArrayList<>();
         for (ClothingItem item : items) {
@@ -63,6 +70,10 @@ public class Outfit {
     
     public String getName() {
         return name;
+    }
+    
+    public User getUser() {
+        return user;
     }
     
     /**
@@ -108,5 +119,6 @@ public class Outfit {
     
     // More functions to possibly implement:
     //      getCommonTags()
+    //          (get a list of all tags that are common to all clothing items for this outfit)
     // ...
 }
