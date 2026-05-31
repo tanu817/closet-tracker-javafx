@@ -1,5 +1,6 @@
 package com.mycompany.irr00_group_project.model;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class Outfit {
     public Outfit(int id, String name, Set<ClothingItem> items, User user) {
         this.id = id;
         this.name = name;
-        this.items = items;
+        this.items = new HashSet<>(items);
         this.user = user;
         this.wornCount = 0;
         this.lastWornDate = null;
