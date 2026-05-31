@@ -7,10 +7,11 @@ package com.mycompany.irr00_group_project.model;
  * @author Priyanshu Guha
  */
 public enum ClothingCategory {
-    BOTTOM,
     TOP,
+    BOTTOM,
+    ONE_PIECE,
     HEADWEAR,
     FOOTWEAR,
-    OUTERWEAR,
     ACCESSORY,
+    OTHER
 }
