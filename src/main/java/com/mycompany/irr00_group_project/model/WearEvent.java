@@ -21,4 +21,16 @@ public class WearEvent {
         this.outfitId = outfitId;
         this.wornDate = wornDate;
     }
+    
+    // =======
+    // Getters
+    // =======
+    
+    public int getOutfitId() {
+        return outfitId;
+    }
+    
+    public LocalDate getWornDate() {
+        return wornDate;
+    }
 }
