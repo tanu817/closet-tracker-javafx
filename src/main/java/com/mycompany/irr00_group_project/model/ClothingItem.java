@@ -75,15 +75,8 @@ public class ClothingItem {
         return user;
     }
     
-    /**
-     * Function for returning the worn count.
-     * 
-     * @return the total number of times this clothing item has been worn, as recorded in the DB.
-     */
     public int getWornCount() {
-        // TODO: Search the database for WearEvents for outfits containing this item,
-        // and return the total number of found WearEvents.
-        return 0;
+        return wornCount;
     }
     
     /**
