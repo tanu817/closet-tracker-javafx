@@ -22,7 +22,9 @@ public class ClothingItem {
     private String name;
     private boolean isFavorite;
     private ClothingCategory category;
-    private Set<Tag> tags;
+    private final Set<Tag> tags;
+    private int wornCount;
+    private LocalDate lastWornDate;
     
     /**
      * Initializes a clothing item with its required properties.
@@ -34,9 +36,11 @@ public class ClothingItem {
     public ClothingItem(int id, String name, ClothingCategory category) {
         this.id = id;
         this.name = name;
-        boolean isFavorite = false;
+        this.isFavorite = false;
         this.category = category;
         this.tags = new HashSet<>();
+        this.wornCount = 0;
+        this.lastWornDate = null;
     }
     
     // =======
@@ -80,9 +84,11 @@ public class ClothingItem {
      * @return the date when this clothing item was last worn.
      */
     public LocalDate getLastWornDate() {
-        // TODO: Search the database for the latest WearEvents for an outfit containing
-        // this clothing item and return the found WearEvent's date.
-        return LocalDate.EPOCH;
+        if (wornCount == 0) {
+            return null;
+        } else {
+            return lastWornDate;
+        }
     }
     
     // =======
@@ -110,7 +116,7 @@ public class ClothingItem {
     }
     
     public void wear() {
-        // TODO: Increment {@code wornCount},
-        //       Update {@code lastWornDate},
+        wornCount++;
+        lastWornDate = LocalDate.now();
     }
 }

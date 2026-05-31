@@ -71,9 +71,7 @@ public class Outfit {
      * @return the total number of times this outfit has been worn, as recorded in the DB.
      */
     public int getWornCount() {
-        // TODO: Search the database for WearEvents for this outfit, and return the total
-        // number of found WearEvents.
-        return 0;
+        return wornCount;
     }
     
     /**
@@ -82,9 +80,7 @@ public class Outfit {
      * @return the date when this clothing item was last worn.
      */
     public LocalDate getLastWornDate() {
-        // TODO: Search the database for the latest WearEvents for an outfit containing
-        // this clothing item and return the found WearEvent's date.
-        return LocalDate.EPOCH;
+        return lastWornDate;
     }
     
     // =======
