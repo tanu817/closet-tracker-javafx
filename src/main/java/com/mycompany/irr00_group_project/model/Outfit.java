@@ -107,7 +107,7 @@ public class Outfit {
     }
     
     public void removeItem(ClothingItem item) {
-        items.add(item);
+        items.remove(item);
     }
     
     public void wear() {
