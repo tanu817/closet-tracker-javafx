@@ -4,17 +4,23 @@ import javafx.animation.FadeTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Label;
+import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 //to run: mvn clean javafx:run
 /**
@@ -25,11 +31,11 @@ import java.util.List;
 public class SearchPage extends BorderPane {
 
     // COLOR PALETTE
-    private final String GREEN = "#606c38";
-    private final String DARK_GREEN = "#283618";
-    private final String CREAM = "#fefae0";
-    private final String GOLD = "#dda15e";
-    private final String BROWN = "#bc6c25";
+    private static final String GREEN = "#606c38";
+    private static final String DARK_GREEN = "#283618";
+    private static final String CREAM = "#fefae0";
+    private static final String GOLD = "#dda15e";
+    private static final String BROWN = "#bc6c25";
 
     // UI COMPONENTS
     private TextField searchField;
@@ -42,6 +48,9 @@ public class SearchPage extends BorderPane {
     // DATA
     private final List<Item> allItems = new ArrayList<>();
 
+    /**
+     * Set up the search page.
+     */
     public SearchPage() {
         setStyle("-fx-background-color: " + CREAM + ";");
 
@@ -52,7 +61,6 @@ public class SearchPage extends BorderPane {
         renderItems(allItems);
     }
 
-    
     // TOP SEARCH BAR 
     
     private VBox createStickySearchBar() {
@@ -99,7 +107,6 @@ public class SearchPage extends BorderPane {
         return container;
     }
 
-    
     // RESULTS AREA (Pinterest masonry)
     
     private VBox createResultsArea() {
@@ -126,7 +133,6 @@ public class SearchPage extends BorderPane {
         return container;
     }
 
-    
     // TAG PILLS
     
     private void addTag(String name) {
@@ -149,7 +155,7 @@ public class SearchPage extends BorderPane {
                 -fx-text-fill: white;
                 -fx-background-radius: 18;
                 -fx-padding: 6 12;
-            """;
+                """;
         }
 
         return """
@@ -157,10 +163,9 @@ public class SearchPage extends BorderPane {
             -fx-text-fill: #283618;
             -fx-background-radius: 18;
             -fx-padding: 6 12;
-        """;
+            """;
     }
 
-    
     // SEARCH LOGIC
     
     private void applySearch() {
@@ -186,7 +191,6 @@ public class SearchPage extends BorderPane {
         renderItems(filtered);
     }
 
-    
     // RENDER (Pinterest Masonry)
     
     private void renderItems(List<Item> items) {
@@ -210,7 +214,6 @@ public class SearchPage extends BorderPane {
         }
     }
 
-    
     // ITEM CARD
     
     private VBox createCard(Item item) {
@@ -225,7 +228,7 @@ public class SearchPage extends BorderPane {
             -fx-border-color: #dda15e;
             -fx-border-radius: 12;
             -fx-background-radius: 12;
-        """);
+            """);
 
         ImageView img = new ImageView(item.image);
         img.setFitWidth(120);
@@ -251,7 +254,6 @@ public class SearchPage extends BorderPane {
         return card;
     }
 
-    
     // FADE ANIMATION
     
     private void fadeIn(javafx.scene.Node node) {
@@ -261,7 +263,6 @@ public class SearchPage extends BorderPane {
         ft.play();
     }
 
-    
     // OUTFIT BUILDER POPUP
     
     private void openOutfitBuilder(Item item) {
@@ -293,10 +294,6 @@ public class SearchPage extends BorderPane {
         stage.show();
     }
 
-    
-
-
-    
     // MOCK DATA - ned to sync with the tags in the UI
     
     private void loadMockData() {
@@ -311,7 +308,6 @@ public class SearchPage extends BorderPane {
                 new Image("https://via.placeholder.com/120")));
     }
 
-    
     // ITEM CLASS
     
     private static class Item {
@@ -326,7 +322,6 @@ public class SearchPage extends BorderPane {
         }
     }
 
-    
     // STYLES
     
     private String buttonStyle() {
@@ -335,7 +330,7 @@ public class SearchPage extends BorderPane {
             -fx-text-fill: white;
             -fx-background-radius: 12;
             -fx-padding: 8 12;
-        """;
+            """;
     }
 
     private String inputStyle() {
@@ -344,6 +339,6 @@ public class SearchPage extends BorderPane {
             -fx-border-radius: 18;
             -fx-border-color: #283618;
             -fx-padding: 6 10;
-        """;
+            """;
     }
 }

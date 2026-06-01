@@ -12,6 +12,12 @@ public class User {
     private String username;
     private String password;
     
+    /**
+     * Initialize a new user.
+     * 
+     * @param username is the username.
+     * @param password is the password of the user.
+     */
     public User(String username, String password) {
         this.username = username;
         this.password = password;
