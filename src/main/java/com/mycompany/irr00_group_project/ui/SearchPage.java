@@ -8,24 +8,23 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.stage.FileChooser;
+
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SearchPage extends BorderPane {
 
-    // ===== COLOR PALETTE =====
+    // COLOR PALETTE
     private final String GREEN = "#606c38";
     private final String DARK_GREEN = "#283618";
     private final String CREAM = "#fefae0";
     private final String GOLD = "#dda15e";
     private final String BROWN = "#bc6c25";
 
-    // ===== UI COMPONENTS =====
+    // UI COMPONENTS
     private TextField searchField;
     private FlowPane tagPane;
     private FlowPane masonry;
@@ -33,7 +32,7 @@ public class SearchPage extends BorderPane {
 
     private ImageView imagePreview;
 
-    // ===== DATA =====
+    // DATA
     private final List<Item> allItems = new ArrayList<>();
 
     public SearchPage() {
@@ -46,9 +45,9 @@ public class SearchPage extends BorderPane {
         renderItems(allItems);
     }
 
-    // =====================================================
-    // TOP SEARCH BAR (Sticky)
-    // =====================================================
+    
+    // TOP SEARCH BAR 
+    
     private VBox createStickySearchBar() {
 
         VBox container = new VBox(10);
@@ -93,9 +92,9 @@ public class SearchPage extends BorderPane {
         return container;
     }
 
-    // =====================================================
+    
     // RESULTS AREA (Pinterest masonry)
-    // =====================================================
+    
     private VBox createResultsArea() {
 
         VBox container = new VBox(10);
@@ -120,9 +119,9 @@ public class SearchPage extends BorderPane {
         return container;
     }
 
-    // =====================================================
+    
     // TAG PILLS
-    // =====================================================
+    
     private void addTag(String name) {
         ToggleButton pill = new ToggleButton(name);
 
@@ -154,9 +153,9 @@ public class SearchPage extends BorderPane {
         """;
     }
 
-    // =====================================================
+    
     // SEARCH LOGIC
-    // =====================================================
+    
     private void applySearch() {
 
         String query = searchField.getText().toLowerCase();
@@ -180,9 +179,9 @@ public class SearchPage extends BorderPane {
         renderItems(filtered);
     }
 
-    // =====================================================
+    
     // RENDER (Pinterest Masonry)
-    // =====================================================
+    
     private void renderItems(List<Item> items) {
 
         masonry.getChildren().clear();
@@ -204,9 +203,9 @@ public class SearchPage extends BorderPane {
         }
     }
 
-    // =====================================================
+    
     // ITEM CARD
-    // =====================================================
+    
     private VBox createCard(Item item) {
 
         VBox card = new VBox(8);
@@ -245,9 +244,9 @@ public class SearchPage extends BorderPane {
         return card;
     }
 
-    // =====================================================
+    
     // FADE ANIMATION
-    // =====================================================
+    
     private void fadeIn(javafx.scene.Node node) {
         FadeTransition ft = new FadeTransition(Duration.millis(250), node);
         ft.setFromValue(0);
@@ -255,9 +254,9 @@ public class SearchPage extends BorderPane {
         ft.play();
     }
 
-    // =====================================================
+    
     // OUTFIT BUILDER POPUP
-    // =====================================================
+    
     private void openOutfitBuilder(Item item) {
 
         Stage stage = new Stage();
@@ -287,27 +286,12 @@ public class SearchPage extends BorderPane {
         stage.show();
     }
 
-    // =====================================================
-    // IMAGE UPLOAD (for future Add Item page)
-    // =====================================================
-    private void uploadImage() {
+    
 
-        FileChooser chooser = new FileChooser();
-        chooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg")
-        );
 
-        File file = chooser.showOpenDialog(null);
-
-        if (file != null) {
-            Image img = new Image(file.toURI().toString());
-            imagePreview.setImage(img);
-        }
-    }
-
-    // =====================================================
-    // MOCK DATA
-    // =====================================================
+    
+    // MOCK DATA - ned to sync with the tags in the UI
+    
     private void loadMockData() {
 
         allItems.add(new Item("Blue Shirt", List.of("top", "casual"),
@@ -320,9 +304,9 @@ public class SearchPage extends BorderPane {
                 new Image("https://via.placeholder.com/120")));
     }
 
-    // =====================================================
+    
     // ITEM CLASS
-    // =====================================================
+    
     private static class Item {
         String name;
         List<String> tags;
@@ -335,9 +319,9 @@ public class SearchPage extends BorderPane {
         }
     }
 
-    // =====================================================
+    
     // STYLES
-    // =====================================================
+    
     private String buttonStyle() {
         return """
             -fx-background-color: #606c38;
