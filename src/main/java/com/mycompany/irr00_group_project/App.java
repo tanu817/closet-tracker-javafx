@@ -5,7 +5,7 @@
 
 package com.mycompany.irr00_group_project;
 
-import com.mycompany.irr00_group_project.ui.SearchPage;
+import com.mycompany.irr00_group_project.ui.MainPage;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -19,14 +19,8 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) {
-
-        SearchPage page = new SearchPage();
-
-        Scene scene = new Scene(page, 1000, 700);
-
-        stage.setTitle("Closet Tracker");
-        stage.setScene(scene);
-        stage.show();
+        MainPage mainPage = new MainPage();
+        mainPage.start(stage);
     }
 
     public static void main(String[] args) {
