@@ -15,6 +15,13 @@ import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+
+//to run: mvn clean javafx:run
+/**
+ * Search page of the closet tracker app.
+ * 
+ * @author Arshiya Shaik
+ */
 public class SearchPage extends BorderPane {
 
     // COLOR PALETTE
