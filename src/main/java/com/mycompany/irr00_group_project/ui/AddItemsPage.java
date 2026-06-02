@@ -352,9 +352,14 @@ public class AddItemsPage {
 
         });
     }
-
+    
+    /**
+     * Helper method to display different categories on add items overlay.
+     * @return Flow pane of each category. 
+     */
     private FlowPane createTagSection() {
-
+        
+        //FONT 
         Font normalBoldFont = Font.loadFont(
                 getClass().getResourceAsStream(
                         "/fonts/MuktaVaani-SemiBold.ttf"
@@ -439,10 +444,73 @@ public class AddItemsPage {
                 // SAME STYLE AS TYPE BUTTONS
                 styleTagButton(tag);
 
+                //LISTERNER FOR THE TAGS
+                tag.setOnMouseClicked(event -> {
+
+                    if (event.getClickCount() == 2) {
+
+                        TextField editField = new TextField(
+                                tag.getText()
+                        );
+
+                        editField.setFont(normalBoldFont);
+
+                        int index
+                                = tagsPane.getChildren().indexOf(tag);
+
+                        tagsPane.getChildren().set(
+                                index,
+                                editField
+                        );
+
+                        editField.requestFocus();
+
+                        editField.setOnAction(enter -> {
+
+                            tag.setText(
+                                    editField.getText()
+                            );
+
+                            tagsPane.getChildren().set(
+                                    index,
+                                    tag
+                            );
+
+                            enter.consume();
+                        });
+
+                        editField.focusedProperty().addListener(
+                                (obs, oldVal, newVal) -> {
+
+                                    if (!newVal) {
+
+                                        tag.setText(
+                                                editField.getText()
+                                        );
+
+                                        tagsPane.getChildren().set(
+                                                index,
+                                                tag
+                                        );
+                                    }
+                                }
+                        );
+
+                    }
+                });
+       
+                // RIGHT CLICK TO DELETE
+                tag.setOnContextMenuRequested(event -> {
+
+                    tagsPane.getChildren().remove(tag);
+
+                });
+
                 tagsPane.getChildren().add(
                         tagsPane.getChildren().size() - 1,
                         tag
                 );
+
             }
 
             newTagField.clear();
@@ -453,7 +521,8 @@ public class AddItemsPage {
             addButton.setVisible(true);
             addButton.setManaged(true);
         });
-
+        
+        //LAYOUT
         tagsPane.getChildren().addAll(
                 newTagField,
                 addButton
