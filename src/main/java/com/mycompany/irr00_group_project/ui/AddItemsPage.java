@@ -22,7 +22,7 @@ import javafx.scene.layout.FlowPane;
 
 /**
  *
- * @author Group 21 teammate
+ * @author Bhavini Kopparam Ajay
  */
 public class AddItemsPage {
 
