@@ -16,13 +16,15 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Region;
 
 /**
  *
- * @author Group 21 teammate
+ * @author Bhavini Kopparam Ajay
  */
 public class MainPage {
-
+    
     /**
      *
      * @param stage Create the Main page background, sets the title and the
@@ -173,11 +175,11 @@ public class MainPage {
                 "Most Worn",
                 "/icons/hanger.png",
                 new String[]{
-                    "White Linen Top",
-                    "Blue Straight Jeans",
-                    "Beige Trench Coat",
-                    "White Sneakers",
-                    "Black Handbag"
+                    "1.  White Linen Top",
+                    "2.  Blue Straight Jeans",
+                    "3.  Beige Trench Coat",
+                    "4.  White Sneakers",
+                    "5.  Black Handbag"
                 },
                 titleFont,
                 buttonFont,
@@ -190,11 +192,11 @@ public class MainPage {
                 "Least Worn",
                 "/icons/hanger.png",
                 new String[]{
-                    "Red Party Dress",
-                    "Silk Slip skirt",
-                    "Black Blazer",
-                    "Strappy Heels",
-                    "Knit Sweater"
+                    "1.  Red Party Dress",
+                    "2.  Silk Slip skirt",
+                    "3.  Black Blazer",
+                    "4.  Strappy Heels",
+                    "5.  Knit Sweater"
                 },
                 titleFont,
                 buttonFont,
@@ -215,6 +217,40 @@ public class MainPage {
         root.setCenter(cardsRow);
         root.setMargin(cardsRow, new Insets(20, 0, 0, 0));
         
+        //OVERLAY
+        AddItemsPage addPage = new AddItemsPage();
+
+        VBox overlay = addPage.createAddItemsOverlay();
+
+        Region dimBackground = new Region();
+
+        dimBackground.setStyle(
+                "-fx-background-color: rgba(0,0,0,0.35);"
+        );
+
+        dimBackground.setVisible(false);
+
+        dimBackground.setMaxSize(
+                Double.MAX_VALUE,
+                Double.MAX_VALUE
+        );
+
+        addPage.getBackButton().setOnAction(e -> {
+            overlay.setVisible(false);
+            dimBackground.setVisible(false);
+        });
+
+        overlay.setVisible(false);
+
+        overlay.setMaxWidth(800);
+        overlay.setMaxHeight(500);
+
+        StackPane.setAlignment(
+                overlay,
+                Pos.CENTER
+        );
+        
+
         //PLUS BUTTON
         Image plusImg = new Image(
                 getClass().getResourceAsStream(
@@ -239,19 +275,11 @@ public class MainPage {
                 + "-fx-border-radius: 30;"
         );
         
-        //addButton.setOnAction(e -> {
+        addButton.setOnAction(e -> {
+            dimBackground.setVisible(true);
+            overlay.setVisible(true);
+        });
 
-        //    additempage addPage = new additempage();
-
-        //    Scene addScene = new Scene(
-        //           addPage,
-        //            1200,
-        //            700
-        //    );
-
-        //    stage.setScene(addScene);
-        //});
-        
         HBox bottomBar = new HBox();
 
         bottomBar.setAlignment(Pos.BOTTOM_RIGHT);
@@ -268,11 +296,17 @@ public class MainPage {
         //GENERAL LAYOUT AND BACKGROUND
 
         root.setTop(topSection);
-
+        
         root.setPadding(new Insets(20));
         root.setStyle("-fx-background-color: #FFFAF4;");
 
-        Scene scene = new Scene(root, 1200, 700);
+        StackPane stackRoot = new StackPane();
+
+        stackRoot.getChildren().add(root);
+        stackRoot.getChildren().add(dimBackground);
+        stackRoot.getChildren().add(overlay);
+        
+        Scene scene = new Scene(stackRoot, 1200, 700);
 
         stage.setTitle("Closet App");
         stage.setScene(scene);
