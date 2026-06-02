@@ -19,6 +19,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.text.Text;
 
 /**
  *
@@ -118,24 +119,25 @@ public class AddItemsPage {
         );
 
         //NOTE LABEL
-        Label note = new Label(
-                "Note: You can create tags by typing in or choose from existing one. It is mandatory to choose the type."
+        Text note = new Text(
+                "Note: You can create tags by typing in or choose from existing one. "
+                + "It is mandatory to choose the type. To delete tags right click, "
+                + "to edit tags double click."
         );
 
         note.setFont(normalFont);
+        note.setWrappingWidth(900);
 
-        note.setPrefWidth(1000);
-        note.setPrefHeight(70);
+        HBox noteBox = new HBox(note);
 
-        note.setAlignment(Pos.CENTER_LEFT);
+        noteBox.setPadding(new Insets(10, 15, 10, 15));
 
-        note.setWrapText(true);
-
-        note.setStyle(
+        noteBox.setStyle(
                 "-fx-background-color: #F3EEE6;"
-                + "-fx-padding: 10 15 10 15;"
                 + "-fx-background-radius: 8;"
         );
+
+        noteBox.setAlignment(Pos.CENTER_LEFT);
 
         //CHOOSE TAGS TITLE
         Label chooseTags = new Label("Choose Tags");
@@ -309,7 +311,7 @@ public class AddItemsPage {
 
         overlay.getChildren().addAll(
                 topRow,
-                note,
+                noteBox,
                 chooseTags,
                 typeRow,
                 colourRow,
