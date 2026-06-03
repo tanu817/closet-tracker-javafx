@@ -1,93 +1,63 @@
 package com.mycompany.irr00_group_project.database;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
- * Class for creating a new SQLite database and tables.
+ * Class for creating CSV files.
  *
  * @author Aleksandra Levenkova
  */
 public class DatabaseManager {
-
-    private static final String URL =  "jdbc:sqlite:myCloset.db";
     
     /**
-     * Method to open a connection to the SQLite database.
-     * @return active connection to myCloset database
-     * @throws SQLException if database connection fails
+     * Method to create CSV files to create a database with items, tags, outfits and relationships.
      */
-    public static Connection connect() throws SQLException {
-        return DriverManager.getConnection(URL);
-    } 
+    public static void initialiseFiles() {
+        
+        createFileIfMissing("clothing_items.csv");
+        createFileIfMissing("tags.csv");
+        createFileIfMissing("clothing_tags.csv");
+        createFileIfMissing("outfits.csv");
+        createFileIfMissing("outfit_items.csv");
+    }
     
     /**
-     * Method to create database tables.
+     * Helper method to create files if not present, including the columns.
+     * @param fileName for the CSV file
      */
-    public static void initialiseDatabase() {
+    private static void createFileIfMissing(String fileName) {
         
-        String clothingItemsTable = """
-            CREATE TABLE IF NOT EXISTS clothing_items (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                wear_count INTEGER DEFAULT 0,
-                category TEXT NOT NULL,
-                favorite BOOLEAN DEFAULT FALSE            
-            );
-            """;
+        File file = new File(fileName);
         
-        String tagsTable = """
-            CREATE TABLE IF NOT EXISTS tags (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT UNIQUE NOT NULL,
-                type TEXT NOT NULL
-            );
-            """;
-        
-        //many to many relationship between items and tags
-        String clothingTagsTable = """
-            CREATE TABLE IF NOT EXISTS clothing_tags (
-                clothing_id INTEGER,
-                tag_id INTEGER,
-                PRIMARY KEY (clothing_id, tag_id),
-                FOREIGN KEY (clothing_id) REFERENCES clothing_items(id),
-                FOREIGN KEY (tag_id) REFERENCES tags(id)
-            );
-            """;
-        
-        String outfitsTable = """
-            CREATE TABLE IF NOT EXISTS outfits (
-                id INTEGER PRIMARY KEY AUTOINCREMENT
-            );
-            """;
-        
-        //many to many relationship between outfits and items
-        //not needed with tags as it would be duplicate
-        String outfitItemsTable = """
-            CREATE TABLE IF NOT EXISTS outfit_items (
-                outfit_id INTEGER,
-                clothing_id INTEGER,
-                PRIMARY KEY (outfit_id, clothing_id),
-                FOREIGN KEY (outfit_id) REFERENCES outfits(id),
-                FOREIGN KEY (clothing_id) REFERENCES clothing_items(id)
-            );
-            """;
-                         
-        try (Connection conn = connect();
-                Statement stmt = conn.createStatement()) {
+        try {
             
-            stmt.execute("PRAGMA foreign_keys = ON;"); //to enable foreign keys
+            if (file.createNewFile()) {
+                
+                FileWriter writer = new FileWriter(file);
+                
+                if (fileName.equals("clothing_items.csv")) {
+                    writer.write("id,name,isFavorite,category,user,wornCount,lastWornDate\n");
+                    
+                } else if (fileName.equals("tags.csv")) {
+                    writer.write("id,name,category,user\n");
+                    
+                } else if (fileName.equals("clothing_tags.csv")) {
+                    writer.write("clothingId,tagId\n");
+                    
+                } else if (fileName.equals("outfits.csv")) {
+                    writer.write("id,name,user,wornCount,lastWornDate\n");
+                    
+                } else if (fileName.equals("outfit_items.csv")) {
+                    writer.write("outfitId,clothingId\n");
+                }
+                
+                writer.close();  
+            }
             
-            stmt.execute(clothingItemsTable);
-            stmt.execute(tagsTable);
-            stmt.execute(clothingTagsTable);
-            stmt.execute(outfitsTable);
-            stmt.execute(outfitItemsTable);
-            
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());   
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
     }
 }
