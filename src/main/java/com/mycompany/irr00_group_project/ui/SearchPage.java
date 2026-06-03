@@ -4,10 +4,17 @@ import javafx.animation.FadeTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Label;
+import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -24,11 +31,11 @@ import java.util.List;
 public class SearchPage extends BorderPane {
 
     // COLOR PALETTE
-    private final String GREEN = "#606c38";
-    private final String DARK_GREEN = "#283618";
-    private final String CREAM = "#fefae0";
-    private final String GOLD = "#dda15e";
-    private final String BROWN = "#bc6c25";
+    private static final String GREEN = "#606c38";
+    private static final String DARK_GREEN = "#283618";
+    private static final String CREAM = "#fefae0";
+    private static final String GOLD = "#dda15e";
+    private static final String BROWN = "#bc6c25";
 
     // UI COMPONENTS
     private TextField searchField;
@@ -41,6 +48,9 @@ public class SearchPage extends BorderPane {
     // DATA
     private final List<Item> allItems = new ArrayList<>();
 
+    /**
+     * Set up the search page.
+     */
     public SearchPage() {
         setStyle("-fx-background-color: " + CREAM + ";");
 
@@ -142,7 +152,7 @@ public class SearchPage extends BorderPane {
                 -fx-text-fill: white;
                 -fx-background-radius: 18;
                 -fx-padding: 6 12;
-            """;
+                """;
         }
 
         return """
@@ -150,7 +160,7 @@ public class SearchPage extends BorderPane {
             -fx-text-fill: #283618;
             -fx-background-radius: 18;
             -fx-padding: 6 12;
-        """;
+            """;
     }
 
     // SEARCH LOGIC
@@ -212,7 +222,7 @@ public class SearchPage extends BorderPane {
             -fx-border-color: #dda15e;
             -fx-border-radius: 12;
             -fx-background-radius: 12;
-        """);
+            """);
 
         ImageView img = new ImageView(item.image);
         img.setFitWidth(120);
@@ -310,7 +320,7 @@ public class SearchPage extends BorderPane {
             -fx-text-fill: white;
             -fx-background-radius: 12;
             -fx-padding: 8 12;
-        """;
+            """;
     }
 
     private String inputStyle() {
@@ -319,6 +329,6 @@ public class SearchPage extends BorderPane {
             -fx-border-radius: 18;
             -fx-border-color: #283618;
             -fx-padding: 6 10;
-        """;
+            """;
     }
 }
