@@ -1,4 +1,5 @@
 package com.mycompany.irr00_group_project.database;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -32,7 +33,8 @@ public class DatabaseManager {
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
                 wear_count INTEGER DEFAULT 0,
-                category TEXT NOT NULL                           
+                category TEXT NOT NULL,
+                favorite BOOLEAN DEFAULT FALSE            
             );
             """;
         
@@ -75,6 +77,8 @@ public class DatabaseManager {
                          
         try (Connection conn = connect();
                 Statement stmt = conn.createStatement()) {
+            
+            stmt.execute("PRAGMA foreign_keys = ON;"); //to enable foreign keys
             
             stmt.execute(clothingItemsTable);
             stmt.execute(tagsTable);
