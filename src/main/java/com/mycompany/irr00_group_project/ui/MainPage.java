@@ -82,7 +82,7 @@ public class MainPage {
         );
         
         searchButton.setOnAction(e -> {
-            SearchPage searchPage = new SearchPage();
+            SearchPage searchPage = new SearchPage(stage);
 
             Scene searchScene = new Scene(searchPage, 1200, 700);
 
