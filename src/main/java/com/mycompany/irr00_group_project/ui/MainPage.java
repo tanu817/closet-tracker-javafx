@@ -20,7 +20,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.Region;
 
 /**
- *
+ * Main page of the app. Appears first when app opened. 
  * @author Bhavini Kopparam Ajay
  */
 public class MainPage {
@@ -103,15 +103,16 @@ public class MainPage {
                 + "-fx-text-fill: white;"
                 + "-fx-background-radius: 10;"
         );
-        
-        //Change for items 
-        //itemsButton.setOnAction(e -> {
-        //    SearchPage searchPage = new SearchPage();
 
-        //    Scene searchScene = new Scene(searchPage, 1200, 700);
+        itemsButton.setOnAction(e -> {
 
-        //    stage.setScene(searchScene);
-        //});
+            ItemsPage itemsPage = new ItemsPage(stage);
+
+            Scene itemsScene
+                    = new Scene(itemsPage, 1200, 700);
+
+            stage.setScene(itemsScene);
+        });
         
         //OUTFITS BUTTON
         Button outfitsButton = new Button("Outfits");

@@ -22,7 +22,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.text.Text;
 
 /**
- *
+ * Add items overlay, appears when plus button clicked on main page. 
  * @author Bhavini Kopparam Ajay
  */
 public class AddItemsPage {

@@ -1,14 +1,9 @@
 package com.mycompany.irr00_group_project.ui;
 
-import javafx.animation.FadeTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -18,14 +13,11 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.util.Duration;
-import java.util.ArrayList;
-import java.util.List;
 import javafx.scene.text.Font;
 
-//to run: mvn clean javafx:run
 /**
- * Search page of the closet tracker app.
+ * Search page of the closet tracker app. Appears when search bar clicked on
+ * main page. 
  *
  * @author Bhavini Kopparam Ajay
  */
