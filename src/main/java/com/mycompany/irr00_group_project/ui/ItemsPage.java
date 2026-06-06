@@ -21,7 +21,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 
 /**
- * Items page of the closet tracker app.
+ * Items page of the closet tracker app. Appears when Items button clicked on 
+ * home page. 
  *
  * @author Bhavini Kopparam Ajay
  */

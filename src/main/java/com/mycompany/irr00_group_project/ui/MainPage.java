@@ -125,14 +125,16 @@ public class MainPage {
 
         outfitsButton.setFont(buttonFont);
         
-        //Change for outfits 
-        //outfitsButton.setOnAction(e -> {
-        //    OutfitsPage outfitPage = new OutfitsPage();
+        outfitsButton.setOnAction(e -> {
 
-        //    Scene outfitScene = new Scene(outfitPage, 1200, 700);
+            OutfitsPage outfitsPage
+                    = new OutfitsPage(stage);
 
-        //    stage.setScene(outfitScene);
-        //});
+            Scene outfitsScene
+                    = new Scene(outfitsPage, 1200, 700);
+
+            stage.setScene(outfitsScene);
+        });
         
         //WORKING WITH THE LAYOUT OF BUTTONS
         VBox topSection = new VBox(15);
