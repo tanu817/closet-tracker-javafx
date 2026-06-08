@@ -20,7 +20,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.Region;
 
 /**
- *
+ * Main page of the app. Appears first when app opened. 
  * @author Bhavini Kopparam Ajay
  */
 public class MainPage {
@@ -82,7 +82,7 @@ public class MainPage {
         );
         
         searchButton.setOnAction(e -> {
-            SearchPage searchPage = new SearchPage();
+            SearchPage searchPage = new SearchPage(stage);
 
             Scene searchScene = new Scene(searchPage, 1200, 700);
 
@@ -103,15 +103,16 @@ public class MainPage {
                 + "-fx-text-fill: white;"
                 + "-fx-background-radius: 10;"
         );
-        
-        //Change for items 
-        //itemsButton.setOnAction(e -> {
-        //    SearchPage searchPage = new SearchPage();
 
-        //    Scene searchScene = new Scene(searchPage, 1200, 700);
+        itemsButton.setOnAction(e -> {
 
-        //    stage.setScene(searchScene);
-        //});
+            ItemsPage itemsPage = new ItemsPage(stage);
+
+            Scene itemsScene
+                    = new Scene(itemsPage, 1200, 700);
+
+            stage.setScene(itemsScene);
+        });
         
         //OUTFITS BUTTON
         Button outfitsButton = new Button("Outfits");
@@ -124,14 +125,16 @@ public class MainPage {
 
         outfitsButton.setFont(buttonFont);
         
-        //Change for outfits 
-        //outfitsButton.setOnAction(e -> {
-        //    OutfitsPage outfitPage = new OutfitsPage();
+        outfitsButton.setOnAction(e -> {
 
-        //    Scene outfitScene = new Scene(outfitPage, 1200, 700);
+            OutfitsPage outfitsPage
+                    = new OutfitsPage(stage);
 
-        //    stage.setScene(outfitScene);
-        //});
+            Scene outfitsScene
+                    = new Scene(outfitsPage, 1200, 700);
+
+            stage.setScene(outfitsScene);
+        });
         
         //WORKING WITH THE LAYOUT OF BUTTONS
         VBox topSection = new VBox(15);

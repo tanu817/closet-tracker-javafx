@@ -22,13 +22,17 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.text.Text;
 
 /**
- *
+ * Add items overlay, appears when plus button clicked on main page. 
  * @author Bhavini Kopparam Ajay
  */
 public class AddItemsPage {
 
     private Button backButton;
-
+    
+    /**
+     * main method through which the overlay is created. 
+     * @return Vbox with all components. 
+     */
     public VBox createAddItemsOverlay() {
 
         //Fonts
@@ -102,7 +106,7 @@ public class AddItemsPage {
                 + "-fx-border-radius: 10;"
         );
 
-        backButton.setPrefSize(40, 35);;
+        backButton.setPrefSize(40, 35);
 
         TextField itemName = new TextField();
         itemName.setPromptText("Enter Name");
@@ -324,11 +328,20 @@ public class AddItemsPage {
         );
         return overlay;
     }
-
+    
+    /**
+     * returns the back button which helps with the listener of this button in 
+     * main page. 
+     * @return 
+     */
     public Button getBackButton() {
         return backButton;
     }
-
+    
+    /**
+     * Styles each tag. 
+     * @param button 
+     */
     private void styleTagButton(ToggleButton button) {
 
         String normal

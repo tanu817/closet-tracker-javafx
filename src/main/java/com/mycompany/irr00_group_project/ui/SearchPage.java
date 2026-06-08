@@ -1,334 +1,360 @@
 package com.mycompany.irr00_group_project.ui;
 
-import javafx.animation.FadeTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
-
 import javafx.stage.Stage;
-import javafx.util.Duration;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.text.Font;
 
-import java.util.ArrayList;
-import java.util.List;
-
-//to run: mvn clean javafx:run
 /**
- * Search page of the closet tracker app.
+ * Search page of the closet tracker app. Appears when search bar clicked on
+ * main page. 
  *
- * @author Arshiya Shaik
+ * @author Bhavini Kopparam Ajay
  */
 public class SearchPage extends BorderPane {
 
     // COLOR PALETTE
-    private static final String GREEN = "#606c38";
-    private static final String DARK_GREEN = "#283618";
-    private static final String CREAM = "#fefae0";
-    private static final String GOLD = "#dda15e";
-    private static final String BROWN = "#bc6c25";
+    private static final String LIGHT_GREEN = "#D8CFBC";
+    private static final String DARK_GREEN = "#565448";
+    private static final String CREAM = "#FFFAF4";
 
-    // UI COMPONENTS
-    private TextField searchField;
-    private FlowPane tagPane;
-    private FlowPane masonry;
-    private Label emptyLabel;
+    //CLASS FIELDS
+    private Stage stage;
+    private FlowPane searchField;
 
-    private ImageView imagePreview;
+    private VBox resultsBox;
 
-    // DATA
-    private final List<Item> allItems = new ArrayList<>();
+    //FONTS
+    private Font normalBoldFont = Font.loadFont(
+            getClass().getResourceAsStream(
+                    "/fonts/MuktaVaani-SemiBold.ttf"
+            ),
+            14
+    );
+
+    private Font normalFont = Font.loadFont(
+            getClass().getResourceAsStream(
+                    "/fonts/MuktaVaani-Regular.ttf"
+            ),
+            13
+    );
+
+    private Font titleFont = Font.loadFont(
+            getClass().getResourceAsStream(
+                    "/fonts/YesevaOne-Regular.ttf"
+            ),
+            24
+    );
+
+    private Font subTitleFont = Font.loadFont(
+            getClass().getResourceAsStream(
+                    "/fonts/YesevaOne-Regular.ttf"
+            ),
+            15
+    );
+
+    private Font buttonFont = Font.loadFont(
+            getClass().getResourceAsStream(
+                    "/fonts/MuktaVaani-SemiBold.ttf"
+            ),
+            19
+    );
 
     /**
-     * Set up the search page.
+     * Constructor of the class.
+     *
+     * @param stage
      */
-    public SearchPage() {
-        setStyle("-fx-background-color: " + CREAM + ";");
+    public SearchPage(Stage stage) {
+        this.stage = stage;
+        setStyle("-fx-background-color: #FFFAF4;");
 
-        setTop(createStickySearchBar());
-        setCenter(createResultsArea());
+        VBox root = new VBox(20);
 
-        loadMockData();
-        renderItems(allItems);
+        root.setPadding(new Insets(25));
+
+        root.getChildren().addAll(
+                createTopSection(),
+                createFiltersSection()
+        //createResultsSection()
+        );
+
+        setCenter(root);
     }
 
-    // TOP SEARCH BAR 
-    private VBox createStickySearchBar() {
+    /**
+     * Designing the top section of the Page which is the back button, search
+     * bar, and search button.
+     *
+     * @return Vbox with all components
+     */
+    private VBox createTopSection() {
 
-        VBox container = new VBox(10);
-        container.setPadding(new Insets(15));
-        container.setStyle("-fx-background-color: " + CREAM + ";");
+        //BACK BUTTON
+        Image backImg = new Image(
+                getClass().getResourceAsStream(
+                        "/icons/arrow.png"
+                )
+        );
 
-        // SEARCH BAR
-        HBox searchBar = new HBox(10);
-        searchBar.setAlignment(Pos.CENTER_LEFT);
+        ImageView backIcon = new ImageView(backImg);
 
-        searchField = new TextField();
-        searchField.setPromptText("Search items...");
-        searchField.setPrefWidth(350);
-        searchField.setStyle(inputStyle());
+        backIcon.setFitWidth(35);
+        backIcon.setFitHeight(35);
+        Button backButton = new Button();
 
-        Button searchBtn = new Button("Search");
-        searchBtn.setStyle(buttonStyle());
+        backButton.setGraphic(backIcon);
 
-        searchBtn.setOnAction(e -> applySearch());
+        backButton.setStyle(
+                "-fx-background-color: #F3EEE6;"
+                + "-fx-background-radius: 10;"
+                + "-fx-border-radius: 10;"
+        );
 
-        searchBar.getChildren().addAll(searchField, searchBtn);
+        backButton.setPrefSize(40, 42);
 
-        // TAG CHIPS
-        tagPane = new FlowPane();
-        tagPane.setHgap(8);
-        tagPane.setVgap(8);
-        tagPane.setPadding(new Insets(5));
+        backButton.setOnAction(e -> {
 
-        addTag("Sunny");
-        addTag("Rainy");
-        addTag("Top");
-        addTag("Bottom");
-        addTag("One Piece");
-        addTag("Accessory");
-        addTag("Casual");
-        addTag("Party");
-        addTag("Minimal");
-        addTag("Streetwear");
+            MainPage mainPage = new MainPage();
 
-        container.getChildren().addAll(searchBar, tagPane);
+            mainPage.start(stage);
 
-        return container;
-    }
-
-    // RESULTS AREA (Pinterest masonry)
-    private VBox createResultsArea() {
-
-        VBox container = new VBox(10);
-        container.setPadding(new Insets(15));
-
-        ScrollPane scroll = new ScrollPane();
-        scroll.setFitToWidth(true);
-
-        masonry = new FlowPane();
-        masonry.setHgap(15);
-        masonry.setVgap(15);
-        masonry.setPrefWrapLength(900);
-
-        scroll.setContent(masonry);
-
-        emptyLabel = new Label("No items match your filters");
-        emptyLabel.setStyle("-fx-text-fill: " + DARK_GREEN + "; -fx-font-size: 16px;");
-        emptyLabel.setVisible(false);
-
-        container.getChildren().addAll(scroll, emptyLabel);
-
-        return container;
-    }
-
-    // TAG PILLS
-    private void addTag(String name) {
-        ToggleButton pill = new ToggleButton(name);
-
-        pill.setStyle(pillStyle(false));
-
-        pill.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            pill.setStyle(pillStyle(newVal));
-            applySearch();
         });
 
-        tagPane.getChildren().add(pill);
+        //SEARCH BAR
+        searchField = new FlowPane();
+
+        searchField.setHgap(8);
+        searchField.setVgap(8);
+
+        searchField.setPrefWidth(950);
+        searchField.setPrefHeight(45);
+
+        searchField.setPadding(new Insets(5));
+
+        searchField.setStyle(
+                "-fx-background-color: white;"
+                + "-fx-border-color: #D8CFBC;"
+                + "-fx-background-radius: 10;"
+                + "-fx-border-radius: 10;"
+        );
+
+        //SEARCH BUTTON 
+        Button searchButton = new Button("Search");
+        searchButton.setFont(buttonFont);
+
+        searchButton.setStyle(
+                "-fx-background-color:" + DARK_GREEN + ";"
+                + "-fx-background-radius: 10;"
+                + "-fx-border-radius: 10;"
+                + "-fx-text-fill: white;"
+        );
+
+        searchButton.setPrefSize(120, 40);
+
+        //PUTTING EVERYTHING IN A ROW
+        HBox searchRow = new HBox(15);
+
+        searchRow.getChildren().addAll(
+                backButton,
+                searchField,
+                searchButton
+        );
+
+        //PUTTING IT ALL AT THE TOP
+        VBox topSection = new VBox(15);
+        topSection.getChildren().add(searchRow);
+
+        return topSection;
     }
 
-    private String pillStyle(boolean selected) {
-        if (selected) {
-            return """
-                -fx-background-color: #606c38;
-                -fx-text-fill: white;
-                -fx-background-radius: 18;
-                -fx-padding: 6 12;
-                """;
+    /**
+     * Creating the part of the page where you select tags. Uses 2 helper
+     * methods.
+     *
+     * @return Vbox with components.
+     */
+    private VBox createFiltersSection() {
+
+        VBox filters = new VBox(15);
+
+        filters.getChildren().addAll(
+                createFilterRow(
+                        true,
+                        "Type",
+                        "Top",
+                        "Bottom",
+                        "One Piece",
+                        "Accessory"
+                ),
+                createFilterRow(
+                        false,
+                        "Colour",
+                        "Pink",
+                        "Blue",
+                        "Green",
+                        "Black"
+                ),
+                createFilterRow(
+                        false,
+                        "Event",
+                        "Party",
+                        "Formal",
+                        "Casual"
+                ),
+                createFilterRow(
+                        false,
+                        "Details",
+                        "Minimal",
+                        "Vintage"
+                ),
+                createFilterRow(
+                        false,
+                        "Other",
+                        "Summer",
+                        "Winter"
+                )
+        );
+
+        return filters;
+
+    }
+
+    /**
+     * Helper method to help create each category of tags.
+     *
+     * @param singleSelect allow to select only one tag if true.
+     * @param title category name.
+     * @param tags the example tags which needs to come from data base later.
+     * Some edits might be required.
+     * @return
+     */
+    private HBox createFilterRow(
+            boolean singleSelect,
+            String title,
+            String... tags
+    ) {
+
+        ToggleGroup group = null;
+
+        if (singleSelect) {
+            group = new ToggleGroup();
         }
 
-        return """
-            -fx-background-color: #dda15e;
-            -fx-text-fill: #283618;
-            -fx-background-radius: 18;
-            -fx-padding: 6 12;
-            """;
-    }
+        Label label = new Label(title);
 
-    // SEARCH LOGIC
-    private void applySearch() {
+        label.setFont(subTitleFont);
 
-        String query = searchField.getText().toLowerCase();
+        label.setPrefWidth(80);
 
-        List<Item> filtered = new ArrayList<>();
+        FlowPane tagPane = new FlowPane();
 
-        for (Item item : allItems) {
+        tagPane.setHgap(10);
 
-            boolean matchesText = item.name.toLowerCase().contains(query);
+        for (String tagText : tags) {
 
-            boolean matchesTags = tagPane.getChildren().stream()
-                    .filter(n -> ((ToggleButton) n).isSelected())
-                    .map(n -> ((ToggleButton) n).getText().toLowerCase())
-                    .allMatch(item.tags::contains);
-
-            if (matchesText && matchesTags) {
-                filtered.add(item);
+            ToggleButton tag
+                    = new ToggleButton(tagText);
+            if (singleSelect) {
+                tag.setToggleGroup(group);
             }
+            tag.setFont(normalBoldFont);
+
+            styleTagButton(tag);
+
+            tagPane.getChildren().add(tag);
         }
 
-        renderItems(filtered);
+        HBox row = new HBox(20);
+
+        row.setAlignment(Pos.CENTER_LEFT);
+
+        row.getChildren().addAll(
+                label,
+                tagPane
+        );
+
+        return row;
     }
 
-    // RENDER (Pinterest Masonry)
-    private void renderItems(List<Item> items) {
+    /**
+     * Helps style each tag in the tag selection section of the page.
+     *
+     * @param tag
+     */
+    private void styleTagButton(
+            ToggleButton tag
+    ) {
 
-        masonry.getChildren().clear();
+        tag.setStyle(
+                "-fx-background-color: white;"
+                + "-fx-border-color: " + LIGHT_GREEN + ";"
+                + "-fx-background-radius: 8;"
+                + "-fx-border-radius: 8;"
+        );
 
-        if (items.isEmpty()) {
-            emptyLabel.setVisible(true);
-            return;
-        }
+        tag.selectedProperty().addListener(
+                (obs, oldVal, selected) -> {
 
-        emptyLabel.setVisible(false);
+                    if (selected) {
 
-        for (Item item : items) {
-            VBox card = createCard(item);
+                        tag.setStyle(
+                                "-fx-background-color: "
+                                + DARK_GREEN + ";"
+                                + "-fx-text-fill: white;"
+                                + "-fx-background-radius: 8;"
+                                + "-fx-border-radius: 8;"
+                        );
 
-            card.setOpacity(0);
-            masonry.getChildren().add(card);
+                        addSelectedTag(tag.getText());
 
-            fadeIn(card);
-        }
+                    } else {
+
+                        tag.setStyle(
+                                "-fx-background-color: white;"
+                                + "-fx-border-color: "
+                                + LIGHT_GREEN + ";"
+                                + "-fx-background-radius: 8;"
+                                + "-fx-border-radius: 8;"
+                        );
+
+                        removeSelectedTag(tag.getText());
+                    }
+                }
+        );
     }
 
-    // ITEM CARD
-    private VBox createCard(Item item) {
+    private void addSelectedTag(String text) {
+        Label tag = new Label(text);
 
-        VBox card = new VBox(8);
-        card.setPadding(new Insets(10));
-        card.setAlignment(Pos.CENTER);
-        card.setPrefWidth(160);
+        tag.setFont(normalBoldFont);
 
-        card.setStyle("""
-            -fx-background-color: #fefae0;
-            -fx-border-color: #dda15e;
-            -fx-border-radius: 12;
-            -fx-background-radius: 12;
-            """);
+        tag.setStyle(
+                "-fx-background-color: #F3EEE6;"
+                + "-fx-background-radius: 8;"
+                + "-fx-padding: 4 10 4 10;"
+        );
 
-        ImageView img = new ImageView(item.image);
-        img.setFitWidth(120);
-        img.setFitHeight(120);
-        img.setPreserveRatio(true);
+        tag.setUserData(text);
 
-        Label name = new Label(item.name);
-        name.setStyle("-fx-text-fill: #283618; -fx-font-weight: bold;");
-
-        card.getChildren().addAll(img, name);
-
-        // HOVER EFFECT
-        card.setOnMouseEntered(e -> card.setScaleX(1.05));
-        card.setOnMouseEntered(e -> card.setScaleY(1.05));
-        card.setOnMouseExited(e -> {
-            card.setScaleX(1.0);
-            card.setScaleY(1.0);
-        });
-
-        // CLICK → OUTFIT BUILDER
-        card.setOnMouseClicked(e -> openOutfitBuilder(item));
-
-        return card;
+        searchField.getChildren().add(tag);
     }
 
-    // FADE ANIMATION
-    private void fadeIn(javafx.scene.Node node) {
-        FadeTransition ft = new FadeTransition(Duration.millis(250), node);
-        ft.setFromValue(0);
-        ft.setToValue(1);
-        ft.play();
+    private void removeSelectedTag(String text) {
+
+        searchField.getChildren().removeIf(
+                node -> text.equals(node.getUserData())
+        );
     }
 
-    // OUTFIT BUILDER POPUP
-    private void openOutfitBuilder(Item item) {
-
-        Stage stage = new Stage();
-
-        VBox root = new VBox(10);
-        root.setPadding(new Insets(15));
-        root.setStyle("-fx-background-color: " + CREAM + ";");
-
-        Label title = new Label("Outfit Builder");
-        title.setStyle("-fx-font-size: 18px; -fx-text-fill: " + DARK_GREEN + ";");
-
-        ImageView img = new ImageView(item.image);
-        img.setFitWidth(150);
-        img.setFitHeight(150);
-
-        Button top = new Button("Add as Top");
-        Button bottom = new Button("Add as Bottom");
-        Button save = new Button("Save Outfit");
-
-        top.setStyle(buttonStyle());
-        bottom.setStyle(buttonStyle());
-        save.setStyle(buttonStyle());
-
-        root.getChildren().addAll(title, img, top, bottom, save);
-
-        stage.setScene(new Scene(root, 300, 400));
-        stage.show();
-    }
-
-    // MOCK DATA - ned to sync with the tags in the UI
-    private void loadMockData() {
-
-        allItems.add(new Item("Blue Shirt", List.of("top", "casual"),
-                new Image("https://via.placeholder.com/120")));
-
-        allItems.add(new Item("Black Jeans", List.of("bottom", "streetwear"),
-                new Image("https://via.placeholder.com/120")));
-
-        allItems.add(new Item("Red Dress", List.of("one piece", "party"),
-                new Image("https://via.placeholder.com/120")));
-    }
-
-    // ITEM CLASS
-    private static class Item {
-
-        String name;
-        List<String> tags;
-        Image image;
-
-        Item(String name, List<String> tags, Image image) {
-            this.name = name;
-            this.tags = tags;
-            this.image = image;
-        }
-    }
-
-    // STYLES
-    private String buttonStyle() {
-        return """
-            -fx-background-color: #606c38;
-            -fx-text-fill: white;
-            -fx-background-radius: 12;
-            -fx-padding: 8 12;
-            """;
-    }
-
-    private String inputStyle() {
-        return """
-            -fx-background-radius: 18;
-            -fx-border-radius: 18;
-            -fx-border-color: #283618;
-            -fx-padding: 6 10;
-            """;
-    }
 }
