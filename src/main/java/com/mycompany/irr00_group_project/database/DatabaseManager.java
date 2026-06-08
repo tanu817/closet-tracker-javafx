@@ -38,16 +38,16 @@ public class DatabaseManager {
                 FileWriter writer = new FileWriter(file);
                 
                 if (fileName.equals("clothing_items.csv")) {
-                    writer.write("id,name,isFavorite,category,wornCount,lastWornDate\n");
+                    writer.write("id,name,isFavorite,category,wornCount\n");
                     
                 } else if (fileName.equals("tags.csv")) {
-                    writer.write("id,name,category,user\n");
+                    writer.write("id,name,category\n");
                     
                 } else if (fileName.equals("clothing_tags.csv")) {
                     writer.write("clothingId,tagId\n");
                     
                 } else if (fileName.equals("outfits.csv")) {
-                    writer.write("id,name,user,wornCount,lastWornDate\n");
+                    writer.write("id,name,wornCount\n");
                     
                 } else if (fileName.equals("outfit_items.csv")) {
                     writer.write("outfitId,clothingId\n");

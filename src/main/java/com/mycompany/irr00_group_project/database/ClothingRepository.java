@@ -2,8 +2,10 @@ package com.mycompany.irr00_group_project.database;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.time.LocalDate;
-import java.io.*;
+import java.io.IOException;
+import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import com.mycompany.irr00_group_project.model.ClothingItem;
 import com.mycompany.irr00_group_project.model.ClothingCategory;
 
@@ -21,15 +23,12 @@ public class ClothingRepository {
      */
     public void addItem(ClothingItem item) {
         
-        try (FileWriter writer = new FileWriter("clothing_items.csv", true)) { //append not overwrite
-            writer.write(
-            item.getId() + ","
-            + item.getName() + ","
-            + item.isFavorite() + ","
-            + item.getCategory() + ","
-            + item.getWornCount() + ","
-            + item.getLastWornDate() + "\n");
-            
+        try (FileWriter writer = new FileWriter("clothing_items.csv", true)) { 
+            writer.write(item.getId() + ","
+                + item.getName() + ","
+                + item.isFavorite() + ","
+                + item.getCategory() + ","
+                + item.getWornCount() + "\n");
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -38,7 +37,8 @@ public class ClothingRepository {
     //USE THE BELOW METHOD IN UI TO ASSIGN AN ID BEFORE USING addItem()
     
     /**
-     * Generate the next item ID for the UI to use
+     * Generate the next item ID for the UI to use.
+     * 
      * @return next available ID
      */
     public int generateNextId() {
@@ -70,14 +70,7 @@ public class ClothingRepository {
                 boolean isFavorite = Boolean.parseBoolean(values[2]);
                 ClothingCategory category = ClothingCategory.valueOf(values[3]);
                 int wornCount = Integer.parseInt(values[4]);
-                LocalDate lastWornDate;
-                if (values[5].equals("null")) {
-                    lastWornDate = null;
-                } else {
-                    lastWornDate =
-                            LocalDate.parse(values[5]);
-                }
-                ClothingItem item = new ClothingItem(id, name, isFavorite, category, wornCount, lastWornDate);
+                ClothingItem item = new ClothingItem(id, name, isFavorite, category, wornCount);
                 items.add(item);
             }
         } catch (IOException e) {
@@ -89,18 +82,17 @@ public class ClothingRepository {
     /**
      * Method to save an updated list of items into the csv.
      * 
-     * @param items 
+     * @param items that are used to update the csv
      */
     public void saveItems(List<ClothingItem> items) {
         try (FileWriter writer = new FileWriter("clothing_items.csv")) { //overwrite
-            writer.write("id,name,isFavorite,category,wornCount,lastWornDate\n");
+            writer.write("id,name,isFavorite,category,wornCount\n");
             for (ClothingItem item : items) {
                 writer.write(item.getId() + ","
                     + item.getName() + ","
                     + item.isFavorite() + ","
                     + item.getCategory() + ","
-                    + item.getWornCount() + ","
-                    + item.getLastWornDate() + "\n");
+                    + item.getWornCount() + "\n");
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -196,7 +188,7 @@ public class ClothingRepository {
             }
         }
         if (items.size() > 5) {
-           return items.subList(0, 5);
+            return items.subList(0, 5);
         } else {
             return items;
         }
@@ -219,7 +211,7 @@ public class ClothingRepository {
             }
         }
         if (items.size() > 5) {
-           return items.subList(items.size() - 5, items.size());
+            return items.subList(items.size() - 5, items.size());
         } else {
             return items;
         }

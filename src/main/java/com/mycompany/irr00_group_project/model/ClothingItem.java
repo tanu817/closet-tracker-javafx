@@ -2,7 +2,6 @@ package com.mycompany.irr00_group_project.model;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.time.LocalDate;
 
 /**
  * Class for clothing items.
@@ -24,9 +23,7 @@ public class ClothingItem {
     private boolean isFavorite;
     private ClothingCategory category;
     private final Set<Tag> tags;
-    private final User user;
     private int wornCount;
-    private LocalDate lastWornDate;
     
     /**
      * Initializes a clothing item with its required properties.
@@ -34,17 +31,14 @@ public class ClothingItem {
      * @param id is the ID number for this clothing item.
      * @param name is the name by which this clothing item should be known.
      * @param category is the category/type of clothing item this is.
-     * @param user is the user that owns this clothing item.
      */
-    public ClothingItem(int id, String name, ClothingCategory category, User user) {
+    public ClothingItem(int id, String name, ClothingCategory category) {
         this.id = id;
         this.name = name;
         this.isFavorite = false;
         this.category = category;
         this.tags = new HashSet<>();
-        this.user = user;
         this.wornCount = 0;
-        this.lastWornDate = null;
     }
     
     // =======
@@ -71,25 +65,8 @@ public class ClothingItem {
         return tags;
     }
     
-    public User getUser() {
-        return user;
-    }
-    
     public int getWornCount() {
         return wornCount;
-    }
-    
-    /**
-     * Function for returning the last worn date.
-     * 
-     * @return the date when this clothing item was last worn.
-     */
-    public LocalDate getLastWornDate() {
-        if (wornCount == 0) {
-            return null;
-        } else {
-            return lastWornDate;
-        }
     }
     
     // =======
@@ -121,7 +98,6 @@ public class ClothingItem {
      */
     public void wear() {
         wornCount++;
-        lastWornDate = LocalDate.now();
     }
     
     /**
@@ -130,21 +106,17 @@ public class ClothingItem {
      * @param name is the name by which this clothing item should be known.
      * @param isFavorite is the Boolean value fo whether it is liked or not.
      * @param category is the category/type of clothing item this is.
-     * @param user is the user that owns this clothing item.
      * @param wornCount is the number of times this item was worn.
-     * @param lastWornDate is the last date this item was worn.
      */
     public ClothingItem(int id, String name, 
             boolean isFavorite, ClothingCategory category, 
-            int wornCount, LocalDate lastWornDate) {
+            int wornCount) {
         
         this.id = id;
         this.name = name;
         this.isFavorite = isFavorite;
         this.category = category;
         this.tags = new HashSet<>();
-        this.user = user;
         this.wornCount = wornCount;
-        this.lastWornDate = lastWornDate;
     }
 }
