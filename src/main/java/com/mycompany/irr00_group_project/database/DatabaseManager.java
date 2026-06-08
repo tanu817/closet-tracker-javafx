@@ -38,7 +38,7 @@ public class DatabaseManager {
                 FileWriter writer = new FileWriter(file);
                 
                 if (fileName.equals("clothing_items.csv")) {
-                    writer.write("id,name,isFavorite,category,user,wornCount,lastWornDate\n");
+                    writer.write("id,name,isFavorite,category,wornCount,lastWornDate\n");
                     
                 } else if (fileName.equals("tags.csv")) {
                     writer.write("id,name,category,user\n");

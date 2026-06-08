@@ -123,4 +123,28 @@ public class ClothingItem {
         wornCount++;
         lastWornDate = LocalDate.now();
     }
+    
+    /**
+     * Constructor for loading an existing item from CSV storage.
+     * @param id is the ID number for this clothing item.
+     * @param name is the name by which this clothing item should be known.
+     * @param isFavorite is the Boolean value fo whether it is liked or not.
+     * @param category is the category/type of clothing item this is.
+     * @param user is the user that owns this clothing item.
+     * @param wornCount is the number of times this item was worn.
+     * @param lastWornDate is the last date this item was worn.
+     */
+    public ClothingItem(int id, String name, 
+            boolean isFavorite, ClothingCategory category, 
+            int wornCount, LocalDate lastWornDate) {
+        
+        this.id = id;
+        this.name = name;
+        this.isFavorite = isFavorite;
+        this.category = category;
+        this.tags = new HashSet<>();
+        this.user = user;
+        this.wornCount = wornCount;
+        this.lastWornDate = lastWornDate;
+    }
 }
