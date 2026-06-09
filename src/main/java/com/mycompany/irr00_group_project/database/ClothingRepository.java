@@ -108,6 +108,9 @@ public class ClothingRepository {
         List<ClothingItem> items = getAllItems();
         items.removeIf(item -> item.getId() == id);
         saveItems(items);
+        
+        deleteItemFromOutfitRelationship(id);
+        deleteItemFromTagRelationship(id);
     }
     
     /**
@@ -211,10 +214,72 @@ public class ClothingRepository {
             }
         }
         if (items.size() > 5) {
-            return items.subList(items.size() - 5, items.size());
+            return items.subList(items.size(), items.size() - 5);
         } else {
             return items;
         }
     }
     
+    /**
+     * Method for deleting an item from the outfit relationship table.
+     * 
+     * @param itemId of the item to delete (so we can use it to find the row)
+     */
+    private void deleteItemFromOutfitRelationship(int itemId) {
+        List<String> rows = new ArrayList<>();
+        
+        try (BufferedReader reader = new BufferedReader(new FileReader("outfit_items.csv"))) {
+            String line;
+            rows.add(reader.readLine()); // header
+            while ((line = reader.readLine()) != null) {
+                String[] values = line.split(",");
+                int clothingId1 = Integer.parseInt(values[1]);
+                int clothingId2 = Integer.parseInt(values[2]);
+                if (clothingId1 != itemId && clothingId2 != itemId) {
+                    rows.add(line);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+
+        try (FileWriter writer = new FileWriter("outfit_items.csv")) {
+            for (String row : rows) {
+                writer.write(row + "\n");
+            }
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    /**
+     * Method for deleting an item from the tag relationship table.
+     * 
+     * @param tagID of the tag to delete
+     */
+    private void deleteItemFromTagRelationship(int itemId) {
+        List<String> rows = new ArrayList<>();
+        
+        try (BufferedReader reader = new BufferedReader(new FileReader("clothing_tags.csv"))) {
+            String line;
+            rows.add(reader.readLine()); // header
+            while ((line = reader.readLine()) != null) {
+                String[] values = line.split(",");
+                int currentItemId = Integer.parseInt(values[0]);
+                if (currentItemId != itemId) {
+                    rows.add(line);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+
+        try (FileWriter writer = new FileWriter("clothing_tags.csv")) {
+            for (String row : rows) {
+                writer.write(row + "\n");
+            }
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }

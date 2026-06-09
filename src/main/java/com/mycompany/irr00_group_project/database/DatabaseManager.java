@@ -41,16 +41,16 @@ public class DatabaseManager {
                     writer.write("id,name,isFavorite,category,wornCount\n");
                     
                 } else if (fileName.equals("tags.csv")) {
-                    writer.write("id,name,category\n");
+                    writer.write("id, name,category\n");
                     
                 } else if (fileName.equals("clothing_tags.csv")) {
                     writer.write("clothingId,tagId\n");
                     
                 } else if (fileName.equals("outfits.csv")) {
-                    writer.write("id,name,wornCount\n");
+                    writer.write("id,name\n");
                     
                 } else if (fileName.equals("outfit_items.csv")) {
-                    writer.write("outfitId,clothingId\n");
+                    writer.write("outfitId,clothingId1,clothingId2\n");
                 }
                 
                 writer.close();  
