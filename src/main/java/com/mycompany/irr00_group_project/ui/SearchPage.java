@@ -2,6 +2,10 @@ package com.mycompany.irr00_group_project.ui;
 
 import com.mycompany.irr00_group_project.controller.SearchController;
 import com.mycompany.irr00_group_project.model.ClothingItem;
+import com.mycompany.irr00_group_project.model.Tag;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -18,9 +22,6 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.text.Font;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Search page of the closet tracker app. Appears when search bar clicked on
  * main page.
@@ -30,20 +31,18 @@ import java.util.List;
  */
 public class SearchPage extends BorderPane {
 
-    // COLOR PALETTE
     private static final String LIGHT_GREEN = "#D8CFBC";
     private static final String DARK_GREEN = "#565448";
     private static final String CREAM = "#FFFAF4";
 
-    // CLASS FIELDS
     private Stage stage;
     private FlowPane searchField;
     private VBox resultsBox;
 
     private SearchController searchController = new SearchController();
-    private final List<String> selectedTags = new ArrayList<>();
 
-    // FONTS
+    private final List<Integer> selectedTagIds = new ArrayList<>();
+
     private Font normalBoldFont = Font.loadFont(
             getClass().getResourceAsStream("/fonts/MuktaVaani-SemiBold.ttf"),
             14
@@ -141,7 +140,7 @@ public class SearchPage extends BorderPane {
 
         searchButton.setOnAction(e -> {
             List<ClothingItem> results =
-                    searchController.searchByTags(selectedTags);
+                    searchController.searchByTags(selectedTagIds);
 
             showResults(results);
         });
@@ -149,10 +148,7 @@ public class SearchPage extends BorderPane {
         HBox searchRow = new HBox(15);
         searchRow.getChildren().addAll(backButton, searchField, searchButton);
 
-        VBox topSection = new VBox(15);
-        topSection.getChildren().add(searchRow);
-
-        return topSection;
+        return new VBox(15, searchRow);
     }
 
     private VBox createFiltersSection() {
@@ -210,6 +206,15 @@ public class SearchPage extends BorderPane {
         return row;
     }
 
+    private void removeSelectedTag(String text) {
+
+        selectedTagIds.remove(Integer.valueOf(text.hashCode()));
+
+        searchField.getChildren().removeIf(
+                node -> text.equals(node.getUserData())
+        );
+    }
+
     private void styleTagButton(ToggleButton tag) {
 
         tag.setStyle(
@@ -247,9 +252,8 @@ public class SearchPage extends BorderPane {
     }
 
     private void addSelectedTag(String text) {
-
-        if (!selectedTags.contains(text)) {
-            selectedTags.add(text);
+        if (!selectedTagIds.contains(text.hashCode())) {
+            selectedTagIds.add(text.hashCode());
         }
 
         Label tag = new Label(text);
@@ -266,13 +270,8 @@ public class SearchPage extends BorderPane {
         searchField.getChildren().add(tag);
     }
 
-    private void removeSelectedTag(String text) {
-
-        selectedTags.remove(text);
-
-        searchField.getChildren().removeIf(
-                node -> text.equals(node.getUserData())
-        );
+    private int resolveTagId(String tagName) {
+        return searchController.getAllTagNames().indexOf(tagName) + 1;
     }
 
     private void showResults(List<ClothingItem> items) {
