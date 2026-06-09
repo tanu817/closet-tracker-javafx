@@ -1,126 +1,173 @@
 package com.mycompany.irr00_group_project.model;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.time.LocalDate;
 
 /**
  * Class for clothing items.
- * 
+ *
  * A clothing item
- * - is defined by an {@code id},
+ * - is identified by a unique {@code id},
  * - is known by a {@code name},
- * - {@code isFavorite} or not,
- * - has a {@code category}, defined at the enum ClothingCategory,
- * - has a list of {@code tags}.
- * - is owned by a {@code user}
- * - has a {@code wornCount} and {@code lastWornDate}.
- * 
+ * - may be marked as a {@code favorite},
+ * - has a {@code category} (defined in {@link ClothingCategory}),
+ * - has a set of {@code tags} (identified by their IDs via {@link Tag}),
+ * - tracks how many times it has been worn via {@code wornCount}.
+ *
+ * <p>Tags inside a clothing item are keyed by the {@link Tag#getId()} value.
+ * The in-memory set is populated by the repository after loading relationships
+ * from {@code clothing_tags.csv}.</p>
+ *
  * @author Priyanshu Guha
  */
 public class ClothingItem {
+
     private final int id;
     private String name;
     private boolean isFavorite;
     private ClothingCategory category;
     private final Set<Tag> tags;
-    private final User user;
     private int wornCount;
-    private LocalDate lastWornDate;
-    
+
     /**
-     * Initializes a clothing item with its required properties.
-     * 
-     * @param id is the ID number for this clothing item.
-     * @param name is the name by which this clothing item should be known.
-     * @param category is the category/type of clothing item this is.
-     * @param user is the user that owns this clothing item.
+     * Initializes a new clothing item with required properties.
+     *
+     * @param id       the unique ID for this clothing item
+     * @param name     the display name of this item
+     * @param category the clothing category/type
      */
-    public ClothingItem(int id, String name, ClothingCategory category, User user) {
+    public ClothingItem(int id, String name, ClothingCategory category) {
         this.id = id;
         this.name = name;
         this.isFavorite = false;
         this.category = category;
         this.tags = new HashSet<>();
-        this.user = user;
         this.wornCount = 0;
-        this.lastWornDate = null;
     }
-    
+
+    /**
+     * Constructor for loading an existing item from CSV storage.
+     *
+     * @param id         the unique ID for this clothing item
+     * @param name       the display name of this item
+     * @param isFavorite whether this item is marked as a favorite
+     * @param category   the clothing category/type
+     * @param wornCount  the number of times this item has been worn
+     */
+    public ClothingItem(int id, String name,
+            boolean isFavorite, ClothingCategory category,
+            int wornCount) {
+        this.id = id;
+        this.name = name;
+        this.isFavorite = isFavorite;
+        this.category = category;
+        this.tags = new HashSet<>();
+        this.wornCount = wornCount;
+    }
+
     // =======
     // Getters
     // =======
-    
+
     public int getId() {
         return id;
     }
-    
+
     public String getName() {
         return name;
     }
-    
+
     public boolean isFavorite() {
         return isFavorite;
     }
-    
+
     public ClothingCategory getCategory() {
         return category;
     }
-    
+
+    /**
+     * Returns an unmodifiable view of this item's tags.
+     * Use {@link #addTag(Tag)} and {@link #removeTag(Tag)} to mutate.
+     *
+     * @return read-only view of all associated {@link Tag} objects
+     */
     public Set<Tag> getTags() {
-        return tags;
+        return Collections.unmodifiableSet(tags);
     }
-    
-    public User getUser() {
-        return user;
-    }
-    
+
     public int getWornCount() {
         return wornCount;
     }
-    
-    /**
-     * Function for returning the last worn date.
-     * 
-     * @return the date when this clothing item was last worn.
-     */
-    public LocalDate getLastWornDate() {
-        if (wornCount == 0) {
-            return null;
-        } else {
-            return lastWornDate;
-        }
-    }
-    
+
     // =======
     // Setters
     // =======
-    
+
     public void rename(String newName) {
-        name = newName;
+        this.name = newName;
     }
-    
+
     public void toggleFavorite() {
-        isFavorite = !isFavorite;
+        this.isFavorite = !this.isFavorite;
     }
-    
+
     public void changeCategory(ClothingCategory newCategory) {
-        category = newCategory;
+        this.category = newCategory;
     }
-    
-    public void addTag(Tag t) {
-        tags.add(t);
-    }
-    
-    public void removeTag(Tag t) {
-        tags.remove(t);
-    }
-    
+
     /**
-     * Record that a clothing item has been worn.
+     * Adds a tag to this item. Duplicate tags (same {@code id}) are ignored
+     * because the backing collection is a {@code Set}.
+     *
+     * @param tag the tag to associate with this item
+     */
+    public void addTag(Tag tag) {
+        tags.add(tag);
+    }
+
+    /**
+     * Removes a tag from this item by object identity (matched on tag ID).
+     *
+     * @param tag the tag to remove
+     */
+    public void removeTag(Tag tag) {
+        tags.remove(tag);
+    }
+
+    /**
+     * Removes a tag from this item by its ID.
+     *
+     * @param tagId the ID of the tag to remove
+     */
+    public void removeTagById(int tagId) {
+        tags.removeIf(t -> t.getId() == tagId);
+    }
+
+    /**
+     * Returns {@code true} if this item has a tag with the given ID.
+     *
+     * @param tagId the tag ID to check
+     * @return {@code true} if the tag is present
+     */
+    public boolean hasTag(int tagId) {
+        for (Tag t : tags) {
+            if (t.getId() == tagId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Records that this clothing item has been worn once.
      */
     public void wear() {
         wornCount++;
-        lastWornDate = LocalDate.now();
+    }
+
+    @Override
+    public String toString() {
+        return "ClothingItem{id=" + id + ", name='" + name + "', category=" + category + "}";
     }
 }
