@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.ArrayList;
 import java.util.List;
-import java.time.LocalDate;
 
 /**
  * Class for outfits.
@@ -18,9 +17,6 @@ public class Outfit {
     private final int id;
     private String name;
     private final Set<ClothingItem> items;
-    private final User user;
-    private int wornCount;
-    private LocalDate lastWornDate;
     
     /**
      * Initializes an outfit.
@@ -28,15 +24,11 @@ public class Outfit {
      * @param id is the ID number for this outfit.
      * @param name is the name by which this outfit could be known.
      * @param items is the set of items this outfit is made of.
-     * @param user is the user who owns this outfit.
      */
-    public Outfit(int id, String name, Set<ClothingItem> items, User user) {
+    public Outfit(int id, String name, Set<ClothingItem> items) {
         this.id = id;
         this.name = name;
         this.items = new HashSet<>(items);
-        this.user = user;
-        this.wornCount = 0;
-        this.lastWornDate = null;
     }
     
     /**
@@ -45,14 +37,10 @@ public class Outfit {
      * 
      * @param id is the ID number for this outfit.
      * @param items is the set of items this outfit is made of.
-     * @param user is the user who owns this outfit.
      */
-    public Outfit(int id, Set<ClothingItem> items, User user) {
+    public Outfit(int id, Set<ClothingItem> items) {
         this.id = id;
         this.items = items;
-        this.user = user;
-        this.wornCount = 0;
-        this.lastWornDate = null;
         
         List<String> itemNames = new ArrayList<>();
         for (ClothingItem item : items) {
@@ -71,28 +59,6 @@ public class Outfit {
     
     public String getName() {
         return name;
-    }
-    
-    public User getUser() {
-        return user;
-    }
-    
-    /**
-     * Function for returning the worn count.
-     * 
-     * @return the total number of times this outfit has been worn, as recorded in the DB.
-     */
-    public int getWornCount() {
-        return wornCount;
-    }
-    
-    /**
-     * Function for returning the last worn date.
-     * 
-     * @return the date when this clothing item was last worn.
-     */
-    public LocalDate getLastWornDate() {
-        return lastWornDate;
     }
     
     // =======
@@ -122,4 +88,16 @@ public class Outfit {
     //      getCommonTags()
     //          (get a list of all tags that are common to all clothing items for this outfit)
     // ...
+ 
+    /**
+     * Initializes an outfit for saving in the database.
+     * 
+     * @param id is the ID number for this outfit.
+     * @param name is the name by which this outfit could be known.
+     */
+    public Outfit(int id, String name) {
+        this.id = id;
+        this.name = name;
+        this.items = new HashSet<>();
+    }
 }
