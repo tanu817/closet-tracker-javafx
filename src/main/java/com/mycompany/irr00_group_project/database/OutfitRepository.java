@@ -9,89 +9,109 @@ import java.io.FileReader;
 import com.mycompany.irr00_group_project.model.Outfit;
 
 /**
- * Class for managing outfits in the outfits file.
- * 
+ * Repository for {@link Outfit} objects persisted in {@code outfits.csv} and
+ * the outfit–item relationship table {@code outfit_items.csv}.
+ *
+ * <p>This class is purely I/O: it reads and writes CSV files and performs
+ * no business logic.</p>
+ *
+ * <h2>CSV schemas</h2>
+ * <pre>
+ *   outfits.csv      – id,name
+ *   outfit_items.csv – outfitId,clothingId1,clothingId2
+ * </pre>
+ *
  * @author Aleksandra Levenkova
  */
 public class OutfitRepository {
-    
+
+    private static final String OUTFITS_FILE      = "outfits.csv";
+    private static final String OUTFIT_ITEMS_FILE = "outfit_items.csv";
+
+    // ==================
+    // Outfit CRUD
+    // ==================
+
     /**
-     * Method to add a new outfit to the file.
-     * 
-     * @param outfit to be added
+     * Appends a new outfit to {@code outfits.csv}.
+     *
+     * @param outfit the outfit to persist
      */
     public void addOutfit(Outfit outfit) {
-        try (FileWriter writer = new FileWriter("outfits.csv", true)) { 
+        try (FileWriter writer = new FileWriter(OUTFITS_FILE, true)) {
             writer.write(outfit.getId() + ","
-                + outfit.getName() + "\n");
+                    + escapeCsv(outfit.getName()) + "\n");
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.err.println("OutfitRepository.addOutfit: " + e.getMessage());
         }
     }
-    
-    //USE THE BELOW METHOD IN THE UI
-    
+
     /**
-     * Method to generate the next available id for a new outfit.
-     * 
-     * @return next available outfit id
+     * Generates the next available outfit ID (max existing ID + 1).
+     *
+     * @return next available ID
      */
     public int generateNextId() {
-        List<Outfit> outfits = getAllOutfits();
         int maxId = 0;
-        for (Outfit outfit : outfits) {
+        for (Outfit outfit : getAllOutfits()) {
             if (outfit.getId() > maxId) {
                 maxId = outfit.getId();
             }
         }
         return maxId + 1;
     }
-    
+
     /**
-     * Method to return all outfits.
-     * 
-     * @return list of all outfits
+     * Returns all outfits stored in {@code outfits.csv}.
+     * Items are NOT loaded here; use {@link OutfitService} to hydrate them.
+     *
+     * @return list of all {@link Outfit} objects; empty list on error
      */
     public List<Outfit> getAllOutfits() {
         List<Outfit> outfits = new ArrayList<>();
-        
-        try (BufferedReader reader = new BufferedReader(new FileReader("outfits.csv"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(OUTFITS_FILE))) {
+            reader.readLine(); // skip header
             String line;
-            reader.readLine();
             while ((line = reader.readLine()) != null) {
-                String[] values = line.split(",");
-                int id = Integer.parseInt(values[0]);
-                String name = values[1];
-                Outfit outfit = new Outfit(id, name);
-                outfits.add(outfit);
+                if (line.isBlank()) {
+                    continue;
+                }
+                // name may contain commas → split on first comma only
+                int comma = line.indexOf(',');
+                if (comma < 0) {
+                    continue;
+                }
+                int id       = Integer.parseInt(line.substring(0, comma).trim());
+                String name  = unescapeCsv(line.substring(comma + 1).trim());
+                outfits.add(new Outfit(id, name));
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.err.println("OutfitRepository.getAllOutfits: " + e.getMessage());
         }
         return outfits;
     }
-    
+
     /**
-     * Save the updated list of outfits in the file.
-     * 
-     * @param outfits that were updated and now need to be saved in the file.
+     * Overwrites {@code outfits.csv} with the supplied list.
+     *
+     * @param outfits the complete list of outfits to persist
      */
     public void saveOutfits(List<Outfit> outfits) {
-        try (FileWriter writer = new FileWriter("outfits.csv")) { //overwrite
+        try (FileWriter writer = new FileWriter(OUTFITS_FILE)) {
             writer.write("id,name\n");
             for (Outfit outfit : outfits) {
                 writer.write(outfit.getId() + ","
-                    + outfit.getName() + "\n");
+                        + escapeCsv(outfit.getName()) + "\n");
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.err.println("OutfitRepository.saveOutfits: " + e.getMessage());
         }
     }
-    
+
     /**
-     * Update a outfit based on the id.
-     * 
-     * @param outfit to be updated
+     * Updates a single outfit record identified by its ID.
+     *
+     * @param outfit the outfit with updated values
      */
     public void updateOutfit(Outfit outfit) {
         List<Outfit> outfits = getAllOutfits();
@@ -103,96 +123,144 @@ public class OutfitRepository {
         }
         saveOutfits(outfits);
     }
-    
+
     /**
-     * Delete an outfit based on its id.
-     * 
-     * @param id of the outfit that needs to be deleted
+     * Deletes an outfit by ID and removes its item relationships.
+     *
+     * @param id the ID of the outfit to delete
      */
     public void deleteOutfit(int id) {
         List<Outfit> outfits = getAllOutfits();
-        outfits.removeIf(outfit -> outfit.getId() == id);
+        outfits.removeIf(o -> o.getId() == id);
         saveOutfits(outfits);
-        
         deleteOutfitItems(id);
     }
-    
-    //METHODS FOR THE ITEM-OUTFIT RELATIONSHIP
-    
+
+    // ==================
+    // Outfit–Item relationship (outfit_items.csv)
+    // ==================
+
     /**
-     * Method for adding an item (top/bottom) to an outfit.
-     * 
-     * @param outfitId of the outfit to which we are adding the item
-     * @param clothingId1 of the first item that needs to be added to the outfit
-     * @param clothingId2 of the second item that needs to be added to the outfit
+     * Persists the two-item composition of an outfit.
+     * Schema: outfitId,clothingId1,clothingId2
+     *
+     * @param outfitId    the ID of the outfit
+     * @param clothingId1 the ID of the first clothing item (e.g. top)
+     * @param clothingId2 the ID of the second clothing item (e.g. bottom)
      */
     public void addItemToOutfit(int outfitId, int clothingId1, int clothingId2) {
-        try (FileWriter writer = new FileWriter("outfit_items.csv", true)) { 
+        try (FileWriter writer = new FileWriter(OUTFIT_ITEMS_FILE, true)) {
             writer.write(outfitId + "," + clothingId1 + "," + clothingId2 + "\n");
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.err.println("OutfitRepository.addItemToOutfit: " + e.getMessage());
         }
     }
-    
+
     /**
-     * Method for getting IDs of items that form the outfit.
-     * (to display correct info on the screen)
-     * 
-     * @param outfitId whose item IDs we need to return
-     * @return the two IDs of the items that form an outfit
+     * Returns the IDs of the two clothing items that compose the given outfit.
+     *
+     * @param outfitId the outfit whose item IDs should be returned
+     * @return list of exactly 0 or 2 clothing item IDs
      */
     public List<Integer> getItemIdsForOutfit(int outfitId) {
         List<Integer> itemIds = new ArrayList<>();
-        
-        try (BufferedReader reader = new BufferedReader(new FileReader("outfit_items.csv"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(OUTFIT_ITEMS_FILE))) {
+            reader.readLine(); // skip header
             String line;
-            reader.readLine();
             while ((line = reader.readLine()) != null) {
-                String[] values = line.split(",");
-                int outfitID = Integer.parseInt(values[0]);
-                int clothingID1 = Integer.parseInt(values[1]);
-                int clothingID2 = Integer.parseInt(values[2]);
-                if (outfitID == outfitId) {
-                    itemIds.add(clothingID1);
-                    itemIds.add(clothingID2);
-                    break;
+                if (line.isBlank()) {
+                    continue;
+                }
+                String[] values = line.split(",", -1);
+                if (values.length < 3) {
+                    continue;
+                }
+                int currentOutfitId = Integer.parseInt(values[0].trim());
+                if (currentOutfitId == outfitId) {
+                    itemIds.add(Integer.parseInt(values[1].trim()));
+                    itemIds.add(Integer.parseInt(values[2].trim()));
+                    break; // each outfit has exactly one row
                 }
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.err.println("OutfitRepository.getItemIdsForOutfit: " + e.getMessage());
         }
         return itemIds;
     }
-    
+
+    // ==================
+    // Private helpers
+    // ==================
+
     /**
-     * Method for deleting an outfit from the relationship table.
-     * 
-     * @param outfitId of the outfit to delete
+     * Removes all rows in {@code outfit_items.csv} for the given outfit ID.
+     *
+     * @param outfitId the outfit whose item rows should be removed
      */
     private void deleteOutfitItems(int outfitId) {
         List<String> rows = new ArrayList<>();
-        
-        try (BufferedReader reader = new BufferedReader(new FileReader("outfit_items.csv"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(OUTFIT_ITEMS_FILE))) {
+            String header = reader.readLine();
+            if (header != null) {
+                rows.add(header);
+            }
             String line;
-            rows.add(reader.readLine()); // header
             while ((line = reader.readLine()) != null) {
-                String[] values = line.split(",");
-                int currentOutfitId = Integer.parseInt(values[0]);
+                if (line.isBlank()) {
+                    continue;
+                }
+                String[] values = line.split(",", -1);
+                if (values.length < 1) {
+                    continue;
+                }
+                int currentOutfitId = Integer.parseInt(values[0].trim());
                 if (currentOutfitId != outfitId) {
                     rows.add(line);
                 }
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.err.println("OutfitRepository.deleteOutfitItems: " + e.getMessage());
+            return;
         }
-
-        try (FileWriter writer = new FileWriter("outfit_items.csv")) {
+        try (FileWriter writer = new FileWriter(OUTFIT_ITEMS_FILE)) {
             for (String row : rows) {
                 writer.write(row + "\n");
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.err.println("OutfitRepository.deleteOutfitItems(write): " + e.getMessage());
         }
     }
-}
 
+    /**
+     * Wraps a field value in double-quotes if it contains a comma, a
+     * double-quote, or a newline — minimal RFC 4180 escaping.
+     *
+     * @param value raw field value
+     * @return safe CSV field value
+     */
+    private String escapeCsv(String value) {
+        if (value == null) {
+            return "";
+        }
+        if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
+            return "\"" + value.replace("\"", "\"\"") + "\"";
+        }
+        return value;
+    }
+
+    /**
+     * Strips surrounding double-quotes and un-doubles internal ones.
+     *
+     * @param value raw CSV field (may be quoted)
+     * @return unescaped value
+     */
+    private String unescapeCsv(String value) {
+        if (value == null) {
+            return "";
+        }
+        if (value.startsWith("\"") && value.endsWith("\"") && value.length() >= 2) {
+            return value.substring(1, value.length() - 1).replace("\"\"", "\"");
+        }
+        return value;
+    }
+}

@@ -1,0 +1,4 @@
+id,name,isFavorite,category,wornCount
+1,red top,false,TOP,0
+2,blue party dress,false,ONE_PIECE,0
+3,brown pants,false,BOTTOM,0
