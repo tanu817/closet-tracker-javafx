@@ -12,7 +12,7 @@ import com.mycompany.irr00_group_project.service.OutfitService;
  * <p>Receives calls from {@code OutfitsPage} and forwards them to
  * {@link OutfitService}. Contains no business logic and performs no I/O.</p>
  *
- * @author Group 21
+ * @author Arshiya Shaik
  */
 public class OutfitController {
 

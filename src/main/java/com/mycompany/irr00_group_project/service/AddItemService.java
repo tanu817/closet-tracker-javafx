@@ -12,20 +12,20 @@ import com.mycompany.irr00_group_project.model.TagCategory;
 /**
  * Service for adding new clothing items to the closet.
  *
- * <p>Responsible for:</p>
- * <ul>
- *   <li>Generating a new unique item ID.</li>
- *   <li>Persisting the {@link ClothingItem} to {@code clothing_items.csv}.</li>
- *   <li>Creating new tags (if they do not already exist) and persisting them
- *       to {@code tags.csv}.</li>
- *   <li>Writing all tag relationships to {@code clothing_tags.csv} using
- *       Tag IDs — never tag names.</li>
- * </ul>
+ * Responsible for:
+ * 
+ *   Generating a new unique item ID.
+ *   Persisting the {@link ClothingItem} to {@code clothing_items.csv}.
+ *   Creating new tags (if they do not already exist) and persisting them
+ *       to {@code tags.csv}.
+ *   Writing all tag relationships to {@code clothing_tags.csv} using
+ *       Tag IDs: never tag names.
+ * 
  *
- * <p>No file I/O is performed here — all persistence is delegated to the
- * repository layer.</p>
+ * No file I/O is performed here: all persistence is delegated to the
+ * repository layer.
  *
- * @author Group 21
+ * @author Arshiya Shaik
  */
 public class AddItemService {
 

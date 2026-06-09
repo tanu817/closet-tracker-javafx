@@ -15,7 +15,7 @@ import com.mycompany.irr00_group_project.model.ClothingItem;
  * if it is a BOTTOM, return all TOPs. All other categories return an
  * empty list (accessories, one-piece, headwear, footwear are not matched).</p>
  *
- * @author Group 21
+ * @author Arshiya Shaik
  */
 public class RecommendationService {
 

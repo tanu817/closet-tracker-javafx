@@ -26,11 +26,12 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 /**
- * Items page — shows all clothing items loaded from CSV storage.
+ * Items page: shows all clothing items loaded from CSV storage.
  * Supports toggling favourites, marking items as worn, and viewing
  * matching items.
  *
  * @author Bhavini Kopparam Ajay
+ * @author Arshiya Shaik
  */
 public class ItemsPage extends BorderPane {
 

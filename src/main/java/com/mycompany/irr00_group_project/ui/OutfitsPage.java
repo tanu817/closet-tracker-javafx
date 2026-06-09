@@ -27,6 +27,7 @@ import javafx.stage.Stage;
  * Outfits page — shows all outfits loaded from CSV storage.
  *
  * @author Bhavini Kopparam Ajay
+ * @author Arshiya Shaik
  */
 public class OutfitsPage extends BorderPane {
 

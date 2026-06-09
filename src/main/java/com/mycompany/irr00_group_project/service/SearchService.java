@@ -11,10 +11,10 @@ import com.mycompany.irr00_group_project.model.Tag;
 /**
  * Service for searching clothing items by tags.
  *
- * <p>All search operations use Tag IDs as the stable key — never tag names.
- * AND semantics: every supplied tag ID must be present on a result item.</p>
+ * All search operations use Tag IDs as the stable key: never tag names.
+ * AND semantics: every supplied tag ID must be present on a result item.
  *
- * @author Group 21
+ * @author Arshiya Shaik
  */
 public class SearchService {
 
@@ -25,10 +25,6 @@ public class SearchService {
         this.clothingRepository = new ClothingRepository();
         this.tagRepository = new TagRepository();
     }
-
-    // ==================
-    // Tag helpers for UI
-    // ==================
 
     /**
      * Returns the display names of every known tag (for populating filter UI).

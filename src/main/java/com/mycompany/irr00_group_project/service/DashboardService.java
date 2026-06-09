@@ -9,12 +9,12 @@ import com.mycompany.irr00_group_project.model.ClothingItem;
 /**
  * Service for computing dashboard statistics.
  *
- * <p>All heavy lifting (sorting, filtering) is delegated to
+ *  All heavy lifting (sorting, filtering) is delegated to
  * {@link ClothingRepository}. This service provides the clean API the
  * controller expects and adds any cross-repository aggregations that a
- * single repository call cannot satisfy on its own.</p>
+ * single repository call cannot satisfy on its own.
  *
- * @author Group 21
+ * @author Arshiya Shaik
  */
 public class DashboardService {
 
@@ -26,9 +26,6 @@ public class DashboardService {
         this.tagRepository = new TagRepository();
     }
 
-    // ==================
-    // Ranked lists
-    // ==================
 
     /**
      * Returns the top 5 most-worn items, sorted by {@code wornCount} descending.
@@ -59,9 +56,6 @@ public class DashboardService {
         return clothingRepository.getLeast5Worn();
     }
 
-    // ==================
-    // Aggregate stats
-    // ==================
 
     /**
      * Snapshot of dashboard statistics for the overview cards.
@@ -109,9 +103,6 @@ public class DashboardService {
         return new DashboardStats(totalItems, totalWears, totalFavourites, avg);
     }
 
-    // ==================
-    // Wear tracking
-    // ==================
 
     /**
      * Marks an item as worn, incrementing its {@code wornCount} by 1
@@ -123,9 +114,6 @@ public class DashboardService {
         clothingRepository.markAsWorn(clothingId);
     }
 
-    // ==================
-    // Full item list (hydrated)
-    // ==================
 
     /**
      * Returns all items with their tags hydrated from the relationship table.

@@ -13,6 +13,7 @@ import java.util.Objects;
  * tags that have been loaded separately from CSV storage.</p>
  *
  * @author Priyanshu Guha
+ * @author Arshiya Shaik
  */
 public class Tag {
 

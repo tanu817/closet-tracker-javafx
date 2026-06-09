@@ -14,12 +14,12 @@ import com.mycompany.irr00_group_project.model.Outfit;
 /**
  * Service for managing outfits.
  *
- * <p>An outfit groups exactly two clothing items (one top, one bottom, as
+ * An outfit groups exactly two clothing items (one top, one bottom, as
  * enforced by {@link OutfitRepository#addItemToOutfit}). This service handles
  * creation, retrieval, deletion, and wear-tracking while keeping the
- * controller free of any repository calls.</p>
+ * controller free of any repository calls.
  *
- * @author Group 21
+ * @author Arshiya Shaik
  */
 public class OutfitService {
 
@@ -33,9 +33,6 @@ public class OutfitService {
         this.tagRepository = new TagRepository();
     }
 
-    // ==================
-    // Create
-    // ==================
 
     /**
      * Creates a new outfit from two clothing item IDs and persists it.
@@ -76,9 +73,6 @@ public class OutfitService {
         return outfit;
     }
 
-    // ==================
-    // Read
-    // ==================
 
     /**
      * Returns all outfits with their clothing items hydrated.
@@ -128,9 +122,7 @@ public class OutfitService {
         return items;
     }
 
-    // ==================
-    // Update / Delete
-    // ==================
+
 
     /**
      * Renames an outfit and persists the change.
@@ -155,9 +147,7 @@ public class OutfitService {
         outfitRepository.deleteOutfit(outfitId);
     }
 
-    // ==================
-    // Wear tracking
-    // ==================
+
 
     /**
      * Records that an outfit was worn: increments {@code wornCount} on both
@@ -172,9 +162,7 @@ public class OutfitService {
         }
     }
 
-    // ==================
-    // Helpers
-    // ==================
+
 
     /**
      * Loads the two clothing items for an outfit into its in-memory item set.

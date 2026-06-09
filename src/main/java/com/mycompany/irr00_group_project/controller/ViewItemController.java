@@ -12,7 +12,7 @@ import com.mycompany.irr00_group_project.service.RecommendationService;
  * <p>Handles: marking an item as worn, toggling favourite status,
  * and fetching matching items.</p>
  *
- * @author Group 21
+ * @author Arshiya Shaik
  */
 public class ViewItemController {
 

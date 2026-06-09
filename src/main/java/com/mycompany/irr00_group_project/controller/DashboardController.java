@@ -12,7 +12,7 @@ import com.mycompany.irr00_group_project.service.DashboardService.DashboardStats
  * <p>Receives calls from the dashboard UI and forwards them to
  * {@link DashboardService}. Contains no business logic and performs no I/O.</p>
  *
- * @author Group 21
+ * @author Arshiya Shaik
  */
 public class DashboardController {
 

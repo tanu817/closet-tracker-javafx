@@ -14,7 +14,7 @@ import com.mycompany.irr00_group_project.service.AddItemService;
  * <p>Receives calls from {@code AddItemsPage} and forwards them to
  * {@link AddItemService}. Contains no business logic and performs no I/O.</p>
  *
- * @author Group 21
+ * @author Arshiya Shaik
  */
 public class AddItemController {
 

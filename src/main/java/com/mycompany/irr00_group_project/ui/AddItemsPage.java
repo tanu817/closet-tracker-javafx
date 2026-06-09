@@ -27,10 +27,11 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 /**
- * Add items overlay — appears when the plus button is clicked on the main page.
+ * Add items overlay: appears when the plus button is clicked on the main page.
  * Wired to {@link AddItemController} for persistence.
  *
  * @author Bhavini Kopparam Ajay
+ * @author Arshiya Shaik
  */
 public class AddItemsPage {
 

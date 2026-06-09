@@ -3,12 +3,12 @@ package com.mycompany.irr00_group_project.utils;
 /**
  * Utility class for input validation helpers.
  *
- * @author Group 21
+ * @author Arshiya Shaik
  */
 public final class ValidationUtils {
 
     private ValidationUtils() {
-        // utility class — not instantiated
+        // utility class: not instantiated
     }
 
     /**

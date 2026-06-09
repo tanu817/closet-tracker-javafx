@@ -12,7 +12,7 @@ import com.mycompany.irr00_group_project.service.SearchService;
  * <p>Receives calls from {@code SearchPage} and forwards them to
  * {@link SearchService}. Contains no business logic and performs no I/O.</p>
  *
- * @author Group 21
+ * @author Arshiya Shaik
  */
 public class SearchController {
 
