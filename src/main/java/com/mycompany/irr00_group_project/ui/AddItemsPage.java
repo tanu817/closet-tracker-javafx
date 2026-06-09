@@ -352,10 +352,13 @@ public class AddItemsPage {
         pane.setHgap(10);
         pane.setVgap(10);
 
-        // Load existing tags for this category from DB
+        // Load existing tags for this category from DB.
+        // Skip the seeded clothing-type tags (Top/Bottom/One Piece/Accessory, ids 1–4)
+        // stored under OTHER — they are ClothingCategory mirrors, not real user tags.
         List<Tag> allTags = addItemController.getAllTags();
         for (Tag tag : allTags) {
-            if (tag.getCategory() == category) {
+            if (tag.getCategory() == category
+                    && !(category == TagCategory.OTHER && tag.getId() <= 4)) {
                 ToggleButton btn = new ToggleButton(tag.getName());
                 btn.setFont(normalBoldFont);
                 btn.setPrefHeight(35);

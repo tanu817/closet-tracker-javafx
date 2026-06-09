@@ -80,8 +80,13 @@ public class SearchService {
         List<ClothingItem> allItems = clothingRepository.getAllItems();
         List<ClothingItem> results = new ArrayList<>();
 
-        // Empty filter → return everything
+        // Empty filter → return everything (with tags hydrated for display)
         if (selectedTagIds == null || selectedTagIds.isEmpty()) {
+            for (ClothingItem item : allItems) {
+                for (Tag tag : tagRepository.getTagsOfItem(item.getId())) {
+                    item.addTag(tag);
+                }
+            }
             return allItems;
         }
 

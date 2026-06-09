@@ -39,6 +39,8 @@ public class SearchPage extends BorderPane {
     private static final String LIGHT_GREEN = "#D8CFBC";
     private static final String DARK_GREEN  = "#565448";
     private static final String CREAM       = "#FFFAF4";
+    /** Explicit dark text color applied to every visible label. */
+    private static final String TEXT_COLOR  = "-fx-text-fill: #1a1a1a;";
 
     private final Stage stage;
     private FlowPane searchField;
@@ -116,7 +118,8 @@ public class SearchPage extends BorderPane {
         showAllButton.setStyle(
                 "-fx-background-color: #F3EEE6;"
                 + "-fx-background-radius: 10;"
-                + "-fx-border-radius: 10;");
+                + "-fx-border-radius: 10;"
+                + TEXT_COLOR);
         showAllButton.setPrefSize(110, 40);
         showAllButton.setOnAction(e -> showResults(searchController.searchByTags(new ArrayList<>())));
 
@@ -129,7 +132,7 @@ public class SearchPage extends BorderPane {
                 + "-fx-border-radius: 10;"
                 + "-fx-text-fill: white;");
         searchButton.setPrefSize(110, 40);
-        searchButton.setOnAction(e -> showResults(searchController.searchByTags(selectedTagIds)));
+        searchButton.setOnAction(e -> showResults(searchController.searchByTags(new ArrayList<>(selectedTagIds))));
 
         HBox searchRow = new HBox(10);
         searchRow.setAlignment(Pos.CENTER_LEFT);
@@ -147,30 +150,38 @@ public class SearchPage extends BorderPane {
 
         List<Tag> allTags = searchController.getAllTags();
 
-        // Group tags by category, preserving enum declaration order
+        // Group tags by category, preserving enum declaration order.
+        // Skip the seeded "type" tags (ids 1–4, category=OTHER) because items are
+        // categorised via ClothingCategory, not via tag IDs, so those tags can never
+        // appear in clothing_tags.csv and would always produce empty results.
         Map<TagCategory, List<Tag>> grouped = new EnumMap<>(TagCategory.class);
         for (TagCategory cat : TagCategory.values()) {
             grouped.put(cat, new ArrayList<>());
         }
         for (Tag tag : allTags) {
+            // Exclude the four seeded clothing-type tags (Top/Bottom/One Piece/Accessory)
+            // stored with category=OTHER. They are identifiable by id <= 4.
+            // User-created OTHER tags (id > 21) ARE shown.
+            if (tag.getCategory() == TagCategory.OTHER && tag.getId() <= 4) {
+                continue;
+            }
             grouped.get(tag.getCategory()).add(tag);
         }
 
         // Pretty display names for each category row
         Map<TagCategory, String> labels = new LinkedHashMap<>();
-        labels.put(TagCategory.OTHER,   "Type");
         labels.put(TagCategory.COLOR,   "Colour");
         labels.put(TagCategory.WEATHER, "Weather");
         labels.put(TagCategory.EVENT,   "Event");
         labels.put(TagCategory.DETAIL,  "Details");
+        labels.put(TagCategory.OTHER,   "Other");
 
-        // Render in this preferred order: Type first, then the rest
         TagCategory[] order = {
-            TagCategory.OTHER,
             TagCategory.COLOR,
             TagCategory.WEATHER,
             TagCategory.EVENT,
-            TagCategory.DETAIL
+            TagCategory.DETAIL,
+            TagCategory.OTHER
         };
 
         for (TagCategory cat : order) {
@@ -185,6 +196,7 @@ public class SearchPage extends BorderPane {
             Label empty = new Label(
                     "No tags available. Add items via the + button on the home screen.");
             empty.setFont(normalFont);
+            empty.setStyle(TEXT_COLOR);
             filters.getChildren().add(empty);
         }
 
@@ -196,6 +208,8 @@ public class SearchPage extends BorderPane {
         Label label = new Label(categoryLabel);
         label.setFont(subTitleFont);
         label.setPrefWidth(80);
+        // FIX Issue 2: explicit dark text so label is visible on cream background
+        label.setStyle(TEXT_COLOR);
 
         FlowPane tagPane = new FlowPane();
         tagPane.setHgap(10);
@@ -240,7 +254,8 @@ public class SearchPage extends BorderPane {
         chip.setStyle(
                 "-fx-background-color: #F3EEE6;"
                 + "-fx-background-radius: 8;"
-                + "-fx-padding: 4 10 4 10;");
+                + "-fx-padding: 4 10 4 10;"
+                + TEXT_COLOR);
         chip.setUserData(tagId);
         searchField.getChildren().add(chip);
     }
@@ -260,6 +275,8 @@ public class SearchPage extends BorderPane {
         if (items == null || items.isEmpty()) {
             Label empty = new Label("No items match your selection.");
             empty.setFont(normalFont);
+            // FIX Issue 2: explicit dark text
+            empty.setStyle(TEXT_COLOR);
             resultsBox.getChildren().add(empty);
             return;
         }
@@ -275,6 +292,8 @@ public class SearchPage extends BorderPane {
 
             Label name = new Label(item.getName());
             name.setFont(normalBoldFont);
+            // FIX Issue 2: explicit dark text so item name is readable on white card
+            name.setStyle(TEXT_COLOR);
 
             Label cat = new Label(cap(item.getCategory().name()));
             cat.setFont(normalFont);
@@ -317,7 +336,8 @@ public class SearchPage extends BorderPane {
                 "-fx-background-color: white;"
                 + "-fx-border-color: " + LIGHT_GREEN + ";"
                 + "-fx-background-radius: 8;"
-                + "-fx-border-radius: 8;";
+                + "-fx-border-radius: 8;"
+                + "-fx-text-fill: #1a1a1a;";
         String selected =
                 "-fx-background-color:" + DARK_GREEN + ";"
                 + "-fx-text-fill: white;"
