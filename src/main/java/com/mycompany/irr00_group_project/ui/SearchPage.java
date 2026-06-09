@@ -1,5 +1,8 @@
 package com.mycompany.irr00_group_project.ui;
 
+import com.mycompany.irr00_group_project.controller.SearchController;
+import com.mycompany.irr00_group_project.model.ClothingItem;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -15,11 +18,15 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.text.Font;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Search page of the closet tracker app. Appears when search bar clicked on
- * main page. 
+ * main page.
  *
  * @author Bhavini Kopparam Ajay
+ * @author Arshiya Tasneem Shaik
  */
 public class SearchPage extends BorderPane {
 
@@ -28,91 +35,69 @@ public class SearchPage extends BorderPane {
     private static final String DARK_GREEN = "#565448";
     private static final String CREAM = "#FFFAF4";
 
-    //CLASS FIELDS
+    // CLASS FIELDS
     private Stage stage;
     private FlowPane searchField;
-
     private VBox resultsBox;
 
-    //FONTS
+    private SearchController searchController = new SearchController();
+    private final List<String> selectedTags = new ArrayList<>();
+
+    // FONTS
     private Font normalBoldFont = Font.loadFont(
-            getClass().getResourceAsStream(
-                    "/fonts/MuktaVaani-SemiBold.ttf"
-            ),
+            getClass().getResourceAsStream("/fonts/MuktaVaani-SemiBold.ttf"),
             14
     );
 
     private Font normalFont = Font.loadFont(
-            getClass().getResourceAsStream(
-                    "/fonts/MuktaVaani-Regular.ttf"
-            ),
+            getClass().getResourceAsStream("/fonts/MuktaVaani-Regular.ttf"),
             13
     );
 
     private Font titleFont = Font.loadFont(
-            getClass().getResourceAsStream(
-                    "/fonts/YesevaOne-Regular.ttf"
-            ),
+            getClass().getResourceAsStream("/fonts/YesevaOne-Regular.ttf"),
             24
     );
 
     private Font subTitleFont = Font.loadFont(
-            getClass().getResourceAsStream(
-                    "/fonts/YesevaOne-Regular.ttf"
-            ),
+            getClass().getResourceAsStream("/fonts/YesevaOne-Regular.ttf"),
             15
     );
 
     private Font buttonFont = Font.loadFont(
-            getClass().getResourceAsStream(
-                    "/fonts/MuktaVaani-SemiBold.ttf"
-            ),
+            getClass().getResourceAsStream("/fonts/MuktaVaani-SemiBold.ttf"),
             19
     );
 
-    /**
-     * Constructor of the class.
-     *
-     * @param stage
-     */
     public SearchPage(Stage stage) {
         this.stage = stage;
         setStyle("-fx-background-color: #FFFAF4;");
 
         VBox root = new VBox(20);
-
         root.setPadding(new Insets(25));
+
+        resultsBox = new VBox(10);
 
         root.getChildren().addAll(
                 createTopSection(),
-                createFiltersSection()
-        //createResultsSection()
+                createFiltersSection(),
+                resultsBox
         );
 
         setCenter(root);
     }
 
-    /**
-     * Designing the top section of the Page which is the back button, search
-     * bar, and search button.
-     *
-     * @return Vbox with all components
-     */
     private VBox createTopSection() {
 
-        //BACK BUTTON
         Image backImg = new Image(
-                getClass().getResourceAsStream(
-                        "/icons/arrow.png"
-                )
+                getClass().getResourceAsStream("/icons/arrow.png")
         );
 
         ImageView backIcon = new ImageView(backImg);
-
         backIcon.setFitWidth(35);
         backIcon.setFitHeight(35);
-        Button backButton = new Button();
 
+        Button backButton = new Button();
         backButton.setGraphic(backIcon);
 
         backButton.setStyle(
@@ -124,22 +109,15 @@ public class SearchPage extends BorderPane {
         backButton.setPrefSize(40, 42);
 
         backButton.setOnAction(e -> {
-
             MainPage mainPage = new MainPage();
-
             mainPage.start(stage);
-
         });
 
-        //SEARCH BAR
         searchField = new FlowPane();
-
         searchField.setHgap(8);
         searchField.setVgap(8);
-
         searchField.setPrefWidth(950);
         searchField.setPrefHeight(45);
-
         searchField.setPadding(new Insets(5));
 
         searchField.setStyle(
@@ -149,7 +127,6 @@ public class SearchPage extends BorderPane {
                 + "-fx-border-radius: 10;"
         );
 
-        //SEARCH BUTTON 
         Button searchButton = new Button("Search");
         searchButton.setFont(buttonFont);
 
@@ -162,83 +139,37 @@ public class SearchPage extends BorderPane {
 
         searchButton.setPrefSize(120, 40);
 
-        //PUTTING EVERYTHING IN A ROW
+        searchButton.setOnAction(e -> {
+            List<ClothingItem> results =
+                    searchController.searchByTags(selectedTags);
+
+            showResults(results);
+        });
+
         HBox searchRow = new HBox(15);
+        searchRow.getChildren().addAll(backButton, searchField, searchButton);
 
-        searchRow.getChildren().addAll(
-                backButton,
-                searchField,
-                searchButton
-        );
-
-        //PUTTING IT ALL AT THE TOP
         VBox topSection = new VBox(15);
         topSection.getChildren().add(searchRow);
 
         return topSection;
     }
 
-    /**
-     * Creating the part of the page where you select tags. Uses 2 helper
-     * methods.
-     *
-     * @return Vbox with components.
-     */
     private VBox createFiltersSection() {
 
         VBox filters = new VBox(15);
 
         filters.getChildren().addAll(
-                createFilterRow(
-                        true,
-                        "Type",
-                        "Top",
-                        "Bottom",
-                        "One Piece",
-                        "Accessory"
-                ),
-                createFilterRow(
-                        false,
-                        "Colour",
-                        "Pink",
-                        "Blue",
-                        "Green",
-                        "Black"
-                ),
-                createFilterRow(
-                        false,
-                        "Event",
-                        "Party",
-                        "Formal",
-                        "Casual"
-                ),
-                createFilterRow(
-                        false,
-                        "Details",
-                        "Minimal",
-                        "Vintage"
-                ),
-                createFilterRow(
-                        false,
-                        "Other",
-                        "Summer",
-                        "Winter"
-                )
+                createFilterRow(true, "Type", "Top", "Bottom", "One Piece", "Accessory"),
+                createFilterRow(false, "Colour", "Pink", "Blue", "Green", "Black"),
+                createFilterRow(false, "Event", "Party", "Formal", "Casual"),
+                createFilterRow(false, "Details", "Minimal", "Vintage"),
+                createFilterRow(false, "Other", "Summer", "Winter")
         );
 
         return filters;
-
     }
 
-    /**
-     * Helper method to help create each category of tags.
-     *
-     * @param singleSelect allow to select only one tag if true.
-     * @param title category name.
-     * @param tags the example tags which needs to come from data base later.
-     * Some edits might be required.
-     * @return
-     */
     private HBox createFilterRow(
             boolean singleSelect,
             String title,
@@ -252,49 +183,34 @@ public class SearchPage extends BorderPane {
         }
 
         Label label = new Label(title);
-
         label.setFont(subTitleFont);
-
         label.setPrefWidth(80);
 
         FlowPane tagPane = new FlowPane();
-
         tagPane.setHgap(10);
 
         for (String tagText : tags) {
 
-            ToggleButton tag
-                    = new ToggleButton(tagText);
+            ToggleButton tag = new ToggleButton(tagText);
+
             if (singleSelect) {
                 tag.setToggleGroup(group);
             }
-            tag.setFont(normalBoldFont);
 
+            tag.setFont(normalBoldFont);
             styleTagButton(tag);
 
             tagPane.getChildren().add(tag);
         }
 
         HBox row = new HBox(20);
-
         row.setAlignment(Pos.CENTER_LEFT);
-
-        row.getChildren().addAll(
-                label,
-                tagPane
-        );
+        row.getChildren().addAll(label, tagPane);
 
         return row;
     }
 
-    /**
-     * Helps style each tag in the tag selection section of the page.
-     *
-     * @param tag
-     */
-    private void styleTagButton(
-            ToggleButton tag
-    ) {
+    private void styleTagButton(ToggleButton tag) {
 
         tag.setStyle(
                 "-fx-background-color: white;"
@@ -303,40 +219,40 @@ public class SearchPage extends BorderPane {
                 + "-fx-border-radius: 8;"
         );
 
-        tag.selectedProperty().addListener(
-                (obs, oldVal, selected) -> {
+        tag.selectedProperty().addListener((obs, oldVal, selected) -> {
 
-                    if (selected) {
+            if (selected) {
 
-                        tag.setStyle(
-                                "-fx-background-color: "
-                                + DARK_GREEN + ";"
-                                + "-fx-text-fill: white;"
-                                + "-fx-background-radius: 8;"
-                                + "-fx-border-radius: 8;"
-                        );
+                tag.setStyle(
+                        "-fx-background-color:" + DARK_GREEN + ";"
+                        + "-fx-text-fill: white;"
+                        + "-fx-background-radius: 8;"
+                        + "-fx-border-radius: 8;"
+                );
 
-                        addSelectedTag(tag.getText());
+                addSelectedTag(tag.getText());
 
-                    } else {
+            } else {
 
-                        tag.setStyle(
-                                "-fx-background-color: white;"
-                                + "-fx-border-color: "
-                                + LIGHT_GREEN + ";"
-                                + "-fx-background-radius: 8;"
-                                + "-fx-border-radius: 8;"
-                        );
+                tag.setStyle(
+                        "-fx-background-color: white;"
+                        + "-fx-border-color:" + LIGHT_GREEN + ";"
+                        + "-fx-background-radius: 8;"
+                        + "-fx-border-radius: 8;"
+                );
 
-                        removeSelectedTag(tag.getText());
-                    }
-                }
-        );
+                removeSelectedTag(tag.getText());
+            }
+        });
     }
 
     private void addSelectedTag(String text) {
-        Label tag = new Label(text);
 
+        if (!selectedTags.contains(text)) {
+            selectedTags.add(text);
+        }
+
+        Label tag = new Label(text);
         tag.setFont(normalBoldFont);
 
         tag.setStyle(
@@ -352,9 +268,39 @@ public class SearchPage extends BorderPane {
 
     private void removeSelectedTag(String text) {
 
+        selectedTags.remove(text);
+
         searchField.getChildren().removeIf(
                 node -> text.equals(node.getUserData())
         );
     }
 
+    private void showResults(List<ClothingItem> items) {
+
+        resultsBox.getChildren().clear();
+
+        if (items == null || items.isEmpty()) {
+            resultsBox.getChildren().add(
+                    new Label("No items match your filters")
+            );
+            return;
+        }
+
+        for (ClothingItem item : items) {
+
+            VBox card = new VBox(5);
+            card.setStyle(
+                    "-fx-background-color: white;"
+                    + "-fx-padding: 10;"
+                    + "-fx-background-radius: 10;"
+            );
+
+            Label name = new Label(item.getName());
+            name.setFont(normalBoldFont);
+
+            card.getChildren().add(name);
+
+            resultsBox.getChildren().add(card);
+        }
+    }
 }
