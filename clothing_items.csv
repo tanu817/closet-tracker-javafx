@@ -1,6 +1,51 @@
 id,name,isFavorite,category,wornCount
-3,brown pants,false,BOTTOM,1
+3,brown pants,true,BOTTOM,1
 4,pearl earrings,true,ACCESSORY,2
-5,striped tee,false,TOP,3
-6,prom dress,true,ONE_PIECE,1
-7,green t-shirt,false,TOP,0
+5,B,true,BOTTOM,0
+6,prom dress,false,ONE_PIECE,3
+5,B,false,BOTTOM,0
+3,Hoodie,false,TOP,0
+2,B,false,TOP,11
+3,C,false,TOP,1
+2,B,false,TOP,1
+3,C,false,TOP,3
+2,NotFav,false,TOP,10
+8,Suit Jacket,false,TOP,0
+9,Blazer,false,TOP,0
+10,Old Coat,false,TOP,0
+11,Summer Dress,false,ONE_PIECE,0
+5,B,false,BOTTOM,0
+3,Hoodie,false,TOP,0
+2,B,false,TOP,9
+3,C,false,TOP,1
+2,B,false,TOP,1
+3,C,false,TOP,3
+1,Fav,true,TOP,3
+2,NotFav,false,TOP,10
+12,Shirt,false,TOP,0
+13,Pants,false,BOTTOM,0
+14,Hoodie,false,TOP,2
+15,Jeans,false,BOTTOM,2
+16,Cap,false,HEADWEAR,1
+17,Tee,false,TOP,0
+18,Jeans,false,BOTTOM,0
+19,Top,false,TOP,0
+20,Bottom,false,BOTTOM,0
+21,White Tee,false,TOP,0
+22,Blue Jeans,false,BOTTOM,0
+23,Shirt,false,TOP,1
+24,Trousers,false,BOTTOM,1
+25,White Tee,false,TOP,0
+26,Blazer,false,TOP,0
+27,Jeans,false,BOTTOM,0
+28,Casual Blue Tee,false,TOP,0
+29,Casual Red Shirt,false,TOP,0
+30,Item 1,false,TOP,0
+31,Item 2,false,BOTTOM,0
+32,Summer Tee,false,TOP,0
+33,Summer Shorts,false,BOTTOM,0
+34,Suit Jacket,false,TOP,0
+35,Blazer,false,TOP,0
+36,Old Coat,false,TOP,0
+37,Summer Dress,false,ONE_PIECE,0
+38,eee,false,TOP,0
