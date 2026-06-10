@@ -46,6 +46,7 @@ public class SearchPage extends BorderPane {
     private final Stage stage;
     private FlowPane searchField;
     private VBox resultsBox;
+    private Label noFilterWarning;
 
     private final SearchController searchController = new SearchController();
 
@@ -76,11 +77,18 @@ public class SearchPage extends BorderPane {
 
         resultsBox = new VBox(10);
 
+        noFilterWarning = new Label("Please select at least one tag.");
+        noFilterWarning.setFont(normalFont);
+        noFilterWarning.setStyle("-fx-text-fill: #c0392b;");
+        noFilterWarning.setVisible(false);
+        noFilterWarning.setManaged(false);
+
         VBox root = new VBox(20);
         root.setPadding(new Insets(25));
         root.getChildren().addAll(
                 createTopSection(),
                 createFiltersSection(),
+                noFilterWarning,
                 resultsBox
         );
 
@@ -90,9 +98,6 @@ public class SearchPage extends BorderPane {
         setCenter(scroll);
     }
 
-    // ──────────────────────────────────────────────────────────────
-    // Top section (back button, search bar, Show All, Search)
-    // ──────────────────────────────────────────────────────────────
 
     private VBox createTopSection() {
         Image backImg = new Image(getClass().getResourceAsStream("/icons/arrow.png"));
@@ -140,9 +145,18 @@ public class SearchPage extends BorderPane {
                 + "-fx-border-radius: 10;"
                 + "-fx-text-fill: white;");
         searchButton.setPrefSize(110, 40);
-        searchButton.setOnAction(e ->
-                showResults(searchController.searchByCategoryAndTags(
-                        selectedCategory, new ArrayList<>(selectedTagIds))));
+        searchButton.setOnAction(e -> {
+            if (selectedCategory == null && selectedTagIds.isEmpty()) {
+                noFilterWarning.setVisible(true);
+                noFilterWarning.setManaged(true);
+                resultsBox.getChildren().clear();
+                return;
+            }
+            noFilterWarning.setVisible(false);
+            noFilterWarning.setManaged(false);
+            showResults(searchController.searchByCategoryAndTags(
+                    selectedCategory, new ArrayList<>(selectedTagIds)));
+        });
 
         HBox searchRow = new HBox(10);
         searchRow.setAlignment(Pos.CENTER_LEFT);
@@ -150,10 +164,6 @@ public class SearchPage extends BorderPane {
 
         return new VBox(15, searchRow);
     }
-
-    // ──────────────────────────────────────────────────────────────
-    // Filters section
-    // ──────────────────────────────────────────────────────────────
 
     private VBox createFiltersSection() {
         VBox filters = new VBox(15);
@@ -302,10 +312,6 @@ public class SearchPage extends BorderPane {
         return row;
     }
 
-    // ──────────────────────────────────────────────────────────────
-    // Chip helpers — chips in the search bar show active filters
-    // ──────────────────────────────────────────────────────────────
-
     private void addTagChip(String tagName, int tagId) {
         Label chip = new Label(tagName);
         chip.setFont(normalBoldFont);
@@ -340,9 +346,6 @@ public class SearchPage extends BorderPane {
                 node -> Integer.valueOf(CATEGORY_CHIP_SENTINEL).equals(node.getUserData()));
     }
 
-    // ──────────────────────────────────────────────────────────────
-    // Results display
-    // ──────────────────────────────────────────────────────────────
 
     private void showResults(List<ClothingItem> items) {
         resultsBox.getChildren().clear();
@@ -391,9 +394,6 @@ public class SearchPage extends BorderPane {
         }
     }
 
-    // ──────────────────────────────────────────────────────────────
-    // Helpers
-    // ──────────────────────────────────────────────────────────────
 
     private String cap(String s) {
         if (s == null || s.isEmpty()) {

@@ -48,11 +48,13 @@ public class ViewItemController {
     }
 
     /**
-     * Deletes a clothing item by ID and removes all its CSV relationships.
+     * Deletes a clothing item by ID, removes all its CSV relationships,
+     * and automatically deletes any outfits that contained this item.
      *
      * @param itemId the ID of the item to delete
      */
     public void deleteItem(int itemId) {
+        outfitService.deleteOutfitsContainingItem(itemId);
         clothingRepository.deleteItem(itemId);
     }
 
