@@ -10,6 +10,7 @@ import java.util.Optional;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -204,6 +205,7 @@ public class OutfitsPage extends BorderPane {
                 if (!newName.isBlank()) {
                     outfitController.renameOutfit(outfitId, newName);
                     title.setText(newName);
+                    showInfo("Outfit Updated", "Outfit renamed to \"" + newName + "\".");
                 }
             });
         });
@@ -211,13 +213,17 @@ public class OutfitsPage extends BorderPane {
         Button wornBtn = new Button("Mark as Worn");
         wornBtn.setFont(normalBoldFont);
         wornBtn.setStyle("-fx-background-color: #F3EEE6; -fx-background-radius: 8; -fx-border-radius: 8;");
-        wornBtn.setOnAction(e -> outfitController.wearOutfit(outfitId));
+        wornBtn.setOnAction(e -> {
+            outfitController.wearOutfit(outfitId);
+            showInfo("Outfit Worn", "Outfit marked as worn. Wear counts updated.");
+        });
 
         Button deleteBtn = new Button("Delete");
         deleteBtn.setFont(normalBoldFont);
         deleteBtn.setStyle("-fx-background-color: #F3EEE6; -fx-background-radius: 8; -fx-border-radius: 8; -fx-text-fill: #c0392b;");
         deleteBtn.setOnAction(e -> {
             outfitController.deleteOutfit(outfitId);
+            showInfo("Outfit Deleted", "Outfit \"" + outfitName + "\" has been deleted.");
             refreshOutfits();
         });
 
@@ -274,5 +280,17 @@ public class OutfitsPage extends BorderPane {
         }
 
         return card;
+    }
+
+    // ==================
+    // Helpers
+    // ==================
+
+    private void showInfo(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

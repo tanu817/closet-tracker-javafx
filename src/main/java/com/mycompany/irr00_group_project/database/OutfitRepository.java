@@ -189,6 +189,39 @@ public class OutfitRepository {
     }
 
     /**
+     * Returns {@code true} if an outfit composed of exactly these two
+     * clothing items already exists (order-independent).
+     *
+     * @param clothingId1 ID of the first item
+     * @param clothingId2 ID of the second item
+     * @return {@code true} when a duplicate outfit is found
+     */
+    public boolean outfitExists(int clothingId1, int clothingId2) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(OUTFIT_ITEMS_FILE))) {
+            reader.readLine(); // skip header
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.isBlank()) {
+                    continue;
+                }
+                String[] values = line.split(",", -1);
+                if (values.length < 3) {
+                    continue;
+                }
+                int a = Integer.parseInt(values[1].trim());
+                int b = Integer.parseInt(values[2].trim());
+                if ((a == clothingId1 && b == clothingId2)
+                        || (a == clothingId2 && b == clothingId1)) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("OutfitRepository.outfitExists: " + e.getMessage());
+        }
+        return false;
+    }
+
+    /**
      * Returns the IDs of all outfits that contain the given clothing item.
      *
      * @param clothingId the clothing item ID to search for

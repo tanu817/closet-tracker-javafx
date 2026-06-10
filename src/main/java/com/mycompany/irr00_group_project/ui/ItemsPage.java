@@ -206,6 +206,11 @@ public class ItemsPage extends BorderPane {
                 + "-fx-padding: 6 14 6 14;");
         deleteBtn.setOnAction(e -> {
             viewItemController.deleteItem(item.getId());
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Item Deleted");
+            alert.setHeaderText(null);
+            alert.setContentText("\"" + item.getName() + "\" has been removed from your closet.");
+            alert.showAndWait();
             loadItemsFromDb();
         });
 
@@ -320,6 +325,13 @@ public class ItemsPage extends BorderPane {
                     + "View it on the Outfits page.");
             alert.showAndWait();
 
+        } catch (IllegalStateException ex) {
+            // Duplicate outfit
+            Alert dup = new Alert(Alert.AlertType.WARNING);
+            dup.setTitle("Duplicate Outfit");
+            dup.setHeaderText(null);
+            dup.setContentText("This outfit already exists.");
+            dup.showAndWait();
         } catch (Exception ex) {
             Alert err = new Alert(Alert.AlertType.ERROR);
             err.setTitle("Error");

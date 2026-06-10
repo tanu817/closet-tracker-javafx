@@ -59,6 +59,10 @@ public class OutfitService {
                     "Clothing item not found: id=" + clothingId2);
         }
 
+        if (outfitRepository.outfitExists(clothingId1, clothingId2)) {
+            throw new IllegalStateException("This outfit already exists.");
+        }
+
         int newId = outfitRepository.generateNextId();
 
         // Build name from items if caller did not supply one
