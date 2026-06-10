@@ -4,13 +4,15 @@ import java.util.List;
 
 import com.mycompany.irr00_group_project.database.ClothingRepository;
 import com.mycompany.irr00_group_project.model.ClothingItem;
+import com.mycompany.irr00_group_project.model.Outfit;
+import com.mycompany.irr00_group_project.service.OutfitService;
 import com.mycompany.irr00_group_project.service.RecommendationService;
 
 /**
  * Controller for the item detail / view-items actions.
  *
  * <p>Handles: marking an item as worn, toggling favourite status,
- * and fetching matching items.</p>
+ * fetching matching items, and creating outfits from a matched pair.</p>
  *
  * @author Arshiya Shaik
  */
@@ -18,10 +20,12 @@ public class ViewItemController {
 
     private final ClothingRepository clothingRepository;
     private final RecommendationService recommendationService;
+    private final OutfitService outfitService;
 
     public ViewItemController() {
         this.clothingRepository = new ClothingRepository();
         this.recommendationService = new RecommendationService();
+        this.outfitService = new OutfitService();
     }
 
     /**
@@ -60,5 +64,21 @@ public class ViewItemController {
      */
     public List<ClothingItem> getMatchingItems(ClothingItem item) {
         return recommendationService.getMatchingItems(item);
+    }
+
+    /**
+     * Creates an outfit from two clothing items and persists it to CSV.
+     *
+     * <p>The outfit name is auto-generated as "item1Name + item2Name".</p>
+     *
+     * @param selectedItem  the item the user is currently viewing
+     * @param matchingItem  the suggested matching item
+     * @return the newly created {@link Outfit}
+     */
+    public Outfit createOutfitFromMatch(ClothingItem selectedItem, ClothingItem matchingItem) {
+        return outfitService.createOutfit(
+                selectedItem.getName() + " + " + matchingItem.getName(),
+                selectedItem.getId(),
+                matchingItem.getId());
     }
 }

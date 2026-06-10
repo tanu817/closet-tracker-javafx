@@ -1,6 +1,6 @@
 id,name,isFavorite,category,wornCount
 3,brown pants,false,BOTTOM,1
 4,pearl earrings,true,ACCESSORY,2
-5,striped tee,false,TOP,3
 6,prom dress,true,ONE_PIECE,1
 7,green t-shirt,false,TOP,0
+8,Satin brown shirt,true,TOP,1
