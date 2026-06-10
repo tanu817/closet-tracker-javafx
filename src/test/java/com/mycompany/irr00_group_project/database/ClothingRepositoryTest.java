@@ -62,10 +62,39 @@ public class ClothingRepositoryTest {
     @DisplayName("item added with addItem() appears in getAllItems()")
     void addItemAppearsInList() {
         ClothingRepository repo = new ClothingRepository();
-        repo.addItem(new ClothingItem(1, "Shirt", ClothingCategory.TOP));
+        repo.addItem(new ClothingItem(1, "Shirt", false, ClothingCategory.TOP, 0));
         List<ClothingItem> all = repo.getAllItems();
         assertEquals(1, all.size());
         assertEquals("Shirt", all.get(0).getName());
+    }
+    
+    @Test
+    @DisplayName("2 items added with addItem() appear in getAllItems()")
+    void addMultipleItemsAppearInList() {
+        ClothingRepository repo = new ClothingRepository();
+        repo.addItem(new ClothingItem(1, "Shirt", false, ClothingCategory.TOP, 0));
+        repo.addItem(new ClothingItem(2, "Blazer", false, ClothingCategory.TOP, 0));
+        List<ClothingItem> all = repo.getAllItems();
+        assertEquals(2, all.size());
+        assertEquals("Shirt", all.get(0).getName());
+        assertEquals("Blazer", all.get(1).getName());
+    }
+    
+    @Test
+    @DisplayName("getAllItems() is empty if no items were added")
+    void getAllItemsIsEmpty() {
+        ClothingRepository repo = new ClothingRepository();
+        List<ClothingItem> all = repo.getAllItems();
+        assertTrue(all.isEmpty());
+    }
+    
+    @Test
+    @DisplayName("generateNextId() returns next available item ID (max existing ID + 1)")
+    void generateNextIdIncrements() {
+        ClothingRepository repo = new ClothingRepository();
+        repo.addItem(new ClothingItem(1, "Shirt", false, ClothingCategory.TOP, 0));
+        repo.addItem(new ClothingItem(4, "Trousers", true, ClothingCategory.BOTTOM, 1));
+        assertEquals(5, repo.generateNextId());
     }
 
     @Test
@@ -76,19 +105,10 @@ public class ClothingRepositoryTest {
     }
 
     @Test
-    @DisplayName("generateNextId() returns max existing ID + 1")
-    void generateNextIdIncrements() {
-        ClothingRepository repo = new ClothingRepository();
-        repo.addItem(new ClothingItem(1, "A", ClothingCategory.TOP));
-        repo.addItem(new ClothingItem(5, "B", ClothingCategory.BOTTOM));
-        assertEquals(6, repo.generateNextId());
-    }
-
-    @Test
-    @DisplayName("getItemById() returns correct item")
+    @DisplayName("getItemById() returns correct item by its ID")
     void getItemByIdCorrect() {
         ClothingRepository repo = new ClothingRepository();
-        repo.addItem(new ClothingItem(3, "Hoodie", ClothingCategory.TOP));
+        repo.addItem(new ClothingItem(3, "Hoodie", true, ClothingCategory.TOP, 0));
         ClothingItem found = repo.getItemById(3);
         assertNotNull(found);
         assertEquals("Hoodie", found.getName());
@@ -98,14 +118,41 @@ public class ClothingRepositoryTest {
     @DisplayName("getItemById() returns null for unknown ID")
     void getItemByIdNotFound() {
         ClothingRepository repo = new ClothingRepository();
-        assertNull(repo.getItemById(999));
+        repo.addItem(new ClothingItem(3, "T-shirt", true, ClothingCategory.TOP, 0));
+        assertNull(repo.getItemById(10));
     }
 
     @Test
-    @DisplayName("deleteItem() removes the item")
+    @DisplayName("changeItem() updates existing item's details (identified by ID)")
+    void changeItemCorrect() {
+        ClothingRepository repo = new ClothingRepository();
+        repo.addItem(new ClothingItem(1, "Shirt", false, ClothingCategory.TOP, 0));
+        repo.changeItem(new ClothingItem(1, "Blouse", true, ClothingCategory.BOTTOM, 1));
+        ClothingItem found = repo.getItemById(1);
+        assertEquals("Blouse", found.getName());
+        assertTrue(found.isFavorite());
+        assertEquals(ClothingCategory.BOTTOM, found.getCategory());
+        assertEquals(1, found.getWornCount());
+    }
+    
+    @Test
+    @DisplayName("changeItem() does not update item's details with unknown ID")
+    void changeItemUnknownID() {
+        ClothingRepository repo = new ClothingRepository();
+        repo.addItem(new ClothingItem(1, "Shirt", false, ClothingCategory.TOP, 0));
+        repo.changeItem(new ClothingItem(3, "Blouse", true, ClothingCategory.BOTTOM, 0));
+        ClothingItem found = repo.getItemById(1);
+        assertEquals("Shirt", found.getName());
+        assertFalse(found.isFavorite());
+        assertEquals(ClothingCategory.TOP, found.getCategory());
+        assertEquals(0, found.getWornCount());
+    }
+
+    @Test
+    @DisplayName("deleteItem() removes the item so getAllItems() is empty")
     void deleteItemCorrect() {
         ClothingRepository repo = new ClothingRepository();
-        repo.addItem(new ClothingItem(1, "ToDelete", ClothingCategory.TOP));
+        repo.addItem(new ClothingItem(1, "Jeans", true, ClothingCategory.BOTTOM, 0));
         repo.deleteItem(1);
         assertTrue(repo.getAllItems().isEmpty());
     }
@@ -119,61 +166,53 @@ public class ClothingRepositoryTest {
         assertEquals(1, repo.getItemById(1).getWornCount());
     }
 
-    @Test
-    @DisplayName("changeItem() updates existing item's details")
-    void changeItemCorrect() {
-        ClothingRepository repo = new ClothingRepository();
-        repo.addItem(new ClothingItem(1, "Old Name", ClothingCategory.TOP));
-        repo.changeItem(new ClothingItem(1, "New Name", false, ClothingCategory.BOTTOM, 5));
-        ClothingItem found = repo.getItemById(1);
-        assertEquals("New Name", found.getName());
-        assertEquals(5, found.getWornCount());
-    }
-
+    
     @Test
     @DisplayName("getTop5Worn() returns items sorted descending by wornCount")
     void getTop5WornCorrect() {
         ClothingRepository repo = new ClothingRepository();
-        repo.addItem(new ClothingItem(1, "A", false, ClothingCategory.TOP, 3));
-        repo.addItem(new ClothingItem(2, "B", false, ClothingCategory.TOP, 9));
-        repo.addItem(new ClothingItem(3, "C", false, ClothingCategory.TOP, 1));
+        repo.addItem(new ClothingItem(1, "Blouse", false, ClothingCategory.TOP, 3));
+        repo.addItem(new ClothingItem(2, "Shirt", true, ClothingCategory.TOP, 0));
+        repo.addItem(new ClothingItem(3, "Jacket", false, ClothingCategory.TOP, 1));
         List<ClothingItem> top = repo.getTop5Worn();
-        assertEquals(9, top.get(0).getWornCount());
-        assertEquals(3, top.get(1).getWornCount());
-        assertEquals(1, top.get(2).getWornCount());
+        assertEquals(3, top.get(0).getWornCount());
+        assertEquals(1, top.get(1).getWornCount());
+        assertEquals(0, top.get(2).getWornCount());
     }
 
     @Test
     @DisplayName("getLeast5Worn() returns items sorted ascending by wornCount")
     void getLeast5WornCorrect() {
         ClothingRepository repo = new ClothingRepository();
-        repo.addItem(new ClothingItem(1, "A", false, ClothingCategory.TOP, 5));
-        repo.addItem(new ClothingItem(2, "B", false, ClothingCategory.TOP, 1));
-        repo.addItem(new ClothingItem(3, "C", false, ClothingCategory.TOP, 3));
+        repo.addItem(new ClothingItem(1, "Blouse", false, ClothingCategory.TOP, 0));
+        repo.addItem(new ClothingItem(2, "Shirt", true, ClothingCategory.TOP, 1));
+        repo.addItem(new ClothingItem(3, "Jacket", false, ClothingCategory.TOP, 2));
         List<ClothingItem> least = repo.getLeast5Worn();
-        assertEquals(1, least.get(0).getWornCount());
-        assertEquals(3, least.get(1).getWornCount());
-        assertEquals(5, least.get(2).getWornCount());
+        assertEquals(0, least.get(0).getWornCount());
+        assertEquals(1, least.get(1).getWornCount());
+        assertEquals(2, least.get(2).getWornCount());
     }
 
     @Test
     @DisplayName("getTop5FavouriteItems() returns only favourite items")
     void getTop5FavouritesCorrect() {
         ClothingRepository repo = new ClothingRepository();
-        repo.addItem(new ClothingItem(1, "Fav", true, ClothingCategory.TOP, 2));
-        repo.addItem(new ClothingItem(2, "NotFav", false, ClothingCategory.TOP, 10));
+        repo.addItem(new ClothingItem(1, "Hoodie", true, ClothingCategory.TOP, 2));
+        repo.addItem(new ClothingItem(2, "T-shirt", false, ClothingCategory.TOP, 7));
         List<ClothingItem> favs = repo.getTop5FavouriteItems();
         assertEquals(1, favs.size());
+        assertEquals("Hoodie", favs.get(0).getName());
         assertTrue(favs.get(0).isFavorite());
+        assertFalse(favs.stream().anyMatch(i -> i.getName().equals("T-shirt")));
     }
 
     @Test
     @DisplayName("getTop5FavouriteItems() returns favourite items sorted descending by wornCount")
     void getTop5FavouritesSortedDescending() {
         ClothingRepository repo = new ClothingRepository();
-        repo.addItem(new ClothingItem(1, "Fav A", true, ClothingCategory.BOTTOM, 2));
-        repo.addItem(new ClothingItem(2, "Fav B", true, ClothingCategory.ACCESSORY, 8));
-        repo.addItem(new ClothingItem(3, "Fav C", true, ClothingCategory.FOOTWEAR, 5));
+        repo.addItem(new ClothingItem(1, "Trousers", true, ClothingCategory.BOTTOM, 2));
+        repo.addItem(new ClothingItem(2, "Earrings", true, ClothingCategory.ACCESSORY, 8));
+        repo.addItem(new ClothingItem(3, "Trainers", true, ClothingCategory.FOOTWEAR, 5));
         List<ClothingItem> favs = repo.getTop5FavouriteItems();
         assertEquals(8, favs.get(0).getWornCount());
         assertEquals(5, favs.get(1).getWornCount());
