@@ -79,4 +79,12 @@ public abstract class CsvTestBase {
             fw.write(content);
         }
     }
+
+    protected String readOrEmpty(String name) throws IOException {
+        File f = new File(name);
+        if (!f.exists()) {
+            return "";
+        }
+        return new String(Files.readAllBytes(f.toPath()));
+    }
 }
