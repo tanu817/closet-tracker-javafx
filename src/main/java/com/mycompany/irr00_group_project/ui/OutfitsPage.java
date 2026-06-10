@@ -164,6 +164,7 @@ public class OutfitsPage extends BorderPane {
 
         Label title = new Label(outfitName);
         title.setFont(outfitFont);
+        title.setStyle("-fx-text-fill: black;");
 
         Image plusImg = new Image(
                 getClass().getResourceAsStream("/icons/plus.png"));
@@ -195,12 +196,14 @@ public class OutfitsPage extends BorderPane {
         if (item == null) {
             Label placeholder = new Label("—");
             placeholder.setFont(buttonFont);
+            placeholder.setStyle("-fx-text-fill: black;");
             card.getChildren().add(placeholder);
             return card;
         }
 
         Label name = new Label(item.getName());
         name.setFont(buttonFont);
+        name.setStyle("-fx-text-fill: black;");
 
         Label catLabel = new Label(item.getCategory().name());
         catLabel.setFont(normalFont);
@@ -220,7 +223,8 @@ public class OutfitsPage extends BorderPane {
             tagChip.setStyle(
                     "-fx-background-color: #F3EEE6;"
                     + "-fx-background-radius: 8;"
-                    + "-fx-padding: 4 8 4 8;");
+                    + "-fx-padding: 4 8 4 8;"
+                    + "-fx-text-fill: black;");
             card.getChildren().add(tagChip);
         }
 
