@@ -27,7 +27,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 /**
- * Outfits page — shows all outfits loaded from CSV storage.
+ * Outfits page: shows all outfits loaded from CSV storage.
  *
  * @author Bhavini Kopparam Ajay
  * @author Arshiya Shaik
@@ -64,9 +64,6 @@ public class OutfitsPage extends BorderPane {
         setCenter(root);
     }
 
-    // ==================
-    // Top section
-    // ==================
 
     private VBox createTopSection() {
         Image backImg = new Image(
@@ -103,9 +100,6 @@ public class OutfitsPage extends BorderPane {
         return topSection;
     }
 
-    // ==================
-    // Outfits grid (loaded from DB)
-    // ==================
 
     private ScrollPane createOutfitsSection() {
         outfitsRoot = new VBox(25);
@@ -157,9 +151,6 @@ public class OutfitsPage extends BorderPane {
         outfitsRoot.getChildren().setAll(outfitsRow);
     }
 
-    // ==================
-    // Card builder
-    // ==================
 
     private VBox createOutfitCard(int outfitId,
                                   String outfitName,
@@ -282,9 +273,6 @@ public class OutfitsPage extends BorderPane {
         return card;
     }
 
-    // ==================
-    // Helpers
-    // ==================
 
     private void showInfo(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

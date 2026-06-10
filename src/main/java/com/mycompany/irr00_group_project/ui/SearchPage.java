@@ -29,7 +29,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 /**
- * Search page — filters are loaded from the database (seeded defaults + any
+ * Search page: filters are loaded from the database (seeded defaults + any
  * user-created tags). A Type row filters by {@link ClothingCategory}; all
  * other rows filter by tag ID. Both filters combine with AND logic.
  *
@@ -168,10 +168,10 @@ public class SearchPage extends BorderPane {
     private VBox createFiltersSection() {
         VBox filters = new VBox(15);
 
-        // ── Row 1: Type filter (ClothingCategory-based, not tag IDs) ──
+        // Row 1: Type filter (ClothingCategory-based, not tag IDs) ──
         filters.getChildren().add(createTypeFilterRow());
 
-        // ── Rows 2-N: Tag-based filters (Color, Weather, Event, Detail, Other) ──
+        // Rows 2-N: Tag-based filters (Color, Weather, Event, Detail, Other) ──
         List<Tag> allTags = searchController.getAllTags();
 
         Map<TagCategory, List<Tag>> grouped = new EnumMap<>(TagCategory.class);

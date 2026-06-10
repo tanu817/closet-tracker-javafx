@@ -24,9 +24,6 @@ public class AddItemController {
         this.addItemService = new AddItemService();
     }
 
-    // ==================
-    // Add item
-    // ==================
 
     /**
      * Adds a new clothing item with known tag IDs.
@@ -69,9 +66,6 @@ public class AddItemController {
                 name, category, existingTagNames, newTagNames);
     }
 
-    // ==================
-    // Tag helpers
-    // ==================
 
     /**
      * Returns all existing tags so the UI can display them as selectable chips.

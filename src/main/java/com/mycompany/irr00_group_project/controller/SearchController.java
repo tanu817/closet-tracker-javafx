@@ -23,9 +23,6 @@ public class SearchController {
         this.searchService = new SearchService();
     }
 
-    // ==================
-    // Tag helpers
-    // ==================
 
     /**
      * Returns the display names of all known tags.
@@ -55,10 +52,6 @@ public class SearchController {
     public int getTagIdByName(String tagName) {
         return searchService.getTagIdByName(tagName);
     }
-
-    // ==================
-    // Search
-    // ==================
 
     /**
      * Executes an AND-logic tag search using Tag IDs.

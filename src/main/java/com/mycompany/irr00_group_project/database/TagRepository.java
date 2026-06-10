@@ -28,15 +28,13 @@ import com.mycompany.irr00_group_project.model.TagCategory;
  * {@link #getTagById(int)} or {@link #getTagIdByName(String)}.</p>
  *
  * @author Aleksandra Levenkova
+ * @author Arshiya Shaik
  */
 public class TagRepository {
 
     private static final String TAGS_FILE         = "tags.csv";
     private static final String CLOTHING_TAGS_FILE = "clothing_tags.csv";
 
-    // ==================
-    // Tag CRUD (tags.csv)
-    // ==================
 
     /**
      * Appends a new tag to {@code tags.csv}.

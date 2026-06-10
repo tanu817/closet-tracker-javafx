@@ -5,6 +5,8 @@ import java.util.List;
 import com.mycompany.irr00_group_project.database.ClothingRepository;
 import com.mycompany.irr00_group_project.model.ClothingItem;
 import com.mycompany.irr00_group_project.model.Outfit;
+import com.mycompany.irr00_group_project.model.Tag;
+import com.mycompany.irr00_group_project.service.EditItemService;
 import com.mycompany.irr00_group_project.service.OutfitService;
 import com.mycompany.irr00_group_project.service.RecommendationService;
 
@@ -21,11 +23,13 @@ public class ViewItemController {
     private final ClothingRepository clothingRepository;
     private final RecommendationService recommendationService;
     private final OutfitService outfitService;
+    private final EditItemService editItemService;
 
     public ViewItemController() {
         this.clothingRepository = new ClothingRepository();
         this.recommendationService = new RecommendationService();
         this.outfitService = new OutfitService();
+        this.editItemService = new EditItemService();
     }
 
     /**
@@ -66,6 +70,26 @@ public class ViewItemController {
      */
     public List<ClothingItem> getMatchingItems(ClothingItem item) {
         return recommendationService.getMatchingItems(item);
+    }
+
+    /**
+     * Updates a clothing item's name and tag set, persisting all changes to CSV.
+     *
+     * @param item     the item to edit (mutated in-place)
+     * @param newName  the new display name
+     * @param tagNames the desired set of tag names
+     */
+    public void editItem(ClothingItem item, String newName, List<String> tagNames) {
+        editItemService.updateItem(item, newName, tagNames);
+    }
+
+    /**
+     * Returns all available tags for the edit UI.
+     *
+     * @return list of all {@link Tag} objects
+     */
+    public List<Tag> getAllTags() {
+        return editItemService.getAllTags();
     }
 
     /**

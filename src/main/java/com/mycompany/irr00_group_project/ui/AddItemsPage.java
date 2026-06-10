@@ -55,9 +55,6 @@ public class AddItemsPage {
 
     private final AddItemController addItemController = new AddItemController();
 
-    // ==================
-    // Fonts (loaded once)
-    // ==================
 
     private final Font normalBoldFont = Font.loadFont(
             getClass().getResourceAsStream("/fonts/MuktaVaani-SemiBold.ttf"), 14);
@@ -202,9 +199,6 @@ public class AddItemsPage {
         return backButton;
     }
 
-    // ==================
-    // Save logic
-    // ==================
 
     /**
      * Collects form values, validates, and delegates to {@link AddItemController}.
@@ -313,9 +307,6 @@ public class AddItemsPage {
         }
     }
 
-    // ==================
-    // UI builders
-    // ==================
 
     /**
      * Creates a type-selection toggle button and registers it with
@@ -462,9 +453,6 @@ public class AddItemsPage {
         addButton.setManaged(true);
     }
 
-    // ==================
-    // Style helpers
-    // ==================
 
     private void styleTagButton(ToggleButton button) {
         String normal =

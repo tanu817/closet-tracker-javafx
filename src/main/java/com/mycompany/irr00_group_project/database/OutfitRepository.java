@@ -22,15 +22,13 @@ import com.mycompany.irr00_group_project.model.Outfit;
  * </pre>
  *
  * @author Aleksandra Levenkova
+ * @author Arshiya Shaik
  */
 public class OutfitRepository {
 
     private static final String OUTFITS_FILE      = "outfits.csv";
     private static final String OUTFIT_ITEMS_FILE = "outfit_items.csv";
 
-    // ==================
-    // Outfit CRUD
-    // ==================
 
     /**
      * Appends a new outfit to {@code outfits.csv}.
@@ -136,9 +134,6 @@ public class OutfitRepository {
         deleteOutfitItems(id);
     }
 
-    // ==================
-    // Outfit–Item relationship (outfit_items.csv)
-    // ==================
 
     /**
      * Persists the two-item composition of an outfit.
@@ -252,9 +247,6 @@ public class OutfitRepository {
         return outfitIds;
     }
 
-    // ==================
-    // Private helpers
-    // ==================
 
     /**
      * Removes all rows in {@code outfit_items.csv} for the given outfit ID.
