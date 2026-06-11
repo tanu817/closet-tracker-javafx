@@ -35,9 +35,9 @@ import javafx.stage.Stage;
  * user-created tags). A Type row filters by {@link ClothingCategory}; all
  * other rows filter by tag ID. Both filters combine with AND logic.
  *
- * <p>Each result card has a "Mark as Worn" button. If the item is a TOP or
+ * Each result card has a "Mark as Worn" button. If the item is a TOP or
  * BOTTOM, matching items of the opposite category are shown inline; each
- * match has a "Create Outfit" button.</p>
+ * match has a "Create Outfit" button.
  *
  * @author Bhavini Kopparam Ajay
  * @author Priyanshu Guha
@@ -429,7 +429,6 @@ public class SearchPage extends BorderPane {
         HBox topRow = new HBox(10);
         topRow.setAlignment(Pos.CENTER_LEFT);
         topRow.getChildren().addAll(name, cat, spacer, heartBtn);
-
         
         FlowPane chips = new FlowPane();
         chips.setHgap(8);
@@ -454,8 +453,7 @@ public class SearchPage extends BorderPane {
         Button wornBtn = new Button("Mark as Worn");
         wornBtn.setFont(normalBoldFont);
         wornBtn.setStyle(
-                "-fx-background-color: " + DARK_GREEN + ";"
-                + "-fx-text-fill: white;"
+                "-fx-background-color: #F3EEE6;"
                 + "-fx-background-radius: 8;"
                 + "-fx-padding: 6 14 6 14;");
         wornBtn.setOnAction(e -> {
@@ -470,29 +468,52 @@ public class SearchPage extends BorderPane {
 
         HBox actionRow = new HBox(10);
         actionRow.setAlignment(Pos.CENTER_LEFT);
-        actionRow.getChildren().addAll(wornBtn, wornLabel);
 
-        // ── TASK 2: "Show Matches" button for TOP/BOTTOM only (lazy) ──
         ClothingCategory category = item.getCategory();
-        if (category == ClothingCategory.TOP || category == ClothingCategory.BOTTOM) {
+
+        if (category == ClothingCategory.TOP
+                || category == ClothingCategory.BOTTOM) {
+
             Button matchBtn = new Button("Show Matches");
+
             matchBtn.setFont(normalBoldFont);
+
             matchBtn.setStyle(
                     "-fx-background-color: #F3EEE6;"
                     + "-fx-background-radius: 8;"
                     + "-fx-padding: 6 14 6 14;"
-                    + TEXT_COLOR);
+                    + TEXT_COLOR
+            );
+
             matchBtn.setOnAction(e -> {
-                // wrapper: index 0 = card; index 1 (if present) = matches panel
+
                 if (wrapper.getChildren().size() > 1) {
+
                     wrapper.getChildren().remove(1);
                     matchBtn.setText("Show Matches");
+
                 } else {
-                    wrapper.getChildren().add(buildMatchesPanel(item));
+
+                    wrapper.getChildren().add(
+                            buildMatchesPanel(item)
+                    );
+
                     matchBtn.setText("Hide Matches");
                 }
             });
-            actionRow.getChildren().add(matchBtn);
+
+            actionRow.getChildren().addAll(
+                    wornBtn,
+                    matchBtn,
+                    wornLabel
+            );
+
+        } else {
+
+            actionRow.getChildren().addAll(
+                    wornBtn,
+                    wornLabel
+            );
         }
 
         card.getChildren().addAll(topRow, chips, actionRow);
@@ -575,10 +596,22 @@ public class SearchPage extends BorderPane {
     private void handleCreateOutfit(ClothingItem selectedItem,
                                     ClothingItem matchItem,
                                     Button outfitBtn) {
+
         try {
+            Image tickImg = new Image(
+                    getClass().getResourceAsStream(
+                            "/icons/tick.png"
+                    )
+            );
+
+            ImageView tickIcon = new ImageView(tickImg);
+
+            tickIcon.setFitWidth(16);
+            tickIcon.setFitHeight(16);
             viewItemController.createOutfitFromMatch(selectedItem, matchItem);
             outfitBtn.setDisable(true);
-            outfitBtn.setText("Saved ✓");
+            outfitBtn.setText("Saved");
+            outfitBtn.setGraphic(tickIcon);
             showDialog(Alert.AlertType.INFORMATION,
                     "Outfit Created",
                     "\"" + selectedItem.getName() + " + " + matchItem.getName()

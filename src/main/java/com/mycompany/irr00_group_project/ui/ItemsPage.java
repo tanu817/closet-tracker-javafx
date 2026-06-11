@@ -193,8 +193,7 @@ public class ItemsPage extends BorderPane {
         Button wornBtn = new Button("Mark as Worn");
         wornBtn.setFont(normalBoldFont);
         wornBtn.setStyle(
-                "-fx-background-color: " + DARK_GREEN + ";"
-                + "-fx-text-fill: white;"
+                "-fx-background-color: #F3EEE6;"
                 + "-fx-background-radius: 8;"
                 + "-fx-padding: 6 14 6 14;");
         wornBtn.setOnAction(e -> {

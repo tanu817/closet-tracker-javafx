@@ -204,7 +204,7 @@ public class OutfitsPage extends BorderPane {
 
         Button wornBtn = new Button("Mark as Worn");
         wornBtn.setFont(normalBoldFont);
-        wornBtn.setStyle("-fx-background-color: " + DARK_GREEN + "; -fx-background-radius: 8; -fx-border-radius: 8; -fx-text-fill: white;");
+        wornBtn.setStyle("-fx-background-color: #F3EEE6; -fx-background-radius: 8; -fx-border-radius: 8;");
         wornBtn.setOnAction(e -> {
             outfitController.wearOutfit(outfitId);
             showInfo("Outfit Worn", "Outfit marked as worn. Wear counts updated.");
