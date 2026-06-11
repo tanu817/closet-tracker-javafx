@@ -7,14 +7,14 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Unit tests for {@link ValidationUtils}.
  *
- * @author  Alexandra Varapai
+ * @author Alexandra Varapai
  */
 public class ValidationUtilsTest {
 
     @Test
     @DisplayName("isNotBlank() returns true for normal string")
     void isNotBlankNormal() {
-        assertTrue(ValidationUtils.isNotBlank("hello"));
+        assertTrue(ValidationUtils.isNotBlank("Skirt"));
     }
 
     @Test
@@ -38,7 +38,6 @@ public class ValidationUtilsTest {
     @Test
     @DisplayName("isNotBlank() returns true for string with surrounding spaces")
     void isNotBlankWithSpaces() {
-        assertTrue(ValidationUtils.isNotBlank("  hello  "));
+        assertTrue(ValidationUtils.isNotBlank("  Skirt  "));
     }
 }
-

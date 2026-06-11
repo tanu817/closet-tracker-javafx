@@ -17,7 +17,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Unit tests for Tag Repository
+ * Unit tests for {@link TagRepository}
  *
  * @author Alexandra Varapai
  */

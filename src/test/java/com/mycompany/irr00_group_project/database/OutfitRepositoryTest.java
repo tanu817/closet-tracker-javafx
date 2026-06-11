@@ -13,7 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Unit tests for Outfit Repository
+ * Unit tests for {@link OutfitRepository}
  *
  * @author Alexandra Varapai
  */
