@@ -34,6 +34,7 @@ import javafx.stage.Stage;
  * other rows filter by tag ID. Both filters combine with AND logic.
  *
  * @author Bhavini Kopparam Ajay
+ * @author Priyanshu Guha
  * @author Arshiya Tasneem Shaik
  */
 public class SearchPage extends BorderPane {

@@ -36,6 +36,7 @@ import javafx.stage.Stage;
  * outfits from matches, and removing items.
  *
  * @author Bhavini Kopparam Ajay
+ * @author Priyanshu Guha
  * @author Arshiya Shaik
  */
 public class ItemsPage extends BorderPane {
