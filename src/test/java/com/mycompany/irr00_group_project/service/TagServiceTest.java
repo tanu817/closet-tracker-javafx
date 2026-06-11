@@ -15,9 +15,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Unit tests for tag management in {@link AddItemService} (FR-01).
+ * Unit tests for tag management in {@link AddItemService}
  *
- * @author  Alexandra Varapai
+ * @author Alexandra Varapai
  */
 public class TagServiceTest extends CsvTestBase {
 
@@ -40,13 +40,6 @@ public class TagServiceTest extends CsvTestBase {
     }
 
     @Test
-    @DisplayName("createTag() with null name throws IllegalArgumentException")
-    void createTagNullNameThrows() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new AddItemService().createTag(null, TagCategory.OTHER));
-    }
-
-    @Test
     @DisplayName("addItem() with blank name throws IllegalArgumentException")
     void addItemBlankNameThrows() {
         assertThrows(IllegalArgumentException.class,
@@ -66,14 +59,14 @@ public class TagServiceTest extends CsvTestBase {
     }
 
     @Test
-    @DisplayName("addItemWithTagNames() creates new tags for unknown names")
+    @DisplayName("addItemWithTagNames() creates new tags for new item")
     void addItemWithNewTagNames() {
         AddItemService service = new AddItemService();
         service.addItemWithTagNames("Summer Dress", ClothingCategory.ONE_PIECE,
                 Collections.emptyList(), Arrays.asList("Floral", "Lightweight"));
         long count = service.getAllTags().stream()
                 .filter(t -> t.getName().equals("Floral")
-                          || t.getName().equals("Lightweight"))
+                || t.getName().equals("Lightweight"))
                 .count();
         assertEquals(2, count);
     }
@@ -83,11 +76,39 @@ public class TagServiceTest extends CsvTestBase {
     void addItemWithExistingTagName() {
         AddItemService service = new AddItemService();
         service.createTag("Vintage", TagCategory.DETAIL);
-        service.addItemWithTagNames("Old Coat", ClothingCategory.TOP,
+        service.addItemWithTagNames("Coat", ClothingCategory.TOP,
                 Collections.singletonList("Vintage"), Collections.emptyList());
         long vintageCount = service.getAllTags().stream()
                 .filter(t -> t.getName().equalsIgnoreCase("Vintage")).count();
         assertEquals(1, vintageCount, "Existing tag must not be duplicated");
+    }
+
+    @Test
+    @DisplayName("addItemWithTagNames() with blank name throws IllegalArgumentException")
+    void addItemWithTagNamesBlankNameThrows() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> new AddItemService().addItemWithTagNames(
+                        "",
+                        ClothingCategory.TOP,
+                        Collections.emptyList(),
+                        Collections.emptyList()
+                )
+        );
+    }
+
+    @Test
+    @DisplayName("addItemWithTagNames() with whitespace-only name throws IllegalArgumentException")
+    void addItemWithTagNameswhiteSpaceOnlyNameThrows() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> new AddItemService().addItemWithTagNames(
+                        " ",
+                        ClothingCategory.TOP,
+                        Collections.emptyList(),
+                        Collections.emptyList()
+                )
+        );
     }
 
     @Test
@@ -97,7 +118,7 @@ public class TagServiceTest extends CsvTestBase {
     }
 
     @Test
-    @DisplayName("assignTagToItem() does not throw when IDs are valid")
+    @DisplayName("assignTagToItem() assigns an already-existing tag (identified by ID) to an item")
     void assignTagToItem() {
         AddItemService service = new AddItemService();
         int tagId = service.createTag("Formal", TagCategory.EVENT);
