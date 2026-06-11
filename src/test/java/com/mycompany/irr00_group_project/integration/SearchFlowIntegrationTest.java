@@ -15,17 +15,17 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Integration tests for the Search Outfit use-case
+ * Integration tests for the Search Outfit flow
  *
  * @author Alexandra Varapai
  */
 public class SearchFlowIntegrationTest extends CsvTestBase {
 
     @Test
-    @DisplayName("FR-02: Items added with tags appear in search results for those tags")
+    @DisplayName("Items added with tags appear in search results for those tags")
     void itemsWithTagsAreSearchable() {
         AddItemService addService = new AddItemService();
-        addService.addItemWithTagNames("White Tee", ClothingCategory.TOP,
+        addService.addItemWithTagNames("Shirt", ClothingCategory.TOP,
                 Collections.emptyList(), Collections.singletonList("Casual"));
         addService.addItemWithTagNames("Blazer", ClothingCategory.TOP,
                 Collections.emptyList(), Collections.singletonList("Formal"));
@@ -37,16 +37,16 @@ public class SearchFlowIntegrationTest extends CsvTestBase {
         assertNotEquals(-1, casualId);
 
         List<ClothingItem> results = searchService.searchByTagId(casualId);
-        assertEquals(2, results.size(), "White Tee and Jeans both have Casual tag");
+        assertEquals(2, results.size(), "Shirt and Jeans both have Casual tag");
     }
 
     @Test
-    @DisplayName("FR-02: AND search returns only items matching ALL selected tags")
-    void andSearchLogic() {
+    @DisplayName("Search returns only items matching all selected tags")
+    void SearchLogicMatchingAllTags() {
         AddItemService addService = new AddItemService();
-        addService.addItemWithTagNames("Casual Blue Tee", ClothingCategory.TOP,
+        addService.addItemWithTagNames("Shirt", ClothingCategory.TOP,
                 Collections.emptyList(), Arrays.asList("Casual", "Blue"));
-        addService.addItemWithTagNames("Casual Red Shirt", ClothingCategory.TOP,
+        addService.addItemWithTagNames("Blouse", ClothingCategory.TOP,
                 Collections.emptyList(), Arrays.asList("Casual", "Red"));
 
         SearchService searchService = new SearchService();
@@ -55,28 +55,30 @@ public class SearchFlowIntegrationTest extends CsvTestBase {
 
         List<ClothingItem> results = searchService.searchByTagIds(Arrays.asList(casualId, blueId));
         assertEquals(1, results.size());
-        assertEquals("Casual Blue Tee", results.get(0).getName());
+        assertEquals("Shirt", results.get(0).getName());
     }
 
     @Test
-    @DisplayName("FR-02: Search with no tags returns all added items")
-    void emptySearchReturnsAll() {
+    @DisplayName("Search with no tags returns all added items")
+    void SearchEmptyNoTags() {
         AddItemService addService = new AddItemService();
-        addService.addItemWithTagNames("Item 1", ClothingCategory.TOP,
-                Collections.emptyList(), Collections.singletonList("A"));
-        addService.addItemWithTagNames("Item 2", ClothingCategory.BOTTOM,
-                Collections.emptyList(), Collections.singletonList("B"));
+        addService.addItemWithTagNames("Shirt", ClothingCategory.TOP,
+                Collections.emptyList(), Collections.singletonList("Blue"));
+        addService.addItemWithTagNames("Jeans", ClothingCategory.BOTTOM,
+                Collections.emptyList(), Collections.singletonList("White"));
 
         assertEquals(2, new SearchService().searchByTagIds(Collections.emptyList()).size());
     }
-
+    
+    
+   
     @Test
-    @DisplayName("FR-03: Tag search returns at least 2 items to allow outfit creation")
+    @DisplayName("Tag search returns at least 2 items to allow outfit creation")
     void searchedItemsCanFormOutfit() {
         AddItemService addService = new AddItemService();
-        addService.addItemWithTagNames("Summer Tee", ClothingCategory.TOP,
+        addService.addItemWithTagNames("T-Shirt", ClothingCategory.TOP,
                 Collections.emptyList(), Collections.singletonList("Summer"));
-        addService.addItemWithTagNames("Summer Shorts", ClothingCategory.BOTTOM,
+        addService.addItemWithTagNames("Shorts", ClothingCategory.BOTTOM,
                 Collections.emptyList(), Collections.singletonList("Summer"));
 
         SearchService searchService = new SearchService();

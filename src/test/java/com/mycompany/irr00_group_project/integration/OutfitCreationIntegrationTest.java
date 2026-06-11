@@ -24,7 +24,7 @@ public class OutfitCreationIntegrationTest extends CsvTestBase {
     @DisplayName("Outfit contains exactly 2 selected items")
     void outfitHasTwoItems() {
         AddItemService addService = new AddItemService();
-        ClothingItem top = addService.addItem("Tee", ClothingCategory.TOP, Collections.emptyList());
+        ClothingItem top = addService.addItem("Shirt", ClothingCategory.TOP, Collections.emptyList());
         ClothingItem bot = addService.addItem("Jeans", ClothingCategory.BOTTOM, Collections.emptyList());
 
         OutfitService outfitService = new OutfitService();
@@ -41,7 +41,7 @@ public class OutfitCreationIntegrationTest extends CsvTestBase {
         ClothingItem bot = addService.addItem("Trousers", ClothingCategory.BOTTOM, Collections.emptyList());
 
         OutfitService outfitService = new OutfitService();
-        Outfit outfit = outfitService.createOutfit("Smart", top.getId(), bot.getId());
+        Outfit outfit = outfitService.createOutfit("University Outfit", top.getId(), bot.getId());
         outfitService.wearOutfit(outfit.getId());
 
         for (ClothingItem item : outfitService.getItemsForOutfit(outfit.getId())) {
@@ -54,11 +54,11 @@ public class OutfitCreationIntegrationTest extends CsvTestBase {
     @DisplayName("Deleting an outfit removes it from getAllOutfits()")
     void deleteOutfitRemovedFromList() {
         AddItemService addService = new AddItemService();
-        ClothingItem top = addService.addItem("Top", ClothingCategory.TOP, Collections.emptyList());
-        ClothingItem bot = addService.addItem("Bottom", ClothingCategory.BOTTOM, Collections.emptyList());
+        ClothingItem top = addService.addItem("T-shirt", ClothingCategory.TOP, Collections.emptyList());
+        ClothingItem bot = addService.addItem("Pants", ClothingCategory.BOTTOM, Collections.emptyList());
 
         OutfitService outfitService = new OutfitService();
-        Outfit outfit = outfitService.createOutfit("Temp", top.getId(), bot.getId());
+        Outfit outfit = outfitService.createOutfit("Sport Outfit", top.getId(), bot.getId());
         int id = outfit.getId();
         outfitService.deleteOutfit(id);
 
@@ -68,11 +68,11 @@ public class OutfitCreationIntegrationTest extends CsvTestBase {
     }
 
     @Test
-    @DisplayName("Outfit name is auto-generated from both item names when left blank")
+    @DisplayName("Outfit name is auto-generated from both item names when is blank")
     void autoNameCombinesBothItemNames() {
         AddItemService addService = new AddItemService();
-        ClothingItem top = addService.addItem("White Tee", ClothingCategory.TOP, Collections.emptyList());
-        ClothingItem bot = addService.addItem("Blue Jeans", ClothingCategory.BOTTOM, Collections.emptyList());
+        ClothingItem top = addService.addItem("Blouse", ClothingCategory.TOP, Collections.emptyList());
+        ClothingItem bot = addService.addItem("Jeans", ClothingCategory.BOTTOM, Collections.emptyList());
 
         OutfitService outfitService = new OutfitService();
         Outfit outfit = outfitService.createOutfit(null, top.getId(), bot.getId());
