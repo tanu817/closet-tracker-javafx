@@ -80,7 +80,7 @@ public class OutfitsPage extends BorderPane {
                 + "-fx-background-radius: 10;");
         backButton.setOnAction(e -> {
             MainPage mainPage = new MainPage();
-            mainPage.start(stage);
+            mainPage.start(stage, stage.getScene().getWidth(), stage.getScene().getHeight());
         });
 
         Label title = new Label("My Outfits");
