@@ -547,7 +547,10 @@ public class ItemsPage extends BorderPane {
                 "-fx-background-color: #F3EEE6;"
                 + "-fx-background-radius: 10;"
                 + "-fx-border-radius: 10;");
-        backButton.setOnAction(e -> new MainPage().start(stage));
+        backButton.setOnAction(e -> {
+            MainPage mainPage = new MainPage();
+            mainPage.start(stage, stage.getScene().getWidth(), stage.getScene().getHeight());
+        });
 
         Label title = new Label("All Items");
         title.setFont(titleFont);

@@ -112,7 +112,10 @@ public class SearchPage extends BorderPane {
                 + "-fx-background-radius: 10;"
                 + "-fx-border-radius: 10;");
         backButton.setPrefSize(40, 42);
-        backButton.setOnAction(e -> new MainPage().start(stage));
+        backButton.setOnAction(e -> {
+            MainPage mainPage = new MainPage();
+            mainPage.start(stage, stage.getScene().getWidth(), stage.getScene().getHeight());
+        });
 
         searchField = new FlowPane();
         searchField.setHgap(8);
