@@ -22,9 +22,6 @@ public class OutfitController {
         this.outfitService = new OutfitService();
     }
 
-    // ==================
-    // Read
-    // ==================
 
     /**
      * Returns all outfits with their clothing items hydrated.
@@ -54,9 +51,6 @@ public class OutfitController {
         return outfitService.getItemsForOutfit(outfitId);
     }
 
-    // ==================
-    // Create
-    // ==================
 
     /**
      * Creates a new outfit from two clothing item IDs.
@@ -71,9 +65,6 @@ public class OutfitController {
         return outfitService.createOutfit(outfitName, clothingId1, clothingId2);
     }
 
-    // ==================
-    // Update / Delete
-    // ==================
 
     /**
      * Renames an outfit and persists the change.
@@ -94,9 +85,6 @@ public class OutfitController {
         outfitService.deleteOutfit(outfitId);
     }
 
-    // ==================
-    // Wear tracking
-    // ==================
 
     /**
      * Records that an outfit was worn (increments wornCount on both items).

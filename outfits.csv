@@ -1,4 +1,5 @@
 id,name
+<<<<<<< HEAD
 1,Casual
 2,Summer Look
 3,Daily
@@ -19,3 +20,8 @@ id,name
 18,New Name
 19,My Outfit
 20,Fav + B
+=======
+2,brown pair
+5,brown pants + green t-shirt
+6,casual uni fit
+>>>>>>> origin/controller

@@ -37,10 +37,6 @@ public class AddItemService {
         this.tagRepository = new TagRepository();
     }
 
-    // ==================
-    // Public API
-    // ==================
-
     /**
      * Creates a new clothing item and assigns the supplied tag IDs to it.
      *
@@ -164,9 +160,6 @@ public class AddItemService {
         return tagRepository.getAllTags();
     }
 
-    // ==================
-    // Private helpers
-    // ==================
 
     private void validateName(String name) {
         if (name == null || name.isBlank()) {

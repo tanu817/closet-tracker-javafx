@@ -50,3 +50,10 @@ id,name,isFavorite,category,wornCount
 37,Summer Dress,false,ONE_PIECE,0
 38,eee,false,TOP,0
 39,zxv,false,TOP,0
+3,Brown pants,true,BOTTOM,13
+4,pearl earrings,true,ACCESSORY,7
+6,prom dress,true,ONE_PIECE,1
+7,green t-shirt,false,TOP,11
+8,Satin brown shirt,true,TOP,2
+10,Satin red pants,false,BOTTOM,0
+11,blue jeans,false,BOTTOM,1

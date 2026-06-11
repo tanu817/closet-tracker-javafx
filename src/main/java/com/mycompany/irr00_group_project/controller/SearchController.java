@@ -2,6 +2,7 @@ package com.mycompany.irr00_group_project.controller;
 
 import java.util.List;
 
+import com.mycompany.irr00_group_project.model.ClothingCategory;
 import com.mycompany.irr00_group_project.model.ClothingItem;
 import com.mycompany.irr00_group_project.model.Tag;
 import com.mycompany.irr00_group_project.service.SearchService;
@@ -22,9 +23,6 @@ public class SearchController {
         this.searchService = new SearchService();
     }
 
-    // ==================
-    // Tag helpers
-    // ==================
 
     /**
      * Returns the display names of all known tags.
@@ -55,10 +53,6 @@ public class SearchController {
         return searchService.getTagIdByName(tagName);
     }
 
-    // ==================
-    // Search
-    // ==================
-
     /**
      * Executes an AND-logic tag search using Tag IDs.
      *
@@ -70,5 +64,20 @@ public class SearchController {
      */
     public List<ClothingItem> searchByTags(List<Integer> selectedTagIds) {
         return searchService.searchByTagIds(selectedTagIds);
+    }
+
+    /**
+     * Executes a combined category + tag search.
+     *
+     * <p>Filters by {@link ClothingCategory} (when non-null) AND by all
+     * supplied tag IDs (AND logic). Either filter may be omitted.</p>
+     *
+     * @param category       the required category, or {@code null} to skip
+     * @param selectedTagIds tag IDs that must all be present, may be empty
+     * @return matching {@link ClothingItem} objects; never {@code null}
+     */
+    public List<ClothingItem> searchByCategoryAndTags(
+            ClothingCategory category, List<Integer> selectedTagIds) {
+        return searchService.searchByCategoryAndTagIds(category, selectedTagIds);
     }
 }

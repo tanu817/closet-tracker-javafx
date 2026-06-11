@@ -22,15 +22,13 @@ import com.mycompany.irr00_group_project.model.Outfit;
  * </pre>
  *
  * @author Aleksandra Levenkova
+ * @author Arshiya Shaik
  */
 public class OutfitRepository {
 
     private static final String OUTFITS_FILE      = "outfits.csv";
     private static final String OUTFIT_ITEMS_FILE = "outfit_items.csv";
 
-    // ==================
-    // Outfit CRUD
-    // ==================
 
     /**
      * Appends a new outfit to {@code outfits.csv}.
@@ -136,9 +134,6 @@ public class OutfitRepository {
         deleteOutfitItems(id);
     }
 
-    // ==================
-    // Outfit–Item relationship (outfit_items.csv)
-    // ==================
 
     /**
      * Persists the two-item composition of an outfit.
@@ -188,9 +183,70 @@ public class OutfitRepository {
         return itemIds;
     }
 
-    // ==================
-    // Private helpers
-    // ==================
+    /**
+     * Returns {@code true} if an outfit composed of exactly these two
+     * clothing items already exists (order-independent).
+     *
+     * @param clothingId1 ID of the first item
+     * @param clothingId2 ID of the second item
+     * @return {@code true} when a duplicate outfit is found
+     */
+    public boolean outfitExists(int clothingId1, int clothingId2) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(OUTFIT_ITEMS_FILE))) {
+            reader.readLine(); // skip header
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.isBlank()) {
+                    continue;
+                }
+                String[] values = line.split(",", -1);
+                if (values.length < 3) {
+                    continue;
+                }
+                int a = Integer.parseInt(values[1].trim());
+                int b = Integer.parseInt(values[2].trim());
+                if ((a == clothingId1 && b == clothingId2)
+                        || (a == clothingId2 && b == clothingId1)) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("OutfitRepository.outfitExists: " + e.getMessage());
+        }
+        return false;
+    }
+
+    /**
+     * Returns the IDs of all outfits that contain the given clothing item.
+     *
+     * @param clothingId the clothing item ID to search for
+     * @return list of outfit IDs that contain this item
+     */
+    public List<Integer> getOutfitIdsContainingItem(int clothingId) {
+        List<Integer> outfitIds = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(OUTFIT_ITEMS_FILE))) {
+            reader.readLine(); // skip header
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.isBlank()) {
+                    continue;
+                }
+                String[] values = line.split(",", -1);
+                if (values.length < 3) {
+                    continue;
+                }
+                int id1 = Integer.parseInt(values[1].trim());
+                int id2 = Integer.parseInt(values[2].trim());
+                if (id1 == clothingId || id2 == clothingId) {
+                    outfitIds.add(Integer.parseInt(values[0].trim()));
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("OutfitRepository.getOutfitIdsContainingItem: " + e.getMessage());
+        }
+        return outfitIds;
+    }
+
 
     /**
      * Removes all rows in {@code outfit_items.csv} for the given outfit ID.

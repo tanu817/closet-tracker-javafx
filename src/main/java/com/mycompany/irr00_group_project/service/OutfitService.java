@@ -59,6 +59,10 @@ public class OutfitService {
                     "Clothing item not found: id=" + clothingId2);
         }
 
+        if (outfitRepository.outfitExists(clothingId1, clothingId2)) {
+            throw new IllegalStateException("This outfit already exists.");
+        }
+
         int newId = outfitRepository.generateNextId();
 
         // Build name from items if caller did not supply one
@@ -177,7 +181,19 @@ public class OutfitService {
     }
 
     /**
-     * Returns all available clothing items for the outfit-builder UI.
+     * Deletes all outfits that contain the given clothing item.
+     * Called automatically when a clothing item is deleted.
+     *
+     * @param clothingId the ID of the deleted clothing item
+     */
+    public void deleteOutfitsContainingItem(int clothingId) {
+        List<Integer> outfitIds = outfitRepository.getOutfitIdsContainingItem(clothingId);
+        for (int id : outfitIds) {
+            outfitRepository.deleteOutfit(id);
+        }
+    }
+
+    /**
      *
      * @return all {@link ClothingItem} objects with tags loaded
      */

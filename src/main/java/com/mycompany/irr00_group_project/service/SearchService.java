@@ -5,14 +5,15 @@ import java.util.List;
 
 import com.mycompany.irr00_group_project.database.ClothingRepository;
 import com.mycompany.irr00_group_project.database.TagRepository;
+import com.mycompany.irr00_group_project.model.ClothingCategory;
 import com.mycompany.irr00_group_project.model.ClothingItem;
 import com.mycompany.irr00_group_project.model.Tag;
 
 /**
  * Service for searching clothing items by tags.
  *
- * All search operations use Tag IDs as the stable key: never tag names.
- * AND semantics: every supplied tag ID must be present on a result item.
+ * <p>All search operations use Tag IDs as the stable key — never tag names.
+ * AND semantics: every supplied tag ID must be present on a result item.</p>
  *
  * @author Arshiya Shaik
  */
@@ -25,6 +26,10 @@ public class SearchService {
         this.clothingRepository = new ClothingRepository();
         this.tagRepository = new TagRepository();
     }
+
+    // ==================
+    // Tag helpers for UI
+    // ==================
 
     /**
      * Returns the display names of every known tag (for populating filter UI).
@@ -119,5 +124,66 @@ public class SearchService {
         List<Integer> ids = new ArrayList<>();
         ids.add(tagId);
         return searchByTagIds(ids);
+    }
+
+    /**
+     * Returns all clothing items whose {@link ClothingCategory} matches
+     * {@code category} AND that carry every tag in {@code selectedTagIds}.
+     *
+     * <p>If {@code category} is {@code null} the category filter is skipped.
+     * If {@code selectedTagIds} is empty the tag filter is skipped.</p>
+     *
+     * @param category       the required clothing category, or {@code null} to skip
+     * @param selectedTagIds tag IDs that must all be present, may be empty
+     * @return matching {@link ClothingItem} objects; never {@code null}
+     */
+    public List<ClothingItem> searchByCategoryAndTagIds(
+            ClothingCategory category, List<Integer> selectedTagIds) {
+
+        List<ClothingItem> allItems = clothingRepository.getAllItems();
+        List<ClothingItem> results = new ArrayList<>();
+
+        boolean noFilters = (category == null)
+                && (selectedTagIds == null || selectedTagIds.isEmpty());
+
+        if (noFilters) {
+            // Return everything with tags hydrated
+            for (ClothingItem item : allItems) {
+                for (Tag tag : tagRepository.getTagsOfItem(item.getId())) {
+                    item.addTag(tag);
+                }
+            }
+            return allItems;
+        }
+
+        for (ClothingItem item : allItems) {
+            // Category filter
+            if (category != null && item.getCategory() != category) {
+                continue;
+            }
+
+            // Tag filter (AND logic)
+            if (selectedTagIds != null && !selectedTagIds.isEmpty()) {
+                List<Integer> itemTagIds = tagRepository.getTagIdsOfItem(item.getId());
+                boolean matchesAll = true;
+                for (Integer requiredId : selectedTagIds) {
+                    if (!itemTagIds.contains(requiredId)) {
+                        matchesAll = false;
+                        break;
+                    }
+                }
+                if (!matchesAll) {
+                    continue;
+                }
+            }
+
+            // Hydrate tags for display
+            for (Tag tag : tagRepository.getTagsOfItem(item.getId())) {
+                item.addTag(tag);
+            }
+            results.add(item);
+        }
+
+        return results;
     }
 }

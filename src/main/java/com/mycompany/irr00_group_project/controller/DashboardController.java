@@ -22,9 +22,6 @@ public class DashboardController {
         this.dashboardService = new DashboardService();
     }
 
-    // ==================
-    // Ranked lists
-    // ==================
 
     /**
      * Returns the top 5 most-worn items.
@@ -54,9 +51,6 @@ public class DashboardController {
         return dashboardService.getLeast5Worn();
     }
 
-    // ==================
-    // Summary stats
-    // ==================
 
     /**
      * Returns aggregate statistics for the overview cards
@@ -68,9 +62,6 @@ public class DashboardController {
         return dashboardService.getStats();
     }
 
-    // ==================
-    // Wear tracking
-    // ==================
 
     /**
      * Records that a clothing item was worn and persists the updated count.
@@ -81,9 +72,6 @@ public class DashboardController {
         dashboardService.markItemWorn(clothingId);
     }
 
-    // ==================
-    // Full list (with tags)
-    // ==================
 
     /**
      * Returns all clothing items with their tags hydrated.

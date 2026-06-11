@@ -35,10 +35,6 @@ public class ClothingRepository {
     private static final String OUTFIT_ITEMS_FILE  = "outfit_items.csv";
     private static final String CLOTHING_TAGS_FILE = "clothing_tags.csv";
 
-    // ===========================
-    // Clothing item CRUD
-    // ===========================
-
     /**
      * Appends a new clothing item to {@code clothing_items.csv}.
      *
@@ -169,9 +165,6 @@ public class ClothingRepository {
         deleteItemFromTagRelationship(id);
     }
 
-    // ===========================
-    // Worn-count helpers
-    // ===========================
 
     /**
      * Increments the {@code wornCount} of the item with the given ID.
@@ -189,9 +182,6 @@ public class ClothingRepository {
         saveItems(items);
     }
 
-    // ===========================
-    // Dashboard / statistics
-    // ===========================
 
     /**
      * Returns the top 5 favorite items sorted by {@code wornCount} descending.
@@ -231,9 +221,6 @@ public class ClothingRepository {
         return items.size() > 5 ? new ArrayList<>(items.subList(0, 5)) : items;
     }
 
-    // ===========================
-    // Private helpers
-    // ===========================
 
     /**
      * Removes all rows in {@code outfit_items.csv} that reference the given

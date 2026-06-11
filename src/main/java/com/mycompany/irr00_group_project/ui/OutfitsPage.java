@@ -5,13 +5,16 @@ import com.mycompany.irr00_group_project.model.ClothingItem;
 import com.mycompany.irr00_group_project.model.Outfit;
 
 import java.util.List;
+import java.util.Optional;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -24,7 +27,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 /**
- * Outfits page — shows all outfits loaded from CSV storage.
+ * Outfits page: shows all outfits loaded from CSV storage.
  *
  * @author Bhavini Kopparam Ajay
  * @author Arshiya Shaik
@@ -49,6 +52,7 @@ public class OutfitsPage extends BorderPane {
             getClass().getResourceAsStream("/fonts/MuktaVaani-SemiBold.ttf"), 19);
 
     private final OutfitController outfitController = new OutfitController();
+    private VBox outfitsRoot;
 
     public OutfitsPage(Stage stage) {
         this.stage = stage;
@@ -60,9 +64,6 @@ public class OutfitsPage extends BorderPane {
         setCenter(root);
     }
 
-    // ==================
-    // Top section
-    // ==================
 
     private VBox createTopSection() {
         Image backImg = new Image(
@@ -99,11 +100,20 @@ public class OutfitsPage extends BorderPane {
         return topSection;
     }
 
-    // ==================
-    // Outfits grid (loaded from DB)
-    // ==================
 
     private ScrollPane createOutfitsSection() {
+        outfitsRoot = new VBox(25);
+        refreshOutfits();
+
+        ScrollPane scrollPane = new ScrollPane(outfitsRoot);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setStyle(
+                "-fx-background: transparent;"
+                + "-fx-background-color: transparent;");
+        return scrollPane;
+    }
+
+    private void refreshOutfits() {
         VBox leftColumn  = new VBox(25);
         VBox rightColumn = new VBox(25);
 
@@ -121,7 +131,7 @@ public class OutfitsPage extends BorderPane {
                 ClothingItem item1 = items.size() > 0 ? items.get(0) : null;
                 ClothingItem item2 = items.size() > 1 ? items.get(1) : null;
 
-                VBox card = createOutfitCard(outfit.getName(), item1, item2);
+                VBox card = createOutfitCard(outfit.getId(), outfit.getName(), item1, item2);
 
                 if (i % 2 == 0) {
                     leftColumn.getChildren().add(card);
@@ -138,19 +148,12 @@ public class OutfitsPage extends BorderPane {
         HBox outfitsRow = new HBox(40);
         outfitsRow.getChildren().addAll(leftColumn, divider, rightColumn);
 
-        ScrollPane scrollPane = new ScrollPane(outfitsRow);
-        scrollPane.setFitToWidth(true);
-        scrollPane.setStyle(
-                "-fx-background: transparent;"
-                + "-fx-background-color: transparent;");
-        return scrollPane;
+        outfitsRoot.getChildren().setAll(outfitsRow);
     }
 
-    // ==================
-    // Card builder
-    // ==================
 
-    private VBox createOutfitCard(String outfitName,
+    private VBox createOutfitCard(int outfitId,
+                                  String outfitName,
                                   ClothingItem item1,
                                   ClothingItem item2) {
         VBox card = new VBox(20);
@@ -164,6 +167,7 @@ public class OutfitsPage extends BorderPane {
 
         Label title = new Label(outfitName);
         title.setFont(outfitFont);
+        title.setStyle("-fx-text-fill: black;");
 
         Image plusImg = new Image(
                 getClass().getResourceAsStream("/icons/plus.png"));
@@ -178,7 +182,46 @@ public class OutfitsPage extends BorderPane {
         itemsRow.setAlignment(Pos.CENTER);
         itemsRow.getChildren().addAll(miniCard1, plusIcon, miniCard2);
 
-        card.getChildren().addAll(title, itemsRow);
+        // Action buttons row
+        Button editBtn = new Button("Edit");
+        editBtn.setFont(normalBoldFont);
+        editBtn.setStyle("-fx-background-color: #F3EEE6; -fx-background-radius: 8; -fx-border-radius: 8;");
+        editBtn.setOnAction(e -> {
+            TextInputDialog dialog = new TextInputDialog(title.getText());
+            dialog.setTitle("Rename Outfit");
+            dialog.setHeaderText(null);
+            dialog.setContentText("New name:");
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(newName -> {
+                if (!newName.isBlank()) {
+                    outfitController.renameOutfit(outfitId, newName);
+                    title.setText(newName);
+                    showInfo("Outfit Updated", "Outfit renamed to \"" + newName + "\".");
+                }
+            });
+        });
+
+        Button wornBtn = new Button("Mark as Worn");
+        wornBtn.setFont(normalBoldFont);
+        wornBtn.setStyle("-fx-background-color: #F3EEE6; -fx-background-radius: 8; -fx-border-radius: 8;");
+        wornBtn.setOnAction(e -> {
+            outfitController.wearOutfit(outfitId);
+            showInfo("Outfit Worn", "Outfit marked as worn. Wear counts updated.");
+        });
+
+        Button deleteBtn = new Button("Delete");
+        deleteBtn.setFont(normalBoldFont);
+        deleteBtn.setStyle("-fx-background-color: #F3EEE6; -fx-background-radius: 8; -fx-border-radius: 8; -fx-text-fill: #c0392b;");
+        deleteBtn.setOnAction(e -> {
+            outfitController.deleteOutfit(outfitId);
+            showInfo("Outfit Deleted", "Outfit \"" + outfitName + "\" has been deleted.");
+            refreshOutfits();
+        });
+
+        HBox actionsRow = new HBox(10);
+        actionsRow.getChildren().addAll(editBtn, wornBtn, deleteBtn);
+
+        card.getChildren().addAll(title, itemsRow, actionsRow);
         return card;
     }
 
@@ -195,12 +238,14 @@ public class OutfitsPage extends BorderPane {
         if (item == null) {
             Label placeholder = new Label("—");
             placeholder.setFont(buttonFont);
+            placeholder.setStyle("-fx-text-fill: black;");
             card.getChildren().add(placeholder);
             return card;
         }
 
         Label name = new Label(item.getName());
         name.setFont(buttonFont);
+        name.setStyle("-fx-text-fill: black;");
 
         Label catLabel = new Label(item.getCategory().name());
         catLabel.setFont(normalFont);
@@ -220,10 +265,20 @@ public class OutfitsPage extends BorderPane {
             tagChip.setStyle(
                     "-fx-background-color: #F3EEE6;"
                     + "-fx-background-radius: 8;"
-                    + "-fx-padding: 4 8 4 8;");
+                    + "-fx-padding: 4 8 4 8;"
+                    + "-fx-text-fill: black;");
             card.getChildren().add(tagChip);
         }
 
         return card;
+    }
+
+
+    private void showInfo(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

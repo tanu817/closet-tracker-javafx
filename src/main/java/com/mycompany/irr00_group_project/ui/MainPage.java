@@ -185,10 +185,6 @@ public class MainPage {
         stage.show();
     }
 
-    // ==================
-    // Card builder
-    // ==================
-
     /**
      * Builds a dashboard card showing up to 5 clothing items.
      *

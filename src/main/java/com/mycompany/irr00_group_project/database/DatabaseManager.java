@@ -50,9 +50,6 @@ public class DatabaseManager {
         seedDefaultTagsIfEmpty();
     }
 
-    // ==================
-    // Private helpers
-    // ==================
 
     /**
      * Creates {@code fileName} and writes {@code header} as the first line.

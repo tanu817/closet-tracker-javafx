@@ -19,6 +19,7 @@ id,name,category
 19,Party,EVENT
 20,Minimal,DETAIL
 21,Vintage,DETAIL
+<<<<<<< HEAD
 10,A,OTHER
 2,Red,COLOR
 5,Casual,EVENT
@@ -43,3 +44,6 @@ id,name,category
 30,Sunny,WEATHER
 31,Party,EVENT
 32,Vintage,DETAIL
+=======
+22,Satin,OTHER
+>>>>>>> origin/controller
