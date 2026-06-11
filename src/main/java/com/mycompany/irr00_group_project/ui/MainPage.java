@@ -25,6 +25,7 @@ import javafx.stage.Stage;
  * Dashboard cards are loaded from real CSV data via {@link DashboardController}.
  *
  * @author Bhavini Kopparam Ajay
+ * @author Priyanshu Guha
  */
 public class MainPage {
 

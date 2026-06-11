@@ -40,6 +40,7 @@ import javafx.stage.Stage;
  * match has a "Create Outfit" button.</p>
  *
  * @author Bhavini Kopparam Ajay
+ * @author Priyanshu Guha
  * @author Arshiya Tasneem Shaik
  */
 public class SearchPage extends BorderPane {
