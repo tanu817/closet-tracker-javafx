@@ -1,8 +1,8 @@
 package com.mycompany.irr00_group_project.service;
 
 import com.mycompany.irr00_group_project.CsvTestBase;
+import com.mycompany.irr00_group_project.model.ClothingCategory;
 import com.mycompany.irr00_group_project.model.ClothingItem;
-import com.mycompany.irr00_group_project.model.Tag;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Unit tests for {@link SearchService}.
  *
- * @author  Alexandra Varapai
+ * @author Alexandra Varapai
  */
 public class SearchServiceTest extends CsvTestBase {
 
@@ -30,20 +30,20 @@ public class SearchServiceTest extends CsvTestBase {
     void seedData() throws IOException {
         writeFile("clothing_items.csv",
                 "id,name,isFavorite,category,wornCount\n"
-              + "1,White Tee,false,TOP,3\n"
-              + "2,Blue Jeans,false,BOTTOM,1\n"
-              + "3,Red Dress,false,ONE_PIECE,0\n");
+                + "1,Shirt,false,TOP,3\n"
+                + "2,Jeans,false,BOTTOM,1\n"
+                + "3,Dress,false,ONE_PIECE,0\n");
         writeFile("tags.csv",
                 "id,name,category\n"
-              + "5,White,COLOR\n"
-              + "7,Blue,COLOR\n"
-              + "17,Casual,EVENT\n");
+                + "1,White,COLOR\n"
+                + "2,Blue,COLOR\n"
+                + "3,Casual,EVENT\n");
         writeFile("clothing_tags.csv",
                 "clothingId,tagId\n"
-              + "1,5\n"
-              + "1,17\n"
-              + "2,7\n"
-              + "2,17\n");
+                + "1,1\n"
+                + "1,2\n"
+                + "2,2\n"
+                + "3,3\n");
     }
 
     @Test
@@ -58,92 +58,124 @@ public class SearchServiceTest extends CsvTestBase {
     }
 
     @Test
-    @DisplayName("getAllTags() returns 3 Tag objects")
-    void getAllTagsReturnsObjects() {
+    @DisplayName("getAllTags() returns 3 tags")
+    void getAllTagsReturnsAllTags() {
         SearchService service = new SearchService();
         assertEquals(3, service.getAllTags().size());
     }
 
     @Test
     @DisplayName("getTagIdByName() returns correct ID")
-    void getTagIdByNameFound() {
+    void getTagIdByNameCorrect() {
         SearchService service = new SearchService();
-        assertEquals(5, service.getTagIdByName("White"));
-        assertEquals(7, service.getTagIdByName("Blue"));
+        assertEquals(1, service.getTagIdByName("White"));
+        assertEquals(2, service.getTagIdByName("Blue"));
     }
 
     @Test
     @DisplayName("getTagIdByName() is case-insensitive")
     void getTagIdByNameCaseInsensitive() {
-        assertEquals(17, new SearchService().getTagIdByName("casual"));
+        assertEquals(3, new SearchService().getTagIdByName("casual"));
+        assertEquals(3, new SearchService().getTagIdByName("CASUAL"));
     }
 
     @Test
     @DisplayName("getTagIdByName() returns -1 for unknown tag")
-    void getTagIdByNameNotFound() {
-        assertEquals(-1, new SearchService().getTagIdByName("NonExistent"));
+    void getTagIdByNameForUnknownTag() {
+        assertEquals(-1, new SearchService().getTagIdByName("Pink"));
     }
 
     @Test
     @DisplayName("searchByTagIds() with empty list returns all 3 items")
-    void searchEmptyTagIdsReturnsAll() {
-        List<ClothingItem> results =
-                new SearchService().searchByTagIds(Collections.emptyList());
+    void searchByTagIdsEmpty() {
+        List<ClothingItem> results
+                = new SearchService().searchByTagIds(Collections.emptyList());
         assertEquals(3, results.size());
     }
 
     @Test
-    @DisplayName("searchByTagIds() with null returns all 3 items")
-    void searchNullTagIdsReturnsAll() {
+    @DisplayName("searchByTagIds() with null list returns all 3 items")
+    void searchByTagIdsNull() {
         assertEquals(3, new SearchService().searchByTagIds(null).size());
     }
 
     @Test
-    @DisplayName("searchByTagIds() with White tag (id=5) returns only item 1")
-    void searchByWhiteTagReturnsItem1() {
-        List<ClothingItem> results =
-                new SearchService().searchByTagIds(Collections.singletonList(5));
+    @DisplayName("searchByTagIds() with specific tag returns only item with this tag")
+    void searchByTagIdsOneItem() {
+        List<ClothingItem> results
+                = new SearchService().searchByTagIds(Collections.singletonList(1));
         assertEquals(1, results.size());
         assertEquals(1, results.get(0).getId());
     }
 
     @Test
-    @DisplayName("searchByTagIds() with Blue tag (id=7) returns only item 2")
-    void searchByBlueTagReturnsItem2() {
-        List<ClothingItem> results =
-                new SearchService().searchByTagIds(Collections.singletonList(7));
-        assertEquals(1, results.size());
-        assertEquals(2, results.get(0).getId());
+    @DisplayName("searchByTagIds() with specific tag returns only item with this tag (2 items with the same tag)")
+    void searchByTagIdsMultipleItems() {
+        List<ClothingItem> results
+                = new SearchService().searchByTagIds(Collections.singletonList(2));
+        assertEquals(2, results.size());
+        assertEquals(1, results.get(0).getId());
+        assertEquals(2, results.get(1).getId());
     }
 
     @Test
-    @DisplayName("searchByTagIds() AND logic: White AND Casual returns only item 1")
+    @DisplayName("searchByTagIds() AND logic: tags White and Blue returns only item Shirt")
     void searchAndLogicReturnsItem1() {
-        List<ClothingItem> results =
-                new SearchService().searchByTagIds(Arrays.asList(5, 17));
+        List<ClothingItem> results
+                = new SearchService().searchByTagIds(Arrays.asList(1, 2));
         assertEquals(1, results.size());
         assertEquals(1, results.get(0).getId());
     }
 
     @Test
-    @DisplayName("searchByTagIds() with Casual returns 2 items")
-    void searchByCasualReturnsTwoItems() {
-        assertEquals(2, new SearchService().searchByTagIds(
-                Collections.singletonList(17)).size());
+    @DisplayName("searchByTagIds() returns empty when no item matches selected tags")
+    void searchByTagIdsNoMatch() {
+        assertTrue(new SearchService().searchByTagIds(Arrays.asList(2, 3)).isEmpty());
     }
 
     @Test
-    @DisplayName("searchByTagIds() returns empty when no item matches all tags")
-    void searchNoMatchReturnsEmpty() {
-        // White AND Blue — no item has both
-        assertTrue(new SearchService().searchByTagIds(Arrays.asList(5, 7)).isEmpty());
+    @DisplayName("searchByCategoryAndTagIds() with null category and empty tags returns all items")
+    void searchNullCategoryEmptyTags() {
+        List<ClothingItem> results = new SearchService()
+                .searchByCategoryAndTagIds(null, Collections.emptyList());
+        assertEquals(3, results.size());
     }
 
     @Test
-    @DisplayName("searchByTagId() single-ID overload works correctly")
-    void searchByTagIdOverload() {
-        List<ClothingItem> results = new SearchService().searchByTagId(5);
+    @DisplayName("searchByCategoryAndTagIds() filters by category only")
+    void searchByCategoryOnly() {
+        List<ClothingItem> results = new SearchService()
+                .searchByCategoryAndTagIds(ClothingCategory.TOP, Collections.emptyList());
         assertEquals(1, results.size());
-        assertEquals(1, results.get(0).getId());
+        for (ClothingItem item : results) {
+            assertEquals(ClothingCategory.TOP, item.getCategory());
+        }
+    }
+
+    @Test
+    @DisplayName("searchByCategoryAndTagIds() filters by tag only")
+    void searchByTagOnly() {
+        List<ClothingItem> results = new SearchService()
+                .searchByCategoryAndTagIds(null, Collections.singletonList(2));
+        assertEquals(2, results.size());
+    }
+
+    @Test
+    @DisplayName("searchByCategoryAndTagIds() filters by both category and tag")
+    void searchByCategoryAndTag() {
+        List<ClothingItem> results = new SearchService()
+                .searchByCategoryAndTagIds(ClothingCategory.TOP,
+                        Collections.singletonList(2));
+        assertEquals(1, results.size());
+        assertEquals(ClothingCategory.TOP, results.get(0).getCategory());
+    }
+
+    @Test
+    @DisplayName("searchByCategoryAndTagIds() returns empty when no items match")
+    void searchByCategoryAndTagIdsNoMatch() {
+        List<ClothingItem> results = new SearchService()
+                .searchByCategoryAndTagIds(ClothingCategory.ONE_PIECE,
+                        Collections.singletonList(1));
+        assertTrue(results.isEmpty());
     }
 }

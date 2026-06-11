@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Unit tests for {@link RecommendationService}.
  *
- * @author  Alexandra Varapai
+ * @author Alexandra Varapai
  */
 public class RecommendationServiceTest extends CsvTestBase {
 
@@ -28,17 +28,17 @@ public class RecommendationServiceTest extends CsvTestBase {
     void seedData() throws IOException {
         writeFile("clothing_items.csv",
                 "id,name,isFavorite,category,wornCount\n"
-              + "1,White Tee,false,TOP,0\n"
-              + "2,Polo Shirt,false,TOP,0\n"
-              + "3,Blue Jeans,false,BOTTOM,0\n"
-              + "4,Black Skirt,false,BOTTOM,0\n"
-              + "5,Red Dress,false,ONE_PIECE,0\n");
+                + "1,Top 1,false,TOP,0\n"
+                + "2,Top 2,false,TOP,0\n"
+                + "3,Bottom 1,false,BOTTOM,0\n"
+                + "4,Bottom 2,false,BOTTOM,0\n"
+                + "5,One Piece,false,ONE_PIECE,0\n");
     }
 
     @Test
     @DisplayName("getMatchingItems() for a TOP returns the 2 BOTTOM items")
     void topMatchesBottoms() {
-        ClothingItem top = new ClothingItem(1, "White Tee", ClothingCategory.TOP);
+        ClothingItem top = new ClothingItem(1, "Top 1", false, ClothingCategory.TOP, 0);
         List<ClothingItem> matches = new RecommendationService().getMatchingItems(top);
         assertEquals(2, matches.size());
         for (ClothingItem m : matches) {
@@ -49,7 +49,7 @@ public class RecommendationServiceTest extends CsvTestBase {
     @Test
     @DisplayName("getMatchingItems() for a BOTTOM returns the 2 TOP items")
     void bottomMatchesTops() {
-        ClothingItem bottom = new ClothingItem(3, "Blue Jeans", ClothingCategory.BOTTOM);
+        ClothingItem bottom = new ClothingItem(3, "Bottom 1", false, ClothingCategory.BOTTOM, 0);
         List<ClothingItem> matches = new RecommendationService().getMatchingItems(bottom);
         assertEquals(2, matches.size());
         for (ClothingItem m : matches) {
@@ -60,7 +60,7 @@ public class RecommendationServiceTest extends CsvTestBase {
     @Test
     @DisplayName("getMatchingItems() for ONE_PIECE returns empty list")
     void onePieceReturnsEmpty() {
-        ClothingItem dress = new ClothingItem(5, "Red Dress", ClothingCategory.ONE_PIECE);
+        ClothingItem dress = new ClothingItem(5, "One Piece", false, ClothingCategory.ONE_PIECE, 0);
         assertTrue(new RecommendationService().getMatchingItems(dress).isEmpty());
     }
 
@@ -70,13 +70,4 @@ public class RecommendationServiceTest extends CsvTestBase {
         assertTrue(new RecommendationService().getMatchingItems(null).isEmpty());
     }
 
-    @Test
-    @DisplayName("getMatchingItems() does not include the source item itself")
-    void doesNotIncludeItemItself() {
-        ClothingItem top = new ClothingItem(1, "White Tee", ClothingCategory.TOP);
-        List<ClothingItem> matches = new RecommendationService().getMatchingItems(top);
-        for (ClothingItem m : matches) {
-            assertNotEquals(1, m.getId());
-        }
-    }
 }
