@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Unit tests for {@link OutfitService}.
  *
- * @author  Alexandra Varapai
+ * @author Alexandra Varapai
  */
 public class OutfitServiceTest extends CsvTestBase {
 
@@ -28,9 +28,9 @@ public class OutfitServiceTest extends CsvTestBase {
     void seedData() throws IOException {
         writeFile("clothing_items.csv",
                 "id,name,isFavorite,category,wornCount\n"
-              + "1,White Tee,false,TOP,0\n"
-              + "2,Blue Jeans,false,BOTTOM,0\n"
-              + "3,Red Dress,false,ONE_PIECE,2\n");
+                + "1,Blouse,true,TOP,0\n"
+                + "2,Blue Jeans,false,BOTTOM,1\n"
+                + "3,Shirt,false,TOP,2\n");
     }
 
     @Test
@@ -47,85 +47,122 @@ public class OutfitServiceTest extends CsvTestBase {
         Outfit outfit = new OutfitService().createOutfit("", 1, 2);
         assertNotNull(outfit);
         String name = outfit.getName();
-        assertTrue(name.contains("White Tee") || name.contains("Blue Jeans"),
+        assertTrue(name.contains("Blouse") || name.contains("Blue Jeans"),
                 "Auto-name should contain at least one item name, was: " + name);
     }
 
     @Test
-    @DisplayName("createOutfit() throws for invalid first item ID")
+    @DisplayName("createOutfit() throws IllegalArgumentException for invalid first item ID")
     void createOutfitInvalidItem1() {
         assertThrows(IllegalArgumentException.class,
-                () -> new OutfitService().createOutfit("Bad", 999, 2));
+                () -> new OutfitService().createOutfit("Rainy Mood", 10, 2));
     }
 
     @Test
-    @DisplayName("createOutfit() throws for invalid second item ID")
+    @DisplayName("createOutfit() throws IllegaArgumentException for invalid second item ID")
     void createOutfitInvalidItem2() {
         assertThrows(IllegalArgumentException.class,
-                () -> new OutfitService().createOutfit("Bad", 1, 999));
+                () -> new OutfitService().createOutfit("Rainy Mood", 1, 10));
+    }
+
+    @Test
+    @DisplayName("createOutfit() throws IllegalStateException if outfit already exists")
+    void createOutfitExists() {
+        OutfitService service = new OutfitService();
+        service.createOutfit("Sunny weather", 1, 2);
+        assertThrows(IllegalStateException.class,
+                () -> service.createOutfit("Hot weather", 1, 2)
+        );
     }
 
     @Test
     @DisplayName("getAllOutfits() returns all created outfits")
     void getAllOutfitsReturnsAll() {
         OutfitService service = new OutfitService();
-        service.createOutfit("Look 1", 1, 2);
-        service.createOutfit("Look 2", 1, 2);
+        service.createOutfit("Sunny Weather", 1, 2);
+        service.createOutfit("Rainy Weather", 3, 2);
         assertEquals(2, service.getAllOutfits().size());
     }
 
     @Test
-    @DisplayName("getOutfitById() returns the correct outfit")
+    @DisplayName("getOutfitById() returns the correct outfit by ID")
     void getOutfitByIdFound() {
         OutfitService service = new OutfitService();
-        Outfit created = service.createOutfit("My Outfit", 1, 2);
+        Outfit created = service.createOutfit("Sunny Weather", 1, 2);
         Outfit found = service.getOutfitById(created.getId());
         assertNotNull(found);
-        assertEquals("My Outfit", found.getName());
+        assertEquals(created.getId(), found.getId());
+        assertEquals("Sunny Weather", found.getName());
     }
 
     @Test
     @DisplayName("getOutfitById() returns null for unknown ID")
     void getOutfitByIdNotFound() {
-        assertNull(new OutfitService().getOutfitById(9999));
+        assertNull(new OutfitService().getOutfitById(10));
     }
 
     @Test
     @DisplayName("getItemsForOutfit() returns the 2 component items")
     void getItemsForOutfitReturnsBoth() {
         OutfitService service = new OutfitService();
-        Outfit outfit = service.createOutfit("Casual", 1, 2);
-        assertEquals(2, service.getItemsForOutfit(outfit.getId()).size());
+        Outfit outfit = service.createOutfit("Sunny Weather", 1, 2);
+        List<ClothingItem> items = service.getItemsForOutfit(outfit.getId());
+        assertEquals(2, items.size());
     }
 
     @Test
-    @DisplayName("renameOutfit() updates the name in the CSV")
+    @DisplayName("getItemsForOutfit() returns the correct items")
+    void getItemsForOutfitReturnsCorrectItems() {
+        OutfitService service = new OutfitService();
+        Outfit outfit = service.createOutfit("Sunny Weather", 1, 2);
+        List<ClothingItem> items = service.getItemsForOutfit(outfit.getId());
+        assertTrue(items.stream().anyMatch(i -> i.getId() == 1));
+        assertTrue(items.stream().anyMatch(i -> i.getId() == 2));
+    }
+
+    @Test
+    @DisplayName("getItemsForOutfit() returns empty list for unknown outfit ID")
+    void getItemsForOutfitNotFound() {
+        OutfitService service = new OutfitService();
+        Outfit outfit = service.createOutfit("Sunny Weather", 1, 2);
+        assertTrue(service.getItemsForOutfit(10).isEmpty());
+    }
+
+    @Test
+    @DisplayName("renameOutfit() renames an outfit and persists the change")
     void renameOutfit() {
         OutfitService service = new OutfitService();
-        Outfit outfit = service.createOutfit("Old Name", 1, 2);
-        service.renameOutfit(outfit.getId(), "New Name");
-        assertEquals("New Name", service.getOutfitById(outfit.getId()).getName());
+        Outfit outfit = service.createOutfit("Sunny Weather", 1, 2);
+        service.renameOutfit(outfit.getId(), "Hot Weather");
+        assertEquals("Hot Weather", service.getOutfitById(outfit.getId()).getName());
+    }
+
+    @Test
+    @DisplayName("renameOutfit() does nothing when outfit ID does not exist")
+    void renameOutfitUnknownId() {
+        OutfitService service = new OutfitService();
+        service.createOutfit("Sunny Weather", 1, 2);
+        service.renameOutfit(10, "Hot weather");
+        assertNull(service.getOutfitById(10));
     }
 
     @Test
     @DisplayName("deleteOutfit() removes it from getAllOutfits()")
     void deleteOutfit() {
         OutfitService service = new OutfitService();
-        Outfit outfit = service.createOutfit("To Delete", 1, 2);
+        Outfit outfit = service.createOutfit("Sunny Weather", 1, 2);
         service.deleteOutfit(outfit.getId());
         assertNull(service.getOutfitById(outfit.getId()));
     }
 
     @Test
-    @DisplayName("wearOutfit() increments wornCount on both items")
-    void wearOutfitIncrementsWornCount() {
+    @DisplayName("deleteOutfitsContainingItem() removes all outfits that contain the specific item")
+    void deleteOutfitsContainingItem() {
         OutfitService service = new OutfitService();
-        Outfit outfit = service.createOutfit("Daily", 1, 2);
-        service.wearOutfit(outfit.getId());
-        for (ClothingItem item : service.getItemsForOutfit(outfit.getId())) {
-            assertEquals(1, item.getWornCount(),
-                    "wornCount should be 1 after one wear for item " + item.getId());
-        }
+        service.createOutfit("Sunny Weather", 1, 2);
+        service.createOutfit("Hot Weather", 3, 2);
+        service.deleteOutfitsContainingItem(1);
+        assertEquals(1, service.getAllOutfits().size());
     }
 
     @Test

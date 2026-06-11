@@ -102,43 +102,41 @@ public class DashboardServiceTest extends CsvTestBase {
     @DisplayName("markItemWorn() increments wornCount and persists it")
     void markItemWornPersists() {
         DashboardService service = new DashboardService();
-        service.markItemWorn(6); 
+        service.markItemWorn(6);
         assertEquals(22, service.getStats().totalWears);
     }
 
- 
-    
     @Test
-@DisplayName("getAllItemsWithTags() returns all items")
-void getAllItemsWithTagsReturnsAll() {
-    assertEquals(6, new DashboardService().getAllItemsWithTags().size());
-}
-
-@Test
-@DisplayName("getAllItemsWithTags() returns items with their tags")
-void getAllItemsWithTagsHasTags() throws IOException {
-    writeFile("tags.csv",
-            "id,name,category\n"
-          + "1,Blue,COLOR\n");
-    writeFile("clothing_tags.csv",
-            "clothingId,tagId\n"
-          + "1,1\n");
-    List<ClothingItem> items = new DashboardService().getAllItemsWithTags();
-    ClothingItem item1 = items.stream()
-            .filter(i -> i.getId() == 1)
-            .findFirst()
-            .orElse(null);
-    assertNotNull(item1);
-    assertTrue(item1.hasTag(1), "Item A should have tag 1 loaded");
-}
-
-@Test
-@DisplayName("getAllItemsWithTags() returns items with no tags when none assigned")
-void getAllItemsWithTagsNoTags() {
-    List<ClothingItem> items = new DashboardService().getAllItemsWithTags();
-    for (ClothingItem item : items) {
-        assertTrue(item.getTags().isEmpty(),
-                "Items should have no tags when none are assigned");
+    @DisplayName("getAllItemsWithTags() returns all items")
+    void getAllItemsWithTagsReturnsAll() {
+        assertEquals(6, new DashboardService().getAllItemsWithTags().size());
     }
-}
+
+    @Test
+    @DisplayName("getAllItemsWithTags() returns items with their tags")
+    void getAllItemsWithTagsHasTags() throws IOException {
+        writeFile("tags.csv",
+                "id,name,category\n"
+                + "1,Blue,COLOR\n");
+        writeFile("clothing_tags.csv",
+                "clothingId,tagId\n"
+                + "1,1\n");
+        List<ClothingItem> items = new DashboardService().getAllItemsWithTags();
+        ClothingItem item1 = items.stream()
+                .filter(i -> i.getId() == 1)
+                .findFirst()
+                .orElse(null);
+        assertNotNull(item1);
+        assertTrue(item1.hasTag(1), "Item A should have tag 1 loaded");
+    }
+
+    @Test
+    @DisplayName("getAllItemsWithTags() returns items with no tags when none assigned")
+    void getAllItemsWithTagsNoTags() {
+        List<ClothingItem> items = new DashboardService().getAllItemsWithTags();
+        for (ClothingItem item : items) {
+            assertTrue(item.getTags().isEmpty(),
+                    "Items should have no tags when none are assigned");
+        }
+    }
 }
