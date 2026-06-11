@@ -1,5 +1,6 @@
 package com.mycompany.irr00_group_project.database;
 
+import com.mycompany.irr00_group_project.CsvTestBase;
 import com.mycompany.irr00_group_project.model.Tag;
 import com.mycompany.irr00_group_project.model.TagCategory;
 import org.junit.jupiter.api.AfterEach;
@@ -20,35 +21,9 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @author Alexandra Varapai
  */
-public class TagRepositoryTest {
+public class TagRepositoryTest extends CsvTestBase {
 
-    //Original CSV file contents saved before each test
-    private String originalTags;
-    private String originalClothingTags;
-
-    /**
-     * Saves original CSV files and replaces them with empty test versions.
-     *
-     * @throws IOException if reading or writing a file fails
-     */
-    @BeforeEach
-    void setUp() throws IOException {
-        originalTags = readOrEmpty("tags.csv");
-        originalClothingTags = readOrEmpty("clothing_tags.csv");
-        writeFile("tags.csv", "id,name,category\n");
-        writeFile("clothing_tags.csv", "clothingId,tagId\n");
-    }
-
-    /**
-     * Restores original CSV files after each test.
-     *
-     * @throws IOException if reading or writing a file fails
-     */
-    @AfterEach
-    void restoreFile() throws IOException {
-        writeFile("tags.csv", originalTags);
-        writeFile("clothing_tags.csv", originalClothingTags);
-    }
+   
 
     // ==================
     // Tests
@@ -168,20 +143,5 @@ public class TagRepositoryTest {
         assertEquals(TagCategory.EVENT, found.getCategory());
     }
 
-    // ==================
-    // Helper methods
-    // ==================
-    private String readOrEmpty(String name) throws IOException {
-        File f = new File(name);
-        if (!f.exists()) {
-            return "";
-        }
-        return new String(Files.readAllBytes(f.toPath()));
-    }
-
-    private void writeFile(String name, String content) throws IOException {
-        try (FileWriter fw = new FileWriter(name)) {
-            fw.write(content);
-        }
-    }
+    
 }

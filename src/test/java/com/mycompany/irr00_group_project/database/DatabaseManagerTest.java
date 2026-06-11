@@ -27,8 +27,6 @@ public class DatabaseManagerTest {
         "outfits.csv", "outfit_items.csv"
     };
 
-    //For each filename store what was in the file before any changes
-    //If the file didn't exist store null
     private final Map<String, String> backups = new HashMap<>();
 
     /**
@@ -83,18 +81,18 @@ public class DatabaseManagerTest {
     void initialiseFilesSeedsDefaultTags() throws IOException {
         DatabaseManager.initialiseFiles();
         List<String> lines = Files.readAllLines(new File("tags.csv").toPath());
-        assertTrue(lines.size() > 1, "tags.csv should contain seeded tag rows");
+        assertTrue(lines.size() > 1, "tags.csv should contain seeded (default)tag rows");
     }
 
     @Test
     @DisplayName("initialiseFiles() does not overwrite existing data")
     void initialiseFilesDoesNotOverwrite() throws IOException {
         try (FileWriter fw = new FileWriter("clothing_items.csv")) {
-            fw.write("id,name,isFavorite,category,wornCount\n1,MyItem,false,TOP,5\n");
+            fw.write("id,name,isFavorite,category,wornCount\n1,Shirt,false,TOP,5\n");
         }
         DatabaseManager.initialiseFiles();
         List<String> lines = Files.readAllLines(new File("clothing_items.csv").toPath());
-        assertTrue(lines.stream().anyMatch(l -> l.contains("MyItem")),
+        assertTrue(lines.stream().anyMatch(l -> l.contains("Shirt")),
                 "Existing data must not be overwritten");
     }
 
@@ -106,6 +104,6 @@ public class DatabaseManagerTest {
         DatabaseManager.initialiseFiles();
         long sizeSecond = new File("tags.csv").length();
         assertEquals(sizeFirst, sizeSecond,
-                "Calling initialiseFiles() twice must not add duplicate seed data");
+                "initialiseFiles() can safely run twice without adding duplicate seed data");
     }
 }
