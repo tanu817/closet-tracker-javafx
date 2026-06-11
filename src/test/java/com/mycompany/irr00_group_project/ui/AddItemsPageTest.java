@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
- * TESTS for FR-01: tag creation, editing and deletion in AddItemsPage.
+ * Tests for FR-01: tag creation, editing and deletion in AddItemsPage.
  *
  * @author Alexandra Varapai
  */
@@ -199,7 +199,7 @@ public class AddItemsPageTest {
                 ToggleButton tag = findTag(pane, "Vintage");
 
                 pane.getChildren().remove(tag);
-                
+
                 assertNull(
                         findTag(pane, "Vintage"),
                         "Tag 'Vintage' should be gone after deletion"

@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DashboardServiceTest extends CsvTestBase {
 
     /**
-     * Seeds 6 clothing items with varying wornCount and favorite flags.
+     * Seeds 6 clothing items with varying wornCount and "favorite" flags.
      *
      * @throws IOException if file write fails
      */
@@ -27,12 +27,12 @@ public class DashboardServiceTest extends CsvTestBase {
     void seedData() throws IOException {
         writeFile("clothing_items.csv",
                 "id,name,isFavorite,category,wornCount\n"
-              + "1,Item A,true,TOP,10\n"
-              + "2,Item B,false,BOTTOM,8\n"
-              + "3,Item C,true,TOP,6\n"
-              + "4,Item D,false,BOTTOM,4\n"
-              + "5,Item E,false,ONE_PIECE,2\n"
-              + "6,Item F,true,TOP,0\n");
+              + "1,Item A,true,TOP,0\n"
+              + "2,Item B,false,BOTTOM,2\n"
+              + "3,Item C,true,TOP,4\n"
+              + "4,Item D,false,BOTTOM,8\n"
+              + "5,Item E,false,ONE_PIECE,6\n"
+              + "6,Item F,true,TOP,1\n");
     }
 
     @Test
@@ -40,23 +40,14 @@ public class DashboardServiceTest extends CsvTestBase {
     void getTop5WornOrdered() {
         List<ClothingItem> top5 = new DashboardService().getTop5Worn();
         assertTrue(top5.size() <= 5);
-        assertEquals(1, top5.get(0).getId(), "Item A (10 wears) should be first");
+        assertEquals(4, top5.get(0).getId(), "Item D should be first");
         for (int i = 0; i < top5.size() - 1; i++) {
             assertTrue(top5.get(i).getWornCount() >= top5.get(i + 1).getWornCount());
         }
     }
 
-    @Test
-    @DisplayName("getLeast5Worn() returns items sorted ascending by wornCount")
-    void getLeast5WornOrdered() {
-        List<ClothingItem> least5 = new DashboardService().getLeast5Worn();
-        assertTrue(least5.size() <= 5);
-        for (int i = 0; i < least5.size() - 1; i++) {
-            assertTrue(least5.get(i).getWornCount() <= least5.get(i + 1).getWornCount());
-        }
-    }
-
-    @Test
+    
+     @Test
     @DisplayName("getTop5Favourites() returns only favourite items")
     void getTop5FavouritesOnlyFavs() {
         List<ClothingItem> favs = new DashboardService().getTop5Favourites();
@@ -65,6 +56,19 @@ public class DashboardServiceTest extends CsvTestBase {
             assertTrue(item.isFavorite());
         }
     }
+    
+    @Test
+    @DisplayName("getLeast5Worn() returns items sorted ascending by wornCount")
+    void getLeast5WornOrdered() {
+        List<ClothingItem> least5 = new DashboardService().getLeast5Worn();
+        assertTrue(least5.size() <= 5);
+        assertEquals(1, least5.get(0).getId(), "Item A should be first");
+        for (int i = 0; i < least5.size() - 1; i++) {
+            assertTrue(least5.get(i).getWornCount() <= least5.get(i + 1).getWornCount());
+        }
+    }
+
+ 
 
     @Test
     @DisplayName("getStats() returns correct totalItems, totalWears, totalFavourites")

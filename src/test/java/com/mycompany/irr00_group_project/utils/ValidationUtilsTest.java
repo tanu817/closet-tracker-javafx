@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Unit tests for {@link ValidationUtils}.
+ * Unit tests for {@link ValidationUtils}
  *
  * @author Alexandra Varapai
  */
