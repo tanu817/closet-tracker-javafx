@@ -6,3 +6,4 @@ id,name,isFavorite,category,wornCount
 8,Satin brown shirt,true,TOP,2
 10,Satin red pants,false,BOTTOM,0
 11,blue jeans,false,BOTTOM,1
+12,sweatshirt,false,TOP,0
