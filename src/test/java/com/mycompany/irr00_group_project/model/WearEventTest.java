@@ -8,14 +8,14 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Unit tests for {@link WearEvent}.
  *
- * @author  Alexandra Varapai
+ * @author Alexandra Varapai
  */
 public class WearEventTest {
 
     @Test
-    @DisplayName("Constructor stores outfitId and wornDate correctly")
+    @DisplayName("Constructor stores outfit ID and wornDate correctly")
     void constructorStoresFields() {
-        LocalDate date = LocalDate.of(2025, 3, 15);
+        LocalDate date = LocalDate.of(2026, 6, 12);
         WearEvent event = new WearEvent(7, date);
         assertEquals(7, event.getOutfitId());
         assertEquals(date, event.getWornDate());

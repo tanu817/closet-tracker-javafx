@@ -21,9 +21,6 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class DashboardIntegrationTest extends CsvTestBase {
 
-    // ==================
-    // Tests
-    // ==================
     @Test
     @DisplayName("Wearing an outfit twice updates dashboard top-5-worn statistics")
     void wearOutfitAppearsInDashboardTop5() {
@@ -32,7 +29,7 @@ public class DashboardIntegrationTest extends CsvTestBase {
                 Collections.emptyList());
         ClothingItem bot = addService.addItem("Jeans", ClothingCategory.BOTTOM,
                 Collections.emptyList());
-
+        
         OutfitService outfitService = new OutfitService();
         var outfit = outfitService.createOutfit("Daily", top.getId(), bot.getId());
         outfitService.wearOutfit(outfit.getId());
@@ -47,9 +44,11 @@ public class DashboardIntegrationTest extends CsvTestBase {
     @DisplayName("Dashboard statistics reflects amount of items and wears after only adding of items")
     void dashboardStatsAfterAdding() {
         AddItemService addService = new AddItemService();
-        addService.addItem("Shirt", ClothingCategory.TOP, Collections.emptyList());
-        addService.addItem("Pants", ClothingCategory.BOTTOM, Collections.emptyList());
-
+        addService.addItem("Shirt", ClothingCategory.TOP,
+                Collections.emptyList());
+        addService.addItem("Pants", ClothingCategory.BOTTOM,
+                Collections.emptyList());
+        
         DashboardService.DashboardStats stats = new DashboardService().getStats();
         assertEquals(2, stats.totalItems);
         assertEquals(0, stats.totalWears);
@@ -61,7 +60,7 @@ public class DashboardIntegrationTest extends CsvTestBase {
         AddItemService addService = new AddItemService();
         ClothingItem item = addService.addItem("Cap", ClothingCategory.HEADWEAR,
                 Collections.emptyList());
-
+        
         DashboardService service = new DashboardService();
         service.markItemWorn(item.getId());
         assertEquals(1, service.getStats().totalWears);

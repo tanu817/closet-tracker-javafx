@@ -7,12 +7,12 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Unit tests for {@link Tag}.
  *
- * @author  Alexandra Varapai
+ * @author Alexandra Varapai
  */
 public class TagTest {
 
     @Test
-    @DisplayName("Three-arg constructor sets all fields")
+    @DisplayName("Constructor sets all fields")
     void fullConstructor() {
         Tag tag = new Tag(1, "Blue", TagCategory.COLOR);
         assertEquals(1, tag.getId());
@@ -21,7 +21,7 @@ public class TagTest {
     }
 
     @Test
-    @DisplayName("Two-arg constructor defaults category to OTHER")
+    @DisplayName("Constructor defaults category of a new tag to OTHER")
     void defaultCategoryIsOther() {
         Tag tag = new Tag(2, "Casual");
         assertEquals(TagCategory.OTHER, tag.getCategory());
@@ -30,9 +30,9 @@ public class TagTest {
     @Test
     @DisplayName("setName() updates the name")
     void setName() {
-        Tag tag = new Tag(1, "Old", TagCategory.COLOR);
-        tag.setName("New");
-        assertEquals("New", tag.getName());
+        Tag tag = new Tag(1, "Blue", TagCategory.COLOR);
+        tag.setName("Pink");
+        assertEquals("Pink", tag.getName());
     }
 
     @Test
@@ -44,10 +44,10 @@ public class TagTest {
     }
 
     @Test
-    @DisplayName("equals() is based on ID only")
+    @DisplayName("equals() make two tags equal when they share the same ID")
     void equalsById() {
         Tag t1 = new Tag(5, "Blue", TagCategory.COLOR);
-        Tag t2 = new Tag(5, "DifferentName", TagCategory.WEATHER);
+        Tag t2 = new Tag(5, "Pink", TagCategory.COLOR);
         assertEquals(t1, t2);
     }
 
@@ -55,7 +55,7 @@ public class TagTest {
     @DisplayName("equals() returns false for different IDs")
     void notEqualsDifferentId() {
         Tag t1 = new Tag(5, "Blue", TagCategory.COLOR);
-        Tag t2 = new Tag(6, "Blue", TagCategory.COLOR);
+        Tag t2 = new Tag(6, "Pink", TagCategory.COLOR);
         assertNotEquals(t1, t2);
     }
 
@@ -63,7 +63,7 @@ public class TagTest {
     @DisplayName("hashCode() is consistent with equals()")
     void hashCodeConsistency() {
         Tag t1 = new Tag(5, "Blue", TagCategory.COLOR);
-        Tag t2 = new Tag(5, "Other", TagCategory.WEATHER);
+        Tag t2 = new Tag(5, "Sunny", TagCategory.WEATHER);
         assertEquals(t1.hashCode(), t2.hashCode());
     }
 
@@ -84,4 +84,3 @@ public class TagTest {
         assertTrue(s.contains("Party"));
     }
 }
-

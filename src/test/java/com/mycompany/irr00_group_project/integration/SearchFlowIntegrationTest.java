@@ -35,7 +35,6 @@ public class SearchFlowIntegrationTest extends CsvTestBase {
         SearchService searchService = new SearchService();
         int casualId = searchService.getTagIdByName("Casual");
         assertNotEquals(-1, casualId);
-
         List<ClothingItem> results = searchService.searchByTagId(casualId);
         assertEquals(2, results.size(), "Shirt and Jeans both have Casual tag");
     }
@@ -51,8 +50,7 @@ public class SearchFlowIntegrationTest extends CsvTestBase {
 
         SearchService searchService = new SearchService();
         int casualId = searchService.getTagIdByName("Casual");
-        int blueId   = searchService.getTagIdByName("Blue");
-
+        int blueId = searchService.getTagIdByName("Blue");
         List<ClothingItem> results = searchService.searchByTagIds(Arrays.asList(casualId, blueId));
         assertEquals(1, results.size());
         assertEquals("Shirt", results.get(0).getName());
@@ -69,9 +67,7 @@ public class SearchFlowIntegrationTest extends CsvTestBase {
 
         assertEquals(2, new SearchService().searchByTagIds(Collections.emptyList()).size());
     }
-    
-    
-   
+
     @Test
     @DisplayName("Tag search returns at least 2 items to allow outfit creation")
     void searchedItemsCanFormOutfit() {

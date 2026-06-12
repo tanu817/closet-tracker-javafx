@@ -18,9 +18,6 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class ClothingRepositoryTest extends CsvTestBase {
 
-    // ==================
-    // TESTS
-    // ==================
     @Test
     @DisplayName("item added with addItem() appears in getAllItems()")
     void addItemAppearsInList() {

@@ -66,9 +66,6 @@ public class DatabaseManagerTest {
         }
     }
 
-    // ==================
-    // TESTS
-    // ==================
     @Test
     @DisplayName("initialiseFiles() creates all CSV files")
     void initialiseFilesCreatesAllFiles() {

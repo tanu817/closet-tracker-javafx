@@ -24,9 +24,11 @@ public class OutfitCreationIntegrationTest extends CsvTestBase {
     @DisplayName("Outfit contains exactly 2 selected items")
     void outfitHasTwoItems() {
         AddItemService addService = new AddItemService();
-        ClothingItem top = addService.addItem("Shirt", ClothingCategory.TOP, Collections.emptyList());
-        ClothingItem bot = addService.addItem("Jeans", ClothingCategory.BOTTOM, Collections.emptyList());
-
+        ClothingItem top = addService.addItem("Shirt", ClothingCategory.TOP,
+                Collections.emptyList());
+        ClothingItem bot = addService.addItem("Jeans", ClothingCategory.BOTTOM,
+                Collections.emptyList());
+        
         OutfitService outfitService = new OutfitService();
         Outfit outfit = outfitService.createOutfit("Casual", top.getId(), bot.getId());
         assertEquals(2, outfitService.getItemsForOutfit(outfit.getId()).size(),
@@ -37,13 +39,14 @@ public class OutfitCreationIntegrationTest extends CsvTestBase {
     @DisplayName("Wearing an outfit increments wornCount on both items")
     void wearOutfitIncrementsItems() {
         AddItemService addService = new AddItemService();
-        ClothingItem top = addService.addItem("Shirt", ClothingCategory.TOP, Collections.emptyList());
-        ClothingItem bot = addService.addItem("Trousers", ClothingCategory.BOTTOM, Collections.emptyList());
-
+        ClothingItem top = addService.addItem("Shirt", ClothingCategory.TOP,
+                Collections.emptyList());
+        ClothingItem bot = addService.addItem("Trousers", ClothingCategory.BOTTOM,
+                Collections.emptyList());
+        
         OutfitService outfitService = new OutfitService();
         Outfit outfit = outfitService.createOutfit("University Outfit", top.getId(), bot.getId());
         outfitService.wearOutfit(outfit.getId());
-
         for (ClothingItem item : outfitService.getItemsForOutfit(outfit.getId())) {
             assertEquals(1, item.getWornCount(),
                     "wornCount should be 1 after one wear for item " + item.getId());
@@ -54,14 +57,15 @@ public class OutfitCreationIntegrationTest extends CsvTestBase {
     @DisplayName("Deleting an outfit removes it from getAllOutfits()")
     void deleteOutfitRemovedFromList() {
         AddItemService addService = new AddItemService();
-        ClothingItem top = addService.addItem("T-shirt", ClothingCategory.TOP, Collections.emptyList());
-        ClothingItem bot = addService.addItem("Pants", ClothingCategory.BOTTOM, Collections.emptyList());
-
+        ClothingItem top = addService.addItem("T-shirt", ClothingCategory.TOP,
+                Collections.emptyList());
+        ClothingItem bot = addService.addItem("Pants", ClothingCategory.BOTTOM,
+                Collections.emptyList());
+        
         OutfitService outfitService = new OutfitService();
         Outfit outfit = outfitService.createOutfit("Sport Outfit", top.getId(), bot.getId());
         int id = outfit.getId();
         outfitService.deleteOutfit(id);
-
         boolean found = outfitService.getAllOutfits().stream()
                 .anyMatch(o -> o.getId() == id);
         assertFalse(found, "Deleted outfit must not appear in getAllOutfits()");
@@ -71,14 +75,14 @@ public class OutfitCreationIntegrationTest extends CsvTestBase {
     @DisplayName("Outfit name is auto-generated from both item names when is blank")
     void autoNameCombinesBothItemNames() {
         AddItemService addService = new AddItemService();
-        ClothingItem top = addService.addItem("Blouse", ClothingCategory.TOP, Collections.emptyList());
-        ClothingItem bot = addService.addItem("Jeans", ClothingCategory.BOTTOM, Collections.emptyList());
-
+        ClothingItem top = addService.addItem("Blouse", ClothingCategory.TOP,
+                Collections.emptyList());
+        ClothingItem bot = addService.addItem("Jeans", ClothingCategory.BOTTOM,
+                Collections.emptyList());
+        
         OutfitService outfitService = new OutfitService();
         Outfit outfit = outfitService.createOutfit(null, top.getId(), bot.getId());
-
         String expectedName = top.getName() + " + " + bot.getName();
-
         assertEquals(expectedName, outfit.getName(),
                 "Auto-generated name should combine both item names");
     }

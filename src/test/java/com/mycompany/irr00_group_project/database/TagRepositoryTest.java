@@ -3,15 +3,9 @@ package com.mycompany.irr00_group_project.database;
 import com.mycompany.irr00_group_project.CsvTestBase;
 import com.mycompany.irr00_group_project.model.Tag;
 import com.mycompany.irr00_group_project.model.TagCategory;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,9 +17,6 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class TagRepositoryTest extends CsvTestBase {
 
-    // ==================
-    // Tests
-    // ==================
     @Test
     @DisplayName("tag added with addTag() appears in getAllTags()")
     void addTagAppearsinList() {

@@ -19,9 +19,6 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class OutfitRepositoryTest extends CsvTestBase {
 
-    // ==================
-    // TESTS
-    // ==================
     @Test
     @DisplayName("outfit added with addOutfit() appears in getAllOutfits()")
     void addOutfitAppearsInList() {
