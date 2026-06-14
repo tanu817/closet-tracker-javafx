@@ -30,6 +30,7 @@ import javafx.stage.Stage;
  * Outfits page: shows all outfits loaded from CSV storage.
  *
  * @author Bhavini Kopparam Ajay
+ * @author Priyanshu Guha
  * @author Arshiya Shaik
  */
 public class OutfitsPage extends BorderPane {
@@ -80,7 +81,7 @@ public class OutfitsPage extends BorderPane {
                 + "-fx-background-radius: 10;");
         backButton.setOnAction(e -> {
             MainPage mainPage = new MainPage();
-            mainPage.start(stage);
+            mainPage.start(stage, stage.getScene().getWidth(), stage.getScene().getHeight());
         });
 
         Label title = new Label("My Outfits");
@@ -203,7 +204,7 @@ public class OutfitsPage extends BorderPane {
 
         Button wornBtn = new Button("Mark as Worn");
         wornBtn.setFont(normalBoldFont);
-        wornBtn.setStyle("-fx-background-color: " + DARK_GREEN + "; -fx-background-radius: 8; -fx-border-radius: 8; -fx-text-fill: white;");
+        wornBtn.setStyle("-fx-background-color: #F3EEE6; -fx-background-radius: 8; -fx-border-radius: 8;");
         wornBtn.setOnAction(e -> {
             outfitController.wearOutfit(outfitId);
             showInfo("Outfit Worn", "Outfit marked as worn. Wear counts updated.");

@@ -36,6 +36,7 @@ import javafx.stage.Stage;
  * outfits from matches, and removing items.
  *
  * @author Bhavini Kopparam Ajay
+ * @author Priyanshu Guha
  * @author Arshiya Shaik
  */
 public class ItemsPage extends BorderPane {
@@ -192,8 +193,7 @@ public class ItemsPage extends BorderPane {
         Button wornBtn = new Button("Mark as Worn");
         wornBtn.setFont(normalBoldFont);
         wornBtn.setStyle(
-                "-fx-background-color: " + DARK_GREEN + ";"
-                + "-fx-text-fill: white;"
+                "-fx-background-color: #F3EEE6;"
                 + "-fx-background-radius: 8;"
                 + "-fx-padding: 6 14 6 14;");
         wornBtn.setOnAction(e -> {
@@ -547,7 +547,10 @@ public class ItemsPage extends BorderPane {
                 "-fx-background-color: #F3EEE6;"
                 + "-fx-background-radius: 10;"
                 + "-fx-border-radius: 10;");
-        backButton.setOnAction(e -> new MainPage().start(stage));
+        backButton.setOnAction(e -> {
+            MainPage mainPage = new MainPage();
+            mainPage.start(stage, stage.getScene().getWidth(), stage.getScene().getHeight());
+        });
 
         Label title = new Label("All Items");
         title.setFont(titleFont);
