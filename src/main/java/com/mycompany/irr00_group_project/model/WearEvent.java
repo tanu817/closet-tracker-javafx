@@ -8,12 +8,13 @@ import java.time.LocalDate;
  * @author Priyanshu Guha
  */
 public class WearEvent {
+
     private int outfitId;
-    private LocalDate wornDate;  
-    
+    private LocalDate wornDate;
+
     /**
      * Create a WearEvent.
-     * 
+     *
      * @param outfitId is the ID of the outfit worn for this wearEvent.
      * @param wornDate is the date when the outfit was worn.
      */
@@ -21,15 +22,14 @@ public class WearEvent {
         this.outfitId = outfitId;
         this.wornDate = wornDate;
     }
-    
+
     // =======
     // Getters
     // =======
-    
     public int getOutfitId() {
         return outfitId;
     }
-    
+
     public LocalDate getWornDate() {
         return wornDate;
     }

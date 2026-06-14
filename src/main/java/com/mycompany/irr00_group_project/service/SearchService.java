@@ -12,8 +12,9 @@ import com.mycompany.irr00_group_project.model.Tag;
 /**
  * Service for searching clothing items by tags.
  *
- * <p>All search operations use Tag IDs as the stable key — never tag names.
- * AND semantics: every supplied tag ID must be present on a result item.</p>
+ * <p>
+ * All search operations use Tag IDs as the stable key — never tag names. AND
+ * semantics: every supplied tag ID must be present on a result item.</p>
  *
  * @author Arshiya Shaik
  */
@@ -22,6 +23,9 @@ public class SearchService {
     private final ClothingRepository clothingRepository;
     private final TagRepository tagRepository;
 
+    /**
+     * Initialize.
+     */
     public SearchService() {
         this.clothingRepository = new ClothingRepository();
         this.tagRepository = new TagRepository();
@@ -30,7 +34,6 @@ public class SearchService {
     // ==================
     // Tag helpers for UI
     // ==================
-
     /**
      * Returns the display names of every known tag (for populating filter UI).
      *
@@ -46,7 +49,8 @@ public class SearchService {
     }
 
     /**
-     * Returns all tags (objects) — useful for building tag-to-ID maps in the UI.
+     * Returns all tags (objects) — useful for building tag-to-ID maps in the
+     * UI.
      *
      * @return all persisted {@link Tag} objects
      */
@@ -67,12 +71,12 @@ public class SearchService {
     // ==================
     // Search
     // ==================
-
     /**
      * Returns all clothing items that carry <em>every</em> tag in
      * {@code selectedTagIds} (AND logic).
      *
-     * <p>An empty or null list returns all items.</p>
+     * <p>
+     * An empty or null list returns all items.</p>
      *
      * @param selectedTagIds list of tag IDs that must all be present
      * @return matching {@link ClothingItem} objects; never {@code null}
@@ -130,10 +134,11 @@ public class SearchService {
      * Returns all clothing items whose {@link ClothingCategory} matches
      * {@code category} AND that carry every tag in {@code selectedTagIds}.
      *
-     * <p>If {@code category} is {@code null} the category filter is skipped.
-     * If {@code selectedTagIds} is empty the tag filter is skipped.</p>
+     * <p>
+     * If {@code category} is {@code null} the category filter is skipped. If
+     * {@code selectedTagIds} is empty the tag filter is skipped.</p>
      *
-     * @param category       the required clothing category, or {@code null} to skip
+     * @param category the required clothing category, or {@code null} to skip
      * @param selectedTagIds tag IDs that must all be present, may be empty
      * @return matching {@link ClothingItem} objects; never {@code null}
      */
