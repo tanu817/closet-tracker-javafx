@@ -13,8 +13,9 @@ import com.mycompany.irr00_group_project.model.TagCategory;
  * Repository for {@link Tag} objects persisted in {@code tags.csv} and the
  * clothing–tag relationship table {@code clothing_tags.csv}.
  *
- * <p>This class is purely I/O: it reads and writes CSV files and performs
- * no business logic.</p>
+ * <p>
+ * This class is purely I/O: it reads and writes CSV files and performs no
+ * business logic.</p>
  *
  * <h2>CSV schemas</h2>
  * <pre>
@@ -23,16 +24,17 @@ import com.mycompany.irr00_group_project.model.TagCategory;
  * </pre>
  *
  * <h2>ID is the single source of truth</h2>
- * <p>Tag IDs are stable integer keys. All relationships are stored by ID.
- * Tag names are only for display and are resolved via
- * {@link #getTagById(int)} or {@link #getTagIdByName(String)}.</p>
+ * <p>
+ * Tag IDs are stable integer keys. All relationships are stored by ID. Tag
+ * names are only for display and are resolved via {@link #getTagById(int)} or
+ * {@link #getTagIdByName(String)}.</p>
  *
  * @author Aleksandra Levenkova
  * @author Arshiya Shaik
  */
 public class TagRepository {
 
-    private static final String TAGS_FILE         = "tags.csv";
+    private static final String TAGS_FILE = "tags.csv";
     private static final String CLOTHING_TAGS_FILE = "clothing_tags.csv";
 
     /**
@@ -174,13 +176,12 @@ public class TagRepository {
     // =========================================
     // Clothing–Tag relationship (clothing_tags.csv)
     // =========================================
-
     /**
-     * Persists the association between a clothing item and a tag.
-     * Does nothing if the relationship already exists (prevents duplicates).
+     * Persists the association between a clothing item and a tag. Does nothing
+     * if the relationship already exists (prevents duplicates).
      *
      * @param clothingId the ID of the clothing item
-     * @param tagId      the ID of the tag to associate
+     * @param tagId the ID of the tag to associate
      */
     public void addTagToItem(int clothingId, int tagId) {
         // Guard against duplicate entries
@@ -200,7 +201,7 @@ public class TagRepository {
      * Cleans up the relationship row from {@code clothing_tags.csv}.
      *
      * @param clothingId the ID of the clothing item
-     * @param tagId      the ID of the tag to disassociate
+     * @param tagId the ID of the tag to disassociate
      */
     public void removeTagFromItem(int clothingId, int tagId) {
         List<String> rows = new ArrayList<>();
@@ -219,7 +220,7 @@ public class TagRepository {
                     continue;
                 }
                 int currentClothingId = Integer.parseInt(values[0].trim());
-                int currentTagId      = Integer.parseInt(values[1].trim());
+                int currentTagId = Integer.parseInt(values[1].trim());
                 // Keep the row unless it matches the pair we want to remove
                 if (!(currentClothingId == clothingId && currentTagId == tagId)) {
                     rows.add(line);
@@ -252,7 +253,7 @@ public class TagRepository {
                     continue;
                 }
                 int currentItemId = Integer.parseInt(values[0].trim());
-                int tagId         = Integer.parseInt(values[1].trim());
+                int tagId = Integer.parseInt(values[1].trim());
                 if (currentItemId == clothingId) {
                     tagIds.add(tagId);
                 }
@@ -273,7 +274,7 @@ public class TagRepository {
      */
     public List<Tag> getTagsOfItem(int clothingId) {
         List<Integer> ids = getTagIdsOfItem(clothingId);
-        List<Tag> result  = new ArrayList<>();
+        List<Tag> result = new ArrayList<>();
         for (int id : ids) {
             Tag tag = getTagById(id);
             if (tag != null) {
@@ -286,7 +287,6 @@ public class TagRepository {
     // ==================
     // Private helpers
     // ==================
-
     /**
      * Removes all {@code clothing_tags.csv} rows that reference the given
      * {@code tagId} (called when a tag is deleted).
@@ -325,7 +325,7 @@ public class TagRepository {
      * Atomically rewrites a CSV file with the supplied rows (header included).
      *
      * @param fileName destination file path
-     * @param rows     all rows (including header as first element)
+     * @param rows all rows (including header as first element)
      */
     private void writeRows(String fileName, List<String> rows) {
         try (FileWriter writer = new FileWriter(fileName)) {

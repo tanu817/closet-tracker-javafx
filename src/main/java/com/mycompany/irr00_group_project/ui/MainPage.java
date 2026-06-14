@@ -21,8 +21,8 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 /**
- * Main page / dashboard of the app.
- * Dashboard cards are loaded from real CSV data via {@link DashboardController}.
+ * Main page / dashboard of the app. Dashboard cards are loaded from real CSV
+ * data via {@link DashboardController}.
  *
  * @author Bhavini Kopparam Ajay
  */
@@ -124,9 +124,9 @@ public class MainPage {
         HBox cardsRow = new HBox(20);
         cardsRow.setAlignment(Pos.CENTER);
         cardsRow.getChildren().addAll(favoritesCard, mostWornCard, leastWornCard);
-        
+
         BorderPane root = new BorderPane();
-        
+
         root.setCenter(cardsRow);
         root.setMargin(cardsRow, new Insets(20, 0, 0, 0));
 
@@ -190,14 +190,14 @@ public class MainPage {
     /**
      * Builds a dashboard card showing up to 5 clothing items.
      *
-     * @param titleText     card heading
-     * @param iconPath      resource path for the card icon
-     * @param items         list of items to display (up to 5)
+     * @param titleText card heading
+     * @param iconPath resource path for the card icon
+     * @param items list of items to display (up to 5)
      * @param cardTitleFont font for the card heading
-     * @param itemFont      font for item label rows
-     * @param iconW         icon width in pixels
-     * @param iconH         icon height in pixels
-     * @param numbered      whether to prefix each row with a rank number
+     * @param itemFont font for item label rows
+     * @param iconW icon width in pixels
+     * @param iconH icon height in pixels
+     * @param numbered whether to prefix each row with a rank number
      * @return styled card VBox
      */
     private VBox buildCard(

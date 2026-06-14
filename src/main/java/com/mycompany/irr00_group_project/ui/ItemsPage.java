@@ -63,7 +63,8 @@ public class ItemsPage extends BorderPane {
 
     /**
      * Page with clothing items.
-     * @param stage 
+     *
+     * @param stage where all the items are shown
      */
     public ItemsPage(Stage stage) {
         this.stage = stage;
@@ -299,11 +300,10 @@ public class ItemsPage extends BorderPane {
         }
 
         // Helper: rebuilds the chips from selectedTagNames
-
         Runnable refreshChips = () -> {
             currentTagsPane.getChildren().clear();
             for (String tn : new ArrayList<>(selectedTagNames)) {
-                
+
                 Image crossImg = new Image(
                         getClass().getResourceAsStream("/icons/cross.png")
                 );
@@ -312,7 +312,7 @@ public class ItemsPage extends BorderPane {
 
                 crossIcon.setFitWidth(12);
                 crossIcon.setFitHeight(12);
-                
+
                 Button chip = new Button(tn);
                 chip.setFont(smallFont);
                 chip.setGraphic(crossIcon);

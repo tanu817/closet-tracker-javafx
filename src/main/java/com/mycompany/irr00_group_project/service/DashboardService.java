@@ -9,10 +9,10 @@ import com.mycompany.irr00_group_project.model.ClothingItem;
 /**
  * Service for computing dashboard statistics.
  *
- *  All heavy lifting (sorting, filtering) is delegated to
+ * All heavy lifting (sorting, filtering) is delegated to
  * {@link ClothingRepository}. This service provides the clean API the
- * controller expects and adds any cross-repository aggregations that a
- * single repository call cannot satisfy on its own.
+ * controller expects and adds any cross-repository aggregations that a single
+ * repository call cannot satisfy on its own.
  *
  * @author Arshiya Shaik
  */
@@ -30,7 +30,8 @@ public class DashboardService {
     }
 
     /**
-     * Returns the top 5 most-worn items, sorted by {@code wornCount} descending.
+     * Returns the top 5 most-worn items, sorted by {@code wornCount}
+     * descending.
      *
      * @return up to 5 {@link ClothingItem} objects
      */
@@ -62,24 +63,34 @@ public class DashboardService {
      * Snapshot of dashboard statistics for the overview cards.
      */
     public static class DashboardStats {
-        /** Total number of clothing items in the closet. */
+
+        /**
+         * Total number of clothing items in the closet.
+         */
         public final int totalItems;
-        /** Total number of times any item has been worn. */
+        /**
+         * Total number of times any item has been worn.
+         */
         public final int totalWears;
-        /** Total number of items marked as favorite. */
+        /**
+         * Total number of items marked as favorite.
+         */
         public final int totalFavourites;
-        /** Average wears per item (0.0 when {@code totalItems} is 0). */
+        /**
+         * Average wears per item (0.0 when {@code totalItems} is 0).
+         */
         public final double avgWearsPerItem;
 
         /**
          * Dashboard Statistics.
-         * @param totalItems
-         * @param totalWears
-         * @param totalFavourites
-         * @param avgWearsPerItem 
+         *
+         * @param totalItems total items worn
+         * @param totalWears total times items have been worn
+         * @param totalFavourites number of favorites
+         * @param avgWearsPerItem average times an item has been worn
          */
         DashboardStats(int totalItems, int totalWears,
-                       int totalFavourites, double avgWearsPerItem) {
+                int totalFavourites, double avgWearsPerItem) {
             this.totalItems = totalItems;
             this.totalWears = totalWears;
             this.totalFavourites = totalFavourites;
@@ -112,8 +123,8 @@ public class DashboardService {
     }
 
     /**
-     * Marks an item as worn, incrementing its {@code wornCount} by 1
-     * and persisting the change.
+     * Marks an item as worn, incrementing its {@code wornCount} by 1 and
+     * persisting the change.
      *
      * @param clothingId the ID of the item to mark worn
      */
@@ -131,7 +142,7 @@ public class DashboardService {
         List<ClothingItem> all = clothingRepository.getAllItems();
         for (ClothingItem item : all) {
             tagRepository.getTagsOfItem(item.getId())
-                         .forEach(item::addTag);
+                    .forEach(item::addTag);
         }
         return all;
     }

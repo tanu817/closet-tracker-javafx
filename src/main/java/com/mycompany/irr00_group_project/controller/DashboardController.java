@@ -9,7 +9,8 @@ import com.mycompany.irr00_group_project.service.DashboardService.DashboardStats
 /**
  * Controller for the Dashboard page.
  *
- * <p>Receives calls from the dashboard UI and forwards them to
+ * <p>
+ * Receives calls from the dashboard UI and forwards them to
  * {@link DashboardService}. Contains no business logic and performs no I/O.</p>
  *
  * @author Arshiya Shaik
@@ -35,7 +36,7 @@ public class DashboardController {
      * Returns the top 5 favourite items.
      *
      * @return up to 5 favourite {@link ClothingItem} objects sorted by
-     *         wornCount desc
+     * wornCount desc
      */
     public List<ClothingItem> getTop5Favourites() {
         return dashboardService.getTop5Favourites();
@@ -51,8 +52,8 @@ public class DashboardController {
     }
 
     /**
-     * Returns aggregate statistics for the overview cards
-     * (total items, total wears, favourites count, avg wears per item).
+     * Returns aggregate statistics for the overview cards (total items, total
+     * wears, favourites count, avg wears per item).
      *
      * @return a populated {@link DashboardStats} object
      */
@@ -70,8 +71,8 @@ public class DashboardController {
     }
 
     /**
-     * Returns all clothing items with their tags hydrated.
-     * Useful for full-closet views within the dashboard.
+     * Returns all clothing items with their tags hydrated. Useful for
+     * full-closet views within the dashboard.
      *
      * @return all items with tags populated
      */

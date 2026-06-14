@@ -9,7 +9,8 @@ import com.mycompany.irr00_group_project.service.OutfitService;
 /**
  * Controller for the Outfits page.
  *
- * <p>Receives calls from {@code OutfitsPage} and forwards them to
+ * <p>
+ * Receives calls from {@code OutfitsPage} and forwards them to
  * {@link OutfitService}. Contains no business logic and performs no I/O.</p>
  *
  * @author Arshiya Shaik
@@ -53,7 +54,7 @@ public class OutfitController {
     /**
      * Creates a new outfit from two clothing item IDs.
      *
-     * @param outfitName  display name (may be blank for auto-generation)
+     * @param outfitName display name (may be blank for auto-generation)
      * @param clothingId1 ID of the first item
      * @param clothingId2 ID of the second item
      * @return the newly created {@link Outfit}
@@ -67,7 +68,7 @@ public class OutfitController {
      * Renames an outfit and persists the change.
      *
      * @param outfitId the ID of the outfit to rename
-     * @param newName  the new display name
+     * @param newName the new display name
      */
     public void renameOutfit(int outfitId, String newName) {
         outfitService.renameOutfit(outfitId, newName);

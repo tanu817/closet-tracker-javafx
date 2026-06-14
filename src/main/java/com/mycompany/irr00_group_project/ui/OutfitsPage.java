@@ -35,8 +35,8 @@ import javafx.stage.Stage;
 public class OutfitsPage extends BorderPane {
 
     private static final String LIGHT_GREEN = "#D8CFBC";
-    private static final String DARK_GREEN  = "#565448";
-    private static final String CREAM       = "#FFFAF4";
+    private static final String DARK_GREEN = "#565448";
+    private static final String CREAM = "#FFFAF4";
 
     private final Stage stage;
 
@@ -56,7 +56,8 @@ public class OutfitsPage extends BorderPane {
 
     /**
      * Page with outfits made.
-     * @param stage 
+     *
+     * @param stage where outfits are displayed
      */
     public OutfitsPage(Stage stage) {
         this.stage = stage;
@@ -89,9 +90,9 @@ public class OutfitsPage extends BorderPane {
         Label title = new Label("My Outfits");
         title.setFont(titleFont);
 
-        Region leftSpacer  = new Region();
+        Region leftSpacer = new Region();
         Region rightSpacer = new Region();
-        HBox.setHgrow(leftSpacer,  Priority.ALWAYS);
+        HBox.setHgrow(leftSpacer, Priority.ALWAYS);
         HBox.setHgrow(rightSpacer, Priority.ALWAYS);
 
         HBox topRow = new HBox();
@@ -116,7 +117,7 @@ public class OutfitsPage extends BorderPane {
     }
 
     private void refreshOutfits() {
-        VBox leftColumn  = new VBox(25);
+        VBox leftColumn = new VBox(25);
         VBox rightColumn = new VBox(25);
 
         List<Outfit> outfits = outfitController.getAllOutfits();
@@ -154,9 +155,9 @@ public class OutfitsPage extends BorderPane {
     }
 
     private VBox createOutfitCard(int outfitId,
-                                  String outfitName,
-                                  ClothingItem item1,
-                                  ClothingItem item2) {
+            String outfitName,
+            ClothingItem item1,
+            ClothingItem item2) {
         VBox card = new VBox(20);
         card.setPadding(new Insets(25));
         card.setPrefSize(580, 260);
