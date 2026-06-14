@@ -21,11 +21,13 @@ public class DashboardService {
     private final ClothingRepository clothingRepository;
     private final TagRepository tagRepository;
 
+    /**
+     * Initialize.
+     */
     public DashboardService() {
         this.clothingRepository = new ClothingRepository();
         this.tagRepository = new TagRepository();
     }
-
 
     /**
      * Returns the top 5 most-worn items, sorted by {@code wornCount} descending.
@@ -56,7 +58,6 @@ public class DashboardService {
         return clothingRepository.getLeast5Worn();
     }
 
-
     /**
      * Snapshot of dashboard statistics for the overview cards.
      */
@@ -65,11 +66,18 @@ public class DashboardService {
         public final int totalItems;
         /** Total number of times any item has been worn. */
         public final int totalWears;
-        /** Total number of items marked as favourite. */
+        /** Total number of items marked as favorite. */
         public final int totalFavourites;
         /** Average wears per item (0.0 when {@code totalItems} is 0). */
         public final double avgWearsPerItem;
 
+        /**
+         * Dashboard Statistics.
+         * @param totalItems
+         * @param totalWears
+         * @param totalFavourites
+         * @param avgWearsPerItem 
+         */
         DashboardStats(int totalItems, int totalWears,
                        int totalFavourites, double avgWearsPerItem) {
             this.totalItems = totalItems;
@@ -103,7 +111,6 @@ public class DashboardService {
         return new DashboardStats(totalItems, totalWears, totalFavourites, avg);
     }
 
-
     /**
      * Marks an item as worn, incrementing its {@code wornCount} by 1
      * and persisting the change.
@@ -113,7 +120,6 @@ public class DashboardService {
     public void markItemWorn(int clothingId) {
         clothingRepository.markAsWorn(clothingId);
     }
-
 
     /**
      * Returns all items with their tags hydrated from the relationship table.

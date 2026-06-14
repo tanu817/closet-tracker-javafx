@@ -22,7 +22,6 @@ public class OutfitController {
         this.outfitService = new OutfitService();
     }
 
-
     /**
      * Returns all outfits with their clothing items hydrated.
      *
@@ -51,7 +50,6 @@ public class OutfitController {
         return outfitService.getItemsForOutfit(outfitId);
     }
 
-
     /**
      * Creates a new outfit from two clothing item IDs.
      *
@@ -64,7 +62,6 @@ public class OutfitController {
     public Outfit createOutfit(String outfitName, int clothingId1, int clothingId2) {
         return outfitService.createOutfit(outfitName, clothingId1, clothingId2);
     }
-
 
     /**
      * Renames an outfit and persists the change.
@@ -84,7 +81,6 @@ public class OutfitController {
     public void deleteOutfit(int outfitId) {
         outfitService.deleteOutfit(outfitId);
     }
-
 
     /**
      * Records that an outfit was worn (increments wornCount on both items).

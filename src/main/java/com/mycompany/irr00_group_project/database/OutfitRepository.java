@@ -29,7 +29,6 @@ public class OutfitRepository {
     private static final String OUTFITS_FILE      = "outfits.csv";
     private static final String OUTFIT_ITEMS_FILE = "outfit_items.csv";
 
-
     /**
      * Appends a new outfit to {@code outfits.csv}.
      *
@@ -133,7 +132,6 @@ public class OutfitRepository {
         saveOutfits(outfits);
         deleteOutfitItems(id);
     }
-
 
     /**
      * Persists the two-item composition of an outfit.
@@ -246,7 +244,6 @@ public class OutfitRepository {
         }
         return outfitIds;
     }
-
 
     /**
      * Removes all rows in {@code outfit_items.csv} for the given outfit ID.

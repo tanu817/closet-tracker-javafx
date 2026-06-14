@@ -82,10 +82,7 @@ public class AddItemsPage {
                 + "-fx-background-radius: 15;"
                 + "-fx-border-color: #D8CFBC;"
                 + "-fx-border-radius: 15;");
-
-        // TOP ROW (back button + item name field)
-        HBox topRow = new HBox(20);
-
+        
         Image backImg = new Image(
                 getClass().getResourceAsStream("/icons/arrow.png"));
         ImageView backIcon = new ImageView(backImg);
@@ -107,6 +104,9 @@ public class AddItemsPage {
         itemName.setMinHeight(42);
         itemName.setMaxHeight(42);
         itemName.setFont(normalFont);
+        
+        // TOP ROW (back button + item name field)
+        HBox topRow = new HBox(20);
 
         topRow.getChildren().addAll(backButton, itemName);
 
@@ -199,7 +199,6 @@ public class AddItemsPage {
         return backButton;
     }
 
-
     /**
      * Collects form values, validates, and delegates to {@link AddItemController}.
      */
@@ -248,10 +247,18 @@ public class AddItemsPage {
 
     /** Maps the selected type button to a {@link ClothingCategory}. */
     private ClothingCategory resolveCategory() {
-        if (topBtn.isSelected())       { return ClothingCategory.TOP; }
-        if (bottomBtn.isSelected())    { return ClothingCategory.BOTTOM; }
-        if (onePieceBtn.isSelected())  { return ClothingCategory.ONE_PIECE; }
-        if (accessoryBtn.isSelected()) { return ClothingCategory.ACCESSORY; }
+        if (topBtn.isSelected()) { 
+            return ClothingCategory.TOP; 
+        }
+        if (bottomBtn.isSelected()) { 
+            return ClothingCategory.BOTTOM; 
+        }
+        if (onePieceBtn.isSelected()) { 
+            return ClothingCategory.ONE_PIECE; 
+        }
+        if (accessoryBtn.isSelected()) { 
+            return ClothingCategory.ACCESSORY; 
+        }
         return null;
     }
 
@@ -306,7 +313,6 @@ public class AddItemsPage {
             }
         }
     }
-
 
     /**
      * Creates a type-selection toggle button and registers it with
@@ -434,7 +440,10 @@ public class AddItemsPage {
                     };
                     editField.setOnAction(ev -> { commit.run(); ev.consume(); });
                     editField.focusedProperty().addListener(
-                            (o, ov, nv) -> { if (!nv) { commit.run(); } });
+                            (o, ov, nv) -> { if (!nv) { 
+                                commit.run(); 
+                            } 
+                            });
                 }
             });
 
@@ -452,7 +461,6 @@ public class AddItemsPage {
         addButton.setVisible(true);
         addButton.setManaged(true);
     }
-
 
     private void styleTagButton(ToggleButton button) {
         String normal =

@@ -27,12 +27,14 @@ public class OutfitService {
     private final ClothingRepository clothingRepository;
     private final TagRepository tagRepository;
 
+    /**
+     * Initialize the new repositories.
+     */
     public OutfitService() {
         this.outfitRepository = new OutfitRepository();
         this.clothingRepository = new ClothingRepository();
         this.tagRepository = new TagRepository();
     }
-
 
     /**
      * Creates a new outfit from two clothing item IDs and persists it.
@@ -76,7 +78,6 @@ public class OutfitService {
 
         return outfit;
     }
-
 
     /**
      * Returns all outfits with their clothing items hydrated.
@@ -126,8 +127,6 @@ public class OutfitService {
         return items;
     }
 
-
-
     /**
      * Renames an outfit and persists the change.
      *
@@ -151,8 +150,6 @@ public class OutfitService {
         outfitRepository.deleteOutfit(outfitId);
     }
 
-
-
     /**
      * Records that an outfit was worn: increments {@code wornCount} on both
      * component items and persists the changes.
@@ -165,8 +162,6 @@ public class OutfitService {
             clothingRepository.markAsWorn(id);
         }
     }
-
-
 
     /**
      * Loads the two clothing items for an outfit into its in-memory item set.
@@ -194,7 +189,8 @@ public class OutfitService {
     }
 
     /**
-     *
+     * Returns all items with tags.
+     * 
      * @return all {@link ClothingItem} objects with tags loaded
      */
     public List<ClothingItem> getAllClothingItems() {

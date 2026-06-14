@@ -61,6 +61,10 @@ public class ItemsPage extends BorderPane {
     private final DashboardController dashboardController = new DashboardController();
     private final ViewItemController viewItemController = new ViewItemController();
 
+    /**
+     * Page with clothing items.
+     * @param stage 
+     */
     public ItemsPage(Stage stage) {
         this.stage = stage;
         setStyle("-fx-background-color: " + CREAM + ";");

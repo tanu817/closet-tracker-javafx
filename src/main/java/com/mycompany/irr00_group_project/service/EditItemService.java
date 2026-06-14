@@ -12,7 +12,7 @@ import com.mycompany.irr00_group_project.model.TagCategory;
  * Service for editing existing clothing items.
  *
  * <p>Allows updating the item name and its tag assignments while
- * leaving all other fields (ID, wornCount, favourite, category)
+ * leaving all other fields (ID, wornCount, favorite, category)
  * untouched.</p>
  *
  * @author Arshiya Shaik
@@ -22,6 +22,9 @@ public class EditItemService {
     private final ClothingRepository clothingRepository;
     private final TagRepository tagRepository;
 
+    /**
+     * Editing the tag and clothing repository.
+     */
     public EditItemService() {
         this.clothingRepository = new ClothingRepository();
         this.tagRepository = new TagRepository();

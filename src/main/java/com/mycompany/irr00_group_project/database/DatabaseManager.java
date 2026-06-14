@@ -50,7 +50,6 @@ public class DatabaseManager {
         seedDefaultTagsIfEmpty();
     }
 
-
     /**
      * Creates {@code fileName} and writes {@code header} as the first line.
      * Does nothing when the file already exists.

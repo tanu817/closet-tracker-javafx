@@ -25,6 +25,9 @@ public class ViewItemController {
     private final OutfitService outfitService;
     private final EditItemService editItemService;
 
+    /**
+     * Initializing.
+     */
     public ViewItemController() {
         this.clothingRepository = new ClothingRepository();
         this.recommendationService = new RecommendationService();
@@ -42,9 +45,9 @@ public class ViewItemController {
     }
 
     /**
-     * Toggles the favourite flag on an item and persists the change.
+     * Toggles the favorite flag on an item and persists the change.
      *
-     * @param item the item whose favourite status should be toggled
+     * @param item the item whose favorite status should be toggled
      */
     public void toggleFavourite(ClothingItem item) {
         item.toggleFavorite();

@@ -165,7 +165,6 @@ public class ClothingRepository {
         deleteItemFromTagRelationship(id);
     }
 
-
     /**
      * Increments the {@code wornCount} of the item with the given ID.
      *
@@ -181,7 +180,6 @@ public class ClothingRepository {
         }
         saveItems(items);
     }
-
 
     /**
      * Returns the top 5 favorite items sorted by {@code wornCount} descending.
@@ -221,7 +219,6 @@ public class ClothingRepository {
         return items.size() > 5 ? new ArrayList<>(items.subList(0, 5)) : items;
     }
 
-
     /**
      * Removes all rows in {@code outfit_items.csv} that reference the given
      * clothing item ID.
@@ -250,7 +247,8 @@ public class ClothingRepository {
                 }
             }
         } catch (IOException e) {
-            System.err.println("ClothingRepository.deleteItemFromOutfitRelationship: " + e.getMessage());
+            System.err.println("ClothingRepository.deleteItemFromOutfitRelationship: " 
+                    + e.getMessage());
             return;
         }
         writeRows(OUTFIT_ITEMS_FILE, rows);
@@ -284,7 +282,8 @@ public class ClothingRepository {
                 }
             }
         } catch (IOException e) {
-            System.err.println("ClothingRepository.deleteItemFromTagRelationship: " + e.getMessage());
+            System.err.println("ClothingRepository.deleteItemFromTagRelationship: "
+                    + e.getMessage());
             return;
         }
         writeRows(CLOTHING_TAGS_FILE, rows);

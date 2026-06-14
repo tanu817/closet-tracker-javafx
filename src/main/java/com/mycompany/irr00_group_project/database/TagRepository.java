@@ -35,7 +35,6 @@ public class TagRepository {
     private static final String TAGS_FILE         = "tags.csv";
     private static final String CLOTHING_TAGS_FILE = "clothing_tags.csv";
 
-
     /**
      * Appends a new tag to {@code tags.csv}.
      *

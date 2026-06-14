@@ -31,7 +31,10 @@ public class AddItemService {
 
     private final ClothingRepository clothingRepository;
     private final TagRepository tagRepository;
-
+    
+    /**
+     * Initialize.
+     */
     public AddItemService() {
         this.clothingRepository = new ClothingRepository();
         this.tagRepository = new TagRepository();
@@ -159,7 +162,6 @@ public class AddItemService {
     public java.util.List<Tag> getAllTags() {
         return tagRepository.getAllTags();
     }
-
 
     private void validateName(String name) {
         if (name == null || name.isBlank()) {

@@ -22,7 +22,6 @@ public class DashboardController {
         this.dashboardService = new DashboardService();
     }
 
-
     /**
      * Returns the top 5 most-worn items.
      *
@@ -51,7 +50,6 @@ public class DashboardController {
         return dashboardService.getLeast5Worn();
     }
 
-
     /**
      * Returns aggregate statistics for the overview cards
      * (total items, total wears, favourites count, avg wears per item).
@@ -62,7 +60,6 @@ public class DashboardController {
         return dashboardService.getStats();
     }
 
-
     /**
      * Records that a clothing item was worn and persists the updated count.
      *
@@ -71,7 +68,6 @@ public class DashboardController {
     public void markItemWorn(int clothingId) {
         dashboardService.markItemWorn(clothingId);
     }
-
 
     /**
      * Returns all clothing items with their tags hydrated.

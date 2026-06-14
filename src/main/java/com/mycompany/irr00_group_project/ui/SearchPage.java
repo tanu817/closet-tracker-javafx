@@ -81,6 +81,10 @@ public class SearchPage extends BorderPane {
     private final Font smallFont = Font.loadFont(
             getClass().getResourceAsStream("/fonts/MuktaVaani-Regular.ttf"), 11);
 
+    /**
+     * Initialize search page.
+     * @param stage 
+     */
     public SearchPage(Stage stage) {
         this.stage = stage;
         setStyle("-fx-background-color: " + CREAM + ";");
@@ -173,7 +177,6 @@ public class SearchPage extends BorderPane {
 
         return new VBox(15, searchRow);
     }
-
 
     private VBox createFiltersSection() {
         VBox filters = new VBox(15);
@@ -310,7 +313,6 @@ public class SearchPage extends BorderPane {
         return row;
     }
 
-
     private void addTagChip(String tagName, int tagId) {
         Label chip = new Label(tagName);
         chip.setFont(normalBoldFont);
@@ -344,7 +346,6 @@ public class SearchPage extends BorderPane {
         searchField.getChildren().removeIf(
                 node -> Integer.valueOf(CATEGORY_CHIP_SENTINEL).equals(node.getUserData()));
     }
-
 
     private void showResults(List<ClothingItem> items) {
         resultsBox.getChildren().clear();
@@ -593,7 +594,6 @@ public class SearchPage extends BorderPane {
         }
     }
 
-    
     private void showDialog(Alert.AlertType type, String title, String message) {
         Alert alert = new Alert(type);
         alert.setTitle(title);

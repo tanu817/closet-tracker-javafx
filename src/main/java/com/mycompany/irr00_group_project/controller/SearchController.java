@@ -23,7 +23,6 @@ public class SearchController {
         this.searchService = new SearchService();
     }
 
-
     /**
      * Returns the display names of all known tags.
      * Used to pre-populate the filter UI.

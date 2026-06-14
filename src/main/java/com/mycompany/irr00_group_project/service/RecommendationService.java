@@ -13,7 +13,7 @@ import com.mycompany.irr00_group_project.model.ClothingItem;
  *
  * <p>Matching logic: if the selected item is a TOP, return all BOTTOMs;
  * if it is a BOTTOM, return all TOPs. All other categories return an
- * empty list (accessories, one-piece, headwear, footwear are not matched).</p>
+ * empty list (accessories, one-piece, head wear, footwear are not matched).</p>
  *
  * @author Arshiya Shaik
  */
@@ -22,6 +22,9 @@ public class RecommendationService {
     private final ClothingRepository clothingRepository;
     private final TagRepository tagRepository;
 
+    /**
+     * Create clothing item.
+     */
     public RecommendationService() {
         this.clothingRepository = new ClothingRepository();
         this.tagRepository = new TagRepository();
