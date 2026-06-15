@@ -21,8 +21,8 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 /**
- * Main page / dashboard of the app.
- * Dashboard cards are loaded from real CSV data via {@link DashboardController}.
+ * Main page / dashboard of the app. Dashboard cards are loaded from real CSV
+ * data via {@link DashboardController}.
  *
  * @author Bhavini Kopparam Ajay
  */
@@ -127,42 +127,33 @@ public class MainPage {
 
         root.setCenter(cardsRow);
         root.setMargin(cardsRow, new Insets(20, 0, 0, 0));
-        
-        
+
         // PROGRESS BAR
-int totalItems = dashboardController.getTotalItems();
-int wornItems  = dashboardController.getItemsWornThisMonth();
-double progress = dashboardController.getWardrobeUsageProgress();
-int percentage  = (int) (progress * 100);
+        int totalItems = dashboardController.getTotalItems();
+        int wornItems = dashboardController.getItemsWornThisMonth();
+        double progress = dashboardController.getWardrobeUsageProgress();
+        int percentage = (int) (progress * 100);
 
-Label progressTitle = new Label("Wardrobe Usage This Month");
-progressTitle.setFont(cardTitleFont);
+        Label progressTitle = new Label("Wardrobe Usage This Month");
+        progressTitle.setFont(cardTitleFont);
 
-Label progressStats = new Label(wornItems + " / " + totalItems + " items  —  " + percentage + "%");
-progressStats.setFont(buttonFont);
+        Label progressStats = new Label(wornItems + "/" + totalItems + " items  —  " + percentage + "%");
+        progressStats.setFont(buttonFont);
 
-javafx.scene.control.ProgressBar progressBar = new javafx.scene.control.ProgressBar(progress);
-progressBar.setPrefWidth(860);
-progressBar.setPrefHeight(24);
-progressBar.setStyle(
-        "-fx-accent: #565448;"
-        + "-fx-background-color: #D8CFBC;"
-        + "-fx-background-radius: 10;"
-        + "-fx-border-radius: 10;");
+        javafx.scene.control.ProgressBar progressBar = new javafx.scene.control.ProgressBar(progress);
+        progressBar.setPrefWidth(860);
+        progressBar.setPrefHeight(10);
+        progressBar.setStyle(
+                "-fx-accent: #565448;"
+                + "-fx-background-color: #D8CFBC;"
+                + "-fx-background-radius: 10;"
+                + "-fx-border-radius: 10;");
 
-VBox progressSection = new VBox(8);
-progressSection.getChildren().addAll(progressTitle, progressBar, progressStats);
+        VBox progressSection = new VBox(10);
+        progressSection.getChildren().addAll(progressTitle, progressBar, progressStats);
+        HBox.setHgrow(progressSection, javafx.scene.layout.Priority.ALWAYS);
 
-progressSection.setAlignment(Pos.CENTER); 
-progressSection.setPadding(new Insets(20, 0, 0, 0)); // right padding to align with button (10, 60, 0, 0)
-
-VBox centerSection = new VBox(15);
-centerSection.getChildren().addAll(cardsRow, progressSection);
-centerSection.setAlignment(Pos.CENTER);
-root.setCenter(centerSection);
-root.setMargin(centerSection, new Insets(20, 0, 0, 0));
-
-
+        progressSection.setAlignment(Pos.CENTER);
 
         // ADD ITEM OVERLAY
         AddItemsPage addPage = new AddItemsPage();
@@ -183,10 +174,6 @@ root.setMargin(centerSection, new Insets(20, 0, 0, 0));
         overlay.setMaxHeight(560);
         StackPane.setAlignment(overlay, Pos.CENTER);
 
-        
-        
-        
-        
         // PLUS BUTTON
         Image plusImg = new Image(
                 getClass().getResourceAsStream("/icons/plus.png"));
@@ -206,9 +193,10 @@ root.setMargin(centerSection, new Insets(20, 0, 0, 0));
             overlay.setVisible(true);
         });
 
-        HBox bottomBar = new HBox();
-        bottomBar.setAlignment(Pos.BOTTOM_RIGHT);
-        bottomBar.getChildren().add(addButton);
+        StackPane bottomBar = new StackPane();
+        StackPane.setAlignment(progressSection, Pos.CENTER);
+        StackPane.setAlignment(addButton, Pos.CENTER_RIGHT);
+        bottomBar.getChildren().addAll(progressSection, addButton);
 
         root.setBottom(bottomBar);
         BorderPane.setMargin(bottomBar, new Insets(20));
@@ -224,20 +212,18 @@ root.setMargin(centerSection, new Insets(20, 0, 0, 0));
         stage.setScene(scene);
         stage.show();
     }
-    
-    
 
     /**
      * Builds a dashboard card showing up to 5 clothing items.
      *
-     * @param titleText     card heading
-     * @param iconPath      resource path for the card icon
-     * @param items         list of items to display (up to 5)
+     * @param titleText card heading
+     * @param iconPath resource path for the card icon
+     * @param items list of items to display (up to 5)
      * @param cardTitleFont font for the card heading
-     * @param itemFont      font for item label rows
-     * @param iconW         icon width in pixels
-     * @param iconH         icon height in pixels
-     * @param numbered      whether to prefix each row with a rank number
+     * @param itemFont font for item label rows
+     * @param iconW icon width in pixels
+     * @param iconH icon height in pixels
+     * @param numbered whether to prefix each row with a rank number
      * @return styled card VBox
      */
     private VBox buildCard(
