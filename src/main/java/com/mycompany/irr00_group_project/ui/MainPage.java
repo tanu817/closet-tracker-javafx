@@ -151,11 +151,10 @@ progressBar.setStyle(
         + "-fx-border-radius: 10;");
 
 VBox progressSection = new VBox(8);
-progressSection.setPadding(new Insets(10, 0, 10, 0));
 progressSection.getChildren().addAll(progressTitle, progressBar, progressStats);
 
-progressSection.setAlignment(Pos.CENTER_LEFT);
-progressSection.setPadding(new Insets(10, 60, 0, 0)); // right padding to align with button
+progressSection.setAlignment(Pos.CENTER); 
+progressSection.setPadding(new Insets(20, 0, 0, 0)); // right padding to align with button (10, 60, 0, 0)
 
 VBox centerSection = new VBox(15);
 centerSection.getChildren().addAll(cardsRow, progressSection);
