@@ -14,6 +14,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -30,9 +31,9 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 /**
- * Items page: shows all clothing items loaded from CSV storage.
- * Supports toggling favourites, marking items as worn, viewing
- * matching items, creating outfits from matches, and removing items.
+ * Items page: shows all clothing items loaded from CSV storage. Supports
+ * toggling favourites, marking items as worn, viewing matching items, creating
+ * outfits from matches, and removing items.
  *
  * @author Bhavini Kopparam Ajay
  * @author Arshiya Shaik
@@ -40,8 +41,8 @@ import javafx.stage.Stage;
 public class ItemsPage extends BorderPane {
 
     private static final String LIGHT_GREEN = "#D8CFBC";
-    private static final String DARK_GREEN  = "#565448";
-    private static final String CREAM       = "#FFFAF4";
+    private static final String DARK_GREEN = "#565448";
+    private static final String CREAM = "#FFFAF4";
 
     private FlowPane itemsGrid;
     private final Stage stage;
@@ -70,10 +71,9 @@ public class ItemsPage extends BorderPane {
         setCenter(root);
     }
 
-
     private ScrollPane createItemsSection() {
         itemsGrid = new FlowPane();
-        itemsGrid.setAlignment(Pos.TOP_LEFT);
+        itemsGrid.setAlignment(Pos.TOP_CENTER);
         itemsGrid.setHgap(20);
         itemsGrid.setVgap(20);
         itemsGrid.setPadding(new Insets(10));
@@ -102,17 +102,16 @@ public class ItemsPage extends BorderPane {
         for (ClothingItem item : items) {
             // Each item gets a wrapper VBox: the card + a collapsible matches panel
             VBox wrapper = new VBox(8);
-            wrapper.setPrefWidth(480);
+            wrapper.setPrefWidth(450);
             VBox card = createItemCard(item, wrapper);
             wrapper.getChildren().add(card);
             itemsGrid.getChildren().add(wrapper);
         }
     }
 
-
     /**
-     * Builds one item card. The {@code wrapper} is passed in so the
-     * "Show Matches" button can append/remove the matches panel into it.
+     * Builds one item card. The {@code wrapper} is passed in so the "Show
+     * Matches" button can append/remove the matches panel into it.
      */
     private VBox createItemCard(ClothingItem item, VBox wrapper) {
         VBox card = new VBox(12);
@@ -122,6 +121,8 @@ public class ItemsPage extends BorderPane {
                 + "-fx-border-color: #EAE4D8;"
                 + "-fx-background-radius: 10;"
                 + "-fx-border-radius: 10;");
+        card.setMinWidth(480);
+        card.setPrefWidth(480);
 
         // TOP ROW: name + favourite heart
         HBox topRow = new HBox();
@@ -134,18 +135,33 @@ public class ItemsPage extends BorderPane {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        Image heartImg = new Image(getClass().getResourceAsStream("/icons/heart.png"));
-        ImageView heart = new ImageView(heartImg);
+        Image emptyHeartImg = new Image(
+                getClass().getResourceAsStream("/icons/heart.png")
+        );
+
+        Image filledHeartImg = new Image(
+                getClass().getResourceAsStream("/icons/heartFilled.png")
+        );
+
+        ImageView heart = new ImageView(
+                item.isFavorite() ? filledHeartImg : emptyHeartImg
+        );
+
         heart.setFitWidth(26);
         heart.setFitHeight(26);
-        heart.setOpacity(item.isFavorite() ? 1.0 : 0.3);
 
         Button heartBtn = new Button();
         heartBtn.setGraphic(heart);
         heartBtn.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
         heartBtn.setOnAction(e -> {
+
             viewItemController.toggleFavourite(item);
-            heart.setOpacity(item.isFavorite() ? 1.0 : 0.3);
+
+            if (item.isFavorite()) {
+                heart.setImage(filledHeartImg);
+            } else {
+                heart.setImage(emptyHeartImg);
+            }
         });
 
         topRow.getChildren().addAll(nameLabel, spacer, heartBtn);
@@ -223,17 +239,33 @@ public class ItemsPage extends BorderPane {
 
         HBox actionRow = new HBox(10);
         actionRow.setAlignment(Pos.CENTER_LEFT);
-        actionRow.getChildren().addAll(wornBtn, matchBtn, editBtn, deleteBtn, wornLabel);
 
-        card.getChildren().addAll(topRow, catLabel, tagsPane, actionRow);
+        actionRow.getChildren().addAll(
+                wornBtn,
+                matchBtn,
+                editBtn,
+                deleteBtn
+        );
+
+        VBox bottomSection = new VBox(8);
+        bottomSection.getChildren().addAll(
+                actionRow,
+                wornLabel
+        );
+
+        card.getChildren().addAll(
+                topRow,
+                catLabel,
+                tagsPane,
+                bottomSection
+        );
         return card;
     }
 
-
     /**
-     * Opens a modal dialog allowing the user to rename the item and
-     * add/remove tags. On confirmation, persists changes and refreshes
-     * the card in-place (no full reload needed for the card itself).
+     * Opens a modal dialog allowing the user to rename the item and add/remove
+     * tags. On confirmation, persists changes and refreshes the card in-place
+     * (no full reload needed for the card itself).
      */
     private void openEditDialog(ClothingItem item, Label nameLabel, FlowPane tagsPane) {
         Dialog<ButtonType> dialog = new Dialog<>();
@@ -249,7 +281,7 @@ public class ItemsPage extends BorderPane {
         nameField.setPrefWidth(340);
 
         // ── Current tags ──
-        Label currentTagsLabel = new Label("Current tags (click ✕ to remove):");
+        Label currentTagsLabel = new Label("Current tags (click x to remove):");
         currentTagsLabel.setFont(normalBoldFont);
 
         FlowPane currentTagsPane = new FlowPane();
@@ -263,11 +295,25 @@ public class ItemsPage extends BorderPane {
         }
 
         // Helper: rebuilds the chips from selectedTagNames
+
         Runnable refreshChips = () -> {
             currentTagsPane.getChildren().clear();
             for (String tn : new ArrayList<>(selectedTagNames)) {
-                Button chip = new Button(tn + "  ✕");
+                
+                Image crossImg = new Image(
+                        getClass().getResourceAsStream("/icons/cross.png")
+                );
+
+                ImageView crossIcon = new ImageView(crossImg);
+
+                crossIcon.setFitWidth(12);
+                crossIcon.setFitHeight(12);
+                
+                Button chip = new Button(tn);
                 chip.setFont(smallFont);
+                chip.setGraphic(crossIcon);
+                chip.setContentDisplay(ContentDisplay.RIGHT);
+                chip.setGraphicTextGap(6);
                 chip.setStyle(
                         "-fx-background-color: " + DARK_GREEN + ";"
                         + "-fx-text-fill: white;"
@@ -373,7 +419,6 @@ public class ItemsPage extends BorderPane {
         });
     }
 
-
     /**
      * Appends or removes the matches panel from the wrapper depending on
      * whether it is currently visible.
@@ -392,8 +437,8 @@ public class ItemsPage extends BorderPane {
     }
 
     /**
-     * Builds the matches panel for the given item.
-     * Each suggested item gets a small card with an "Add to Outfit" button.
+     * Builds the matches panel for the given item. Each suggested item gets a
+     * small card with an "Add to Outfit" button.
      */
     private VBox buildMatchesPanel(ClothingItem selectedItem) {
         VBox panel = new VBox(10);
@@ -442,8 +487,8 @@ public class ItemsPage extends BorderPane {
                     + "-fx-text-fill: white;"
                     + "-fx-background-radius: 8;"
                     + "-fx-padding: 6 14 6 14;");
-            addToOutfitBtn.setOnAction(e ->
-                    handleAddToOutfit(selectedItem, match, addToOutfitBtn));
+            addToOutfitBtn.setOnAction(e
+                    -> handleAddToOutfit(selectedItem, match, addToOutfitBtn));
 
             matchRow.getChildren().addAll(info, addToOutfitBtn);
             panel.getChildren().add(matchRow);
@@ -457,8 +502,8 @@ public class ItemsPage extends BorderPane {
      * and shows a brief confirmation label.
      */
     private void handleAddToOutfit(ClothingItem selectedItem,
-                                   ClothingItem matchItem,
-                                   Button addToOutfitBtn) {
+            ClothingItem matchItem,
+            Button addToOutfitBtn) {
         try {
             Outfit created = viewItemController.createOutfitFromMatch(selectedItem, matchItem);
             addToOutfitBtn.setDisable(true);
@@ -489,7 +534,6 @@ public class ItemsPage extends BorderPane {
         }
     }
 
-
     private VBox createTopSection() {
         Image backImg = new Image(getClass().getResourceAsStream("/icons/arrow.png"));
         ImageView backIcon = new ImageView(backImg);
@@ -508,9 +552,9 @@ public class ItemsPage extends BorderPane {
         Label title = new Label("All Items");
         title.setFont(titleFont);
 
-        Region leftSpacer  = new Region();
+        Region leftSpacer = new Region();
         Region rightSpacer = new Region();
-        HBox.setHgrow(leftSpacer,  Priority.ALWAYS);
+        HBox.setHgrow(leftSpacer, Priority.ALWAYS);
         HBox.setHgrow(rightSpacer, Priority.ALWAYS);
 
         HBox topRow = new HBox();
@@ -521,7 +565,6 @@ public class ItemsPage extends BorderPane {
         topSection.getChildren().add(topRow);
         return topSection;
     }
-
 
     private Label createTagChip(String text) {
         Label chip = new Label(text);

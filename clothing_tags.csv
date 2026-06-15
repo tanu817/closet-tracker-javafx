@@ -2,7 +2,6 @@ clothingId,tagId
 4,17
 6,10
 6,19
-<<<<<<< HEAD
 10,2
 8,22
 9,24
@@ -30,7 +29,6 @@ clothingId,tagId
 38,11
 38,15
 39,9
-=======
 7,9
 7,13
 8,12
@@ -43,4 +41,5 @@ clothingId,tagId
 11,17
 3,18
 3,12
->>>>>>> origin/controller
+3,23
+12,6
