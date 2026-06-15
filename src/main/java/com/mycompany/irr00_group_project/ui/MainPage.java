@@ -127,6 +127,43 @@ public class MainPage {
 
         root.setCenter(cardsRow);
         root.setMargin(cardsRow, new Insets(20, 0, 0, 0));
+        
+        
+        // PROGRESS BAR
+int totalItems = dashboardController.getTotalItems();
+int wornItems  = dashboardController.getItemsWornThisMonth();
+double progress = dashboardController.getWardrobeUsageProgress();
+int percentage  = (int) (progress * 100);
+
+Label progressTitle = new Label("Wardrobe Usage This Month");
+progressTitle.setFont(cardTitleFont);
+
+Label progressStats = new Label(wornItems + " / " + totalItems + " items  —  " + percentage + "%");
+progressStats.setFont(buttonFont);
+
+javafx.scene.control.ProgressBar progressBar = new javafx.scene.control.ProgressBar(progress);
+progressBar.setPrefWidth(860);
+progressBar.setPrefHeight(24);
+progressBar.setStyle(
+        "-fx-accent: #565448;"
+        + "-fx-background-color: #D8CFBC;"
+        + "-fx-background-radius: 10;"
+        + "-fx-border-radius: 10;");
+
+VBox progressSection = new VBox(8);
+progressSection.setPadding(new Insets(10, 0, 10, 0));
+progressSection.getChildren().addAll(progressTitle, progressBar, progressStats);
+
+progressSection.setAlignment(Pos.CENTER_LEFT);
+progressSection.setPadding(new Insets(10, 60, 0, 0)); // right padding to align with button
+
+VBox centerSection = new VBox(15);
+centerSection.getChildren().addAll(cardsRow, progressSection);
+centerSection.setAlignment(Pos.CENTER);
+root.setCenter(centerSection);
+root.setMargin(centerSection, new Insets(20, 0, 0, 0));
+
+
 
         // ADD ITEM OVERLAY
         AddItemsPage addPage = new AddItemsPage();
@@ -147,6 +184,10 @@ public class MainPage {
         overlay.setMaxHeight(560);
         StackPane.setAlignment(overlay, Pos.CENTER);
 
+        
+        
+        
+        
         // PLUS BUTTON
         Image plusImg = new Image(
                 getClass().getResourceAsStream("/icons/plus.png"));
@@ -184,6 +225,8 @@ public class MainPage {
         stage.setScene(scene);
         stage.show();
     }
+    
+    
 
     /**
      * Builds a dashboard card showing up to 5 clothing items.

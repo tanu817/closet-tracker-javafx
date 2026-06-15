@@ -4,6 +4,6 @@ id,name,isFavorite,category,wornCount
 6,prom dress,true,ONE_PIECE,1
 7,green t-shirt,false,TOP,11
 8,Satin brown shirt,true,TOP,2
-10,Satin red pants,false,BOTTOM,0
+10,Satin red pants,false,BOTTOM,1
 11,blue jeans,false,BOTTOM,1
 12,sweatshirt,false,TOP,0

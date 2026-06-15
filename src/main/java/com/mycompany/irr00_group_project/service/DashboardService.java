@@ -112,6 +112,22 @@ public class DashboardService {
     }
 
     /**
+     * Returns the number of items worn at least once in the current month.
+     *
+     * @return count of items worn this month
+     */
+    public int getItemsWornThisMonth() {
+        List<ClothingItem> all = clothingRepository.getAllItems();
+        int count = 0;
+        for (ClothingItem item : all) {
+            if (item.getWornCount() > 0) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
      * Marks an item as worn, incrementing its {@code wornCount} by 1 and
      * persisting the change.
      *
