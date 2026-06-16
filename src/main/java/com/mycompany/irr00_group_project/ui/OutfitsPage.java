@@ -1,15 +1,14 @@
 package com.mycompany.irr00_group_project.ui;
 
+import java.util.List;
+import java.util.Optional;
+
 import com.mycompany.irr00_group_project.controller.OutfitController;
 import com.mycompany.irr00_group_project.model.ClothingItem;
 import com.mycompany.irr00_group_project.model.Outfit;
 
-import java.util.List;
-import java.util.Optional;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -18,7 +17,6 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -35,8 +33,8 @@ import javafx.stage.Stage;
 public class OutfitsPage extends BorderPane {
 
     private static final String LIGHT_GREEN = "#D8CFBC";
-    private static final String DARK_GREEN  = "#565448";
-    private static final String CREAM       = "#FFFAF4";
+    private static final String DARK_GREEN = "#565448";
+    private static final String CREAM = "#FFFAF4";
 
     private final Stage stage;
 
@@ -64,7 +62,6 @@ public class OutfitsPage extends BorderPane {
         setCenter(root);
     }
 
-
     private VBox createTopSection() {
         Image backImg = new Image(
                 getClass().getResourceAsStream("/icons/arrow.png"));
@@ -86,9 +83,9 @@ public class OutfitsPage extends BorderPane {
         Label title = new Label("My Outfits");
         title.setFont(titleFont);
 
-        Region leftSpacer  = new Region();
+        Region leftSpacer = new Region();
         Region rightSpacer = new Region();
-        HBox.setHgrow(leftSpacer,  Priority.ALWAYS);
+        HBox.setHgrow(leftSpacer, Priority.ALWAYS);
         HBox.setHgrow(rightSpacer, Priority.ALWAYS);
 
         HBox topRow = new HBox();
@@ -99,7 +96,6 @@ public class OutfitsPage extends BorderPane {
         topSection.getChildren().add(topRow);
         return topSection;
     }
-
 
     private ScrollPane createOutfitsSection() {
         outfitsRoot = new VBox(25);
@@ -114,7 +110,7 @@ public class OutfitsPage extends BorderPane {
     }
 
     private void refreshOutfits() {
-        VBox leftColumn  = new VBox(25);
+        VBox leftColumn = new VBox(25);
         VBox rightColumn = new VBox(25);
 
         List<Outfit> outfits = outfitController.getAllOutfits();
@@ -151,11 +147,10 @@ public class OutfitsPage extends BorderPane {
         outfitsRoot.getChildren().setAll(outfitsRow);
     }
 
-
     private VBox createOutfitCard(int outfitId,
-                                  String outfitName,
-                                  ClothingItem item1,
-                                  ClothingItem item2) {
+            String outfitName,
+            ClothingItem item1,
+            ClothingItem item2) {
         VBox card = new VBox(20);
         card.setPadding(new Insets(25));
         card.setPrefSize(580, 260);
@@ -275,7 +270,6 @@ public class OutfitsPage extends BorderPane {
 
         return card;
     }
-
 
     private void showInfo(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

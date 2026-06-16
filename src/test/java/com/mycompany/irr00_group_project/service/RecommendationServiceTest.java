@@ -1,16 +1,17 @@
 package com.mycompany.irr00_group_project.service;
 
-import com.mycompany.irr00_group_project.CsvTestBase;
-import com.mycompany.irr00_group_project.model.ClothingCategory;
-import com.mycompany.irr00_group_project.model.ClothingItem;
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import com.mycompany.irr00_group_project.CsvTestBase;
+import com.mycompany.irr00_group_project.model.ClothingCategory;
+import com.mycompany.irr00_group_project.model.ClothingItem;
 
 /**
  * Unit tests for {@link RecommendationService}.

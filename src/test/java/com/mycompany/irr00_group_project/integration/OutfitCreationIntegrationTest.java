@@ -1,17 +1,18 @@
 package com.mycompany.irr00_group_project.integration;
 
+import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
 import com.mycompany.irr00_group_project.CsvTestBase;
 import com.mycompany.irr00_group_project.model.ClothingCategory;
 import com.mycompany.irr00_group_project.model.ClothingItem;
 import com.mycompany.irr00_group_project.model.Outfit;
 import com.mycompany.irr00_group_project.service.AddItemService;
 import com.mycompany.irr00_group_project.service.OutfitService;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import java.util.Collections;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Integration tests for Outfit Creation
@@ -28,7 +29,7 @@ public class OutfitCreationIntegrationTest extends CsvTestBase {
                 Collections.emptyList());
         ClothingItem bot = addService.addItem("Jeans", ClothingCategory.BOTTOM,
                 Collections.emptyList());
-        
+
         OutfitService outfitService = new OutfitService();
         Outfit outfit = outfitService.createOutfit("Casual", top.getId(), bot.getId());
         assertEquals(2, outfitService.getItemsForOutfit(outfit.getId()).size(),
@@ -43,7 +44,7 @@ public class OutfitCreationIntegrationTest extends CsvTestBase {
                 Collections.emptyList());
         ClothingItem bot = addService.addItem("Trousers", ClothingCategory.BOTTOM,
                 Collections.emptyList());
-        
+
         OutfitService outfitService = new OutfitService();
         Outfit outfit = outfitService.createOutfit("University Outfit", top.getId(), bot.getId());
         outfitService.wearOutfit(outfit.getId());
@@ -61,7 +62,7 @@ public class OutfitCreationIntegrationTest extends CsvTestBase {
                 Collections.emptyList());
         ClothingItem bot = addService.addItem("Pants", ClothingCategory.BOTTOM,
                 Collections.emptyList());
-        
+
         OutfitService outfitService = new OutfitService();
         Outfit outfit = outfitService.createOutfit("Sport Outfit", top.getId(), bot.getId());
         int id = outfit.getId();
@@ -79,7 +80,7 @@ public class OutfitCreationIntegrationTest extends CsvTestBase {
                 Collections.emptyList());
         ClothingItem bot = addService.addItem("Jeans", ClothingCategory.BOTTOM,
                 Collections.emptyList());
-        
+
         OutfitService outfitService = new OutfitService();
         Outfit outfit = outfitService.createOutfit(null, top.getId(), bot.getId());
         String expectedName = top.getName() + " + " + bot.getName();

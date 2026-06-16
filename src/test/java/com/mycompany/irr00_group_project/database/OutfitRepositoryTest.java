@@ -1,16 +1,17 @@
 package com.mycompany.irr00_group_project.database;
 
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
 import com.mycompany.irr00_group_project.CsvTestBase;
 import com.mycompany.irr00_group_project.model.ClothingCategory;
 import com.mycompany.irr00_group_project.model.ClothingItem;
 import com.mycompany.irr00_group_project.model.Outfit;
-
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit tests for {@link OutfitRepository}

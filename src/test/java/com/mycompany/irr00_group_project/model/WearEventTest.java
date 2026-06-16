@@ -1,9 +1,11 @@
 package com.mycompany.irr00_group_project.model;
 
+import java.time.LocalDate;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import java.time.LocalDate;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit tests for {@link WearEvent}.

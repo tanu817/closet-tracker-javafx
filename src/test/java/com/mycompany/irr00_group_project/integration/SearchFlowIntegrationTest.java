@@ -1,18 +1,20 @@
 package com.mycompany.irr00_group_project.integration;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
 import com.mycompany.irr00_group_project.CsvTestBase;
 import com.mycompany.irr00_group_project.model.ClothingCategory;
 import com.mycompany.irr00_group_project.model.ClothingItem;
 import com.mycompany.irr00_group_project.service.AddItemService;
 import com.mycompany.irr00_group_project.service.SearchService;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Integration tests for the Search Outfit flow

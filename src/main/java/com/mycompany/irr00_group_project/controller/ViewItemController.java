@@ -13,8 +13,9 @@ import com.mycompany.irr00_group_project.service.RecommendationService;
 /**
  * Controller for the item detail / view-items actions.
  *
- * <p>Handles: marking an item as worn, toggling favourite status,
- * fetching matching items, and creating outfits from a matched pair.</p>
+ * <p>
+ * Handles: marking an item as worn, toggling favourite status, fetching
+ * matching items, and creating outfits from a matched pair.</p>
  *
  * @author Arshiya Shaik
  */
@@ -52,8 +53,8 @@ public class ViewItemController {
     }
 
     /**
-     * Deletes a clothing item by ID, removes all its CSV relationships,
-     * and automatically deletes any outfits that contained this item.
+     * Deletes a clothing item by ID, removes all its CSV relationships, and
+     * automatically deletes any outfits that contained this item.
      *
      * @param itemId the ID of the item to delete
      */
@@ -73,10 +74,11 @@ public class ViewItemController {
     }
 
     /**
-     * Updates a clothing item's name and tag set, persisting all changes to CSV.
+     * Updates a clothing item's name and tag set, persisting all changes to
+     * CSV.
      *
-     * @param item     the item to edit (mutated in-place)
-     * @param newName  the new display name
+     * @param item the item to edit (mutated in-place)
+     * @param newName the new display name
      * @param tagNames the desired set of tag names
      */
     public void editItem(ClothingItem item, String newName, List<String> tagNames) {
@@ -95,10 +97,11 @@ public class ViewItemController {
     /**
      * Creates an outfit from two clothing items and persists it to CSV.
      *
-     * <p>The outfit name is auto-generated as "item1Name + item2Name".</p>
+     * <p>
+     * The outfit name is auto-generated as "item1Name + item2Name".</p>
      *
-     * @param selectedItem  the item the user is currently viewing
-     * @param matchingItem  the suggested matching item
+     * @param selectedItem the item the user is currently viewing
+     * @param matchingItem the suggested matching item
      * @return the newly created {@link Outfit}
      */
     public Outfit createOutfitFromMatch(ClothingItem selectedItem, ClothingItem matchingItem) {

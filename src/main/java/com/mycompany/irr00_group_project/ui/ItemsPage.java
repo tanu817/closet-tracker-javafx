@@ -1,13 +1,13 @@
 package com.mycompany.irr00_group_project.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mycompany.irr00_group_project.controller.DashboardController;
 import com.mycompany.irr00_group_project.controller.ViewItemController;
 import com.mycompany.irr00_group_project.model.ClothingItem;
 import com.mycompany.irr00_group_project.model.Outfit;
 import com.mycompany.irr00_group_project.model.Tag;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -295,7 +295,6 @@ public class ItemsPage extends BorderPane {
         }
 
         // Helper: rebuilds the chips from selectedTagNames
-
         Runnable refreshChips = () -> {
             currentTagsPane.getChildren().clear();
             for (String tn : new ArrayList<>(selectedTagNames)) {

@@ -1,19 +1,21 @@
 package com.mycompany.irr00_group_project.database;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.io.IOException;
-import java.io.FileWriter;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mycompany.irr00_group_project.model.Outfit;
 
 /**
  * Repository for {@link Outfit} objects persisted in {@code outfits.csv} and
  * the outfit–item relationship table {@code outfit_items.csv}.
  *
- * <p>This class is purely I/O: it reads and writes CSV files and performs
- * no business logic.</p>
+ * <p>
+ * This class is purely I/O: it reads and writes CSV files and performs no
+ * business logic.</p>
  *
  * <h2>CSV schemas</h2>
  * <pre>
@@ -26,9 +28,8 @@ import com.mycompany.irr00_group_project.model.Outfit;
  */
 public class OutfitRepository {
 
-    private static final String OUTFITS_FILE      = "outfits.csv";
+    private static final String OUTFITS_FILE = "outfits.csv";
     private static final String OUTFIT_ITEMS_FILE = "outfit_items.csv";
-
 
     /**
      * Appends a new outfit to {@code outfits.csv}.
@@ -60,8 +61,8 @@ public class OutfitRepository {
     }
 
     /**
-     * Returns all outfits stored in {@code outfits.csv}.
-     * Items are NOT loaded here; use {@link OutfitService} to hydrate them.
+     * Returns all outfits stored in {@code outfits.csv}. Items are NOT loaded
+     * here; use {@link OutfitService} to hydrate them.
      *
      * @return list of all {@link Outfit} objects; empty list on error
      */
@@ -79,8 +80,8 @@ public class OutfitRepository {
                 if (comma < 0) {
                     continue;
                 }
-                int id       = Integer.parseInt(line.substring(0, comma).trim());
-                String name  = unescapeCsv(line.substring(comma + 1).trim());
+                int id = Integer.parseInt(line.substring(0, comma).trim());
+                String name = unescapeCsv(line.substring(comma + 1).trim());
                 outfits.add(new Outfit(id, name));
             }
         } catch (IOException e) {
@@ -134,12 +135,11 @@ public class OutfitRepository {
         deleteOutfitItems(id);
     }
 
-
     /**
-     * Persists the two-item composition of an outfit.
-     * Schema: outfitId,clothingId1,clothingId2
+     * Persists the two-item composition of an outfit. Schema:
+     * outfitId,clothingId1,clothingId2
      *
-     * @param outfitId    the ID of the outfit
+     * @param outfitId the ID of the outfit
      * @param clothingId1 the ID of the first clothing item (e.g. top)
      * @param clothingId2 the ID of the second clothing item (e.g. bottom)
      */
@@ -184,8 +184,8 @@ public class OutfitRepository {
     }
 
     /**
-     * Returns {@code true} if an outfit composed of exactly these two
-     * clothing items already exists (order-independent).
+     * Returns {@code true} if an outfit composed of exactly these two clothing
+     * items already exists (order-independent).
      *
      * @param clothingId1 ID of the first item
      * @param clothingId2 ID of the second item
@@ -246,7 +246,6 @@ public class OutfitRepository {
         }
         return outfitIds;
     }
-
 
     /**
      * Removes all rows in {@code outfit_items.csv} for the given outfit ID.

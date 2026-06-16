@@ -1,12 +1,12 @@
 package com.mycompany.irr00_group_project.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mycompany.irr00_group_project.controller.AddItemController;
 import com.mycompany.irr00_group_project.model.ClothingCategory;
 import com.mycompany.irr00_group_project.model.Tag;
 import com.mycompany.irr00_group_project.model.TagCategory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -54,7 +54,6 @@ public class AddItemsPage {
     private TextField itemName;
 
     private final AddItemController addItemController = new AddItemController();
-
 
     private final Font normalBoldFont = Font.loadFont(
             getClass().getResourceAsStream("/fonts/MuktaVaani-SemiBold.ttf"), 14);
@@ -131,9 +130,9 @@ public class AddItemsPage {
 
         // TYPE ROW (clothing category — single select)
         typeGroup = new ToggleGroup();
-        topBtn       = makeTypeButton("Top",       typeGroup);
-        bottomBtn    = makeTypeButton("Bottom",    typeGroup);
-        onePieceBtn  = makeTypeButton("One Piece", typeGroup);
+        topBtn = makeTypeButton("Top", typeGroup);
+        bottomBtn = makeTypeButton("Bottom", typeGroup);
+        onePieceBtn = makeTypeButton("One Piece", typeGroup);
         accessoryBtn = makeTypeButton("Accessory", typeGroup);
 
         HBox typeRow = new HBox(20);
@@ -144,17 +143,17 @@ public class AddItemsPage {
         typeRow.getChildren().addAll(typeLabel, topBtn, bottomBtn, onePieceBtn, accessoryBtn);
 
         // TAG CATEGORY ROWS — pre-populate from DB, then allow custom additions
-        colorPane   = createTagSection(TagCategory.COLOR);
+        colorPane = createTagSection(TagCategory.COLOR);
         weatherPane = createTagSection(TagCategory.WEATHER);
-        eventPane   = createTagSection(TagCategory.EVENT);
+        eventPane = createTagSection(TagCategory.EVENT);
         detailsPane = createTagSection(TagCategory.DETAIL);
-        otherPane   = createTagSection(TagCategory.OTHER);
+        otherPane = createTagSection(TagCategory.OTHER);
 
-        HBox colourRow  = makeTagRow("Colour",  colorPane);
+        HBox colourRow = makeTagRow("Colour", colorPane);
         HBox weatherRow = makeTagRow("Weather", weatherPane);
-        HBox eventRow   = makeTagRow("Event",   eventPane);
+        HBox eventRow = makeTagRow("Event", eventPane);
         HBox detailsRow = makeTagRow("Details", detailsPane);
-        HBox otherRow   = makeTagRow("Other",   otherPane);
+        HBox otherRow = makeTagRow("Other", otherPane);
 
         // SAVE BUTTON
         Button saveButton = new Button("Save");
@@ -199,9 +198,9 @@ public class AddItemsPage {
         return backButton;
     }
 
-
     /**
-     * Collects form values, validates, and delegates to {@link AddItemController}.
+     * Collects form values, validates, and delegates to
+     * {@link AddItemController}.
      */
     private void handleSave() {
         String name = itemName.getText().trim();
@@ -224,11 +223,11 @@ public class AddItemsPage {
         existingTagIds.addAll(collectSelectedTagIds(otherPane));
 
         // Collect custom (new) tag names from un-persisted toggle buttons
-        List<String> newTagNames = collectCustomTagNames(colorPane,   TagCategory.COLOR);
+        List<String> newTagNames = collectCustomTagNames(colorPane, TagCategory.COLOR);
         newTagNames.addAll(collectCustomTagNames(weatherPane, TagCategory.WEATHER));
-        newTagNames.addAll(collectCustomTagNames(eventPane,   TagCategory.EVENT));
+        newTagNames.addAll(collectCustomTagNames(eventPane, TagCategory.EVENT));
         newTagNames.addAll(collectCustomTagNames(detailsPane, TagCategory.DETAIL));
-        newTagNames.addAll(collectCustomTagNames(otherPane,   TagCategory.OTHER));
+        newTagNames.addAll(collectCustomTagNames(otherPane, TagCategory.OTHER));
 
         try {
             // addItem handles existing IDs
@@ -246,18 +245,28 @@ public class AddItemsPage {
         }
     }
 
-    /** Maps the selected type button to a {@link ClothingCategory}. */
+    /**
+     * Maps the selected type button to a {@link ClothingCategory}.
+     */
     private ClothingCategory resolveCategory() {
-        if (topBtn.isSelected())       { return ClothingCategory.TOP; }
-        if (bottomBtn.isSelected())    { return ClothingCategory.BOTTOM; }
-        if (onePieceBtn.isSelected())  { return ClothingCategory.ONE_PIECE; }
-        if (accessoryBtn.isSelected()) { return ClothingCategory.ACCESSORY; }
+        if (topBtn.isSelected()) {
+            return ClothingCategory.TOP;
+        }
+        if (bottomBtn.isSelected()) {
+            return ClothingCategory.BOTTOM;
+        }
+        if (onePieceBtn.isSelected()) {
+            return ClothingCategory.ONE_PIECE;
+        }
+        if (accessoryBtn.isSelected()) {
+            return ClothingCategory.ACCESSORY;
+        }
         return null;
     }
 
     /**
-     * Returns IDs of all selected toggle buttons in a tag pane.
-     * Buttons backed by a DB tag carry their tag ID as user data (Integer).
+     * Returns IDs of all selected toggle buttons in a tag pane. Buttons backed
+     * by a DB tag carry their tag ID as user data (Integer).
      */
     private List<Integer> collectSelectedTagIds(FlowPane pane) {
         List<Integer> ids = new ArrayList<>();
@@ -287,7 +296,9 @@ public class AddItemsPage {
         return names;
     }
 
-    /** Clears the form after a successful save. */
+    /**
+     * Clears the form after a successful save.
+     */
     private void resetForm() {
         itemName.clear();
         typeGroup.selectToggle(null);
@@ -298,7 +309,9 @@ public class AddItemsPage {
         clearTagPane(otherPane);
     }
 
-    /** Deselects all toggle buttons in a pane (does not remove DB-backed ones). */
+    /**
+     * Deselects all toggle buttons in a pane (does not remove DB-backed ones).
+     */
     private void clearTagPane(FlowPane pane) {
         for (var node : pane.getChildren()) {
             if (node instanceof ToggleButton btn) {
@@ -306,7 +319,6 @@ public class AddItemsPage {
             }
         }
     }
-
 
     /**
      * Creates a type-selection toggle button and registers it with
@@ -432,9 +444,16 @@ public class AddItemsPage {
                         tag.setText(editField.getText());
                         pane.getChildren().set(pane.getChildren().indexOf(editField), tag);
                     };
-                    editField.setOnAction(ev -> { commit.run(); ev.consume(); });
+                    editField.setOnAction(ev -> {
+                        commit.run();
+                        ev.consume();
+                    });
                     editField.focusedProperty().addListener(
-                            (o, ov, nv) -> { if (!nv) { commit.run(); } });
+                            (o, ov, nv) -> {
+                                if (!nv) {
+                                    commit.run();
+                                }
+                            });
                 }
             });
 
@@ -453,21 +472,20 @@ public class AddItemsPage {
         addButton.setManaged(true);
     }
 
-
     private void styleTagButton(ToggleButton button) {
-        String normal =
-                "-fx-background-color: white;"
+        String normal
+                = "-fx-background-color: white;"
                 + "-fx-border-color: #D8CFBC;"
                 + "-fx-background-radius: 8;"
                 + "-fx-border-radius: 8;";
-        String selected =
-                "-fx-background-color: #565448;"
+        String selected
+                = "-fx-background-color: #565448;"
                 + "-fx-text-fill: white;"
                 + "-fx-background-radius: 8;";
 
         button.setStyle(normal);
-        button.selectedProperty().addListener((obs, oldVal, isSelected) ->
-                button.setStyle(isSelected ? selected : normal));
+        button.selectedProperty().addListener((obs, oldVal, isSelected)
+                -> button.setStyle(isSelected ? selected : normal));
     }
 
     private void showAlert(String title, String message) {

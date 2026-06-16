@@ -11,9 +11,9 @@ import com.mycompany.irr00_group_project.model.TagCategory;
 /**
  * Service for editing existing clothing items.
  *
- * <p>Allows updating the item name and its tag assignments while
- * leaving all other fields (ID, wornCount, favourite, category)
- * untouched.</p>
+ * <p>
+ * Allows updating the item name and its tag assignments while leaving all other
+ * fields (ID, wornCount, favourite, category) untouched.</p>
  *
  * @author Arshiya Shaik
  */
@@ -30,8 +30,8 @@ public class EditItemService {
     /**
      * Updates the name of a clothing item and replaces its tag set.
      *
-     * @param item     the item to edit (mutated in-place)
-     * @param newName  the new display name (must not be blank)
+     * @param item the item to edit (mutated in-place)
+     * @param newName the new display name (must not be blank)
      * @param tagNames the desired set of tag names after the edit
      * @throws IllegalArgumentException if {@code newName} is blank
      */

@@ -1,20 +1,22 @@
 package com.mycompany.irr00_group_project.database;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import com.mycompany.irr00_group_project.model.ClothingItem;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mycompany.irr00_group_project.model.ClothingCategory;
+import com.mycompany.irr00_group_project.model.ClothingItem;
 
 /**
  * Repository for {@link ClothingItem} objects persisted in
  * {@code clothing_items.csv}.
  *
- * <p>This class is purely I/O: it reads and writes CSV files and performs
- * no business logic.</p>
+ * <p>
+ * This class is purely I/O: it reads and writes CSV files and performs no
+ * business logic.</p>
  *
  * <h2>CSV schema</h2>
  * <pre>
@@ -23,16 +25,17 @@ import com.mycompany.irr00_group_project.model.ClothingCategory;
  *   clothing_tags.csv  – clothingId, tagId
  * </pre>
  *
- * <p>Note: tags are <em>not</em> stored inside {@code clothing_items.csv}.
- * They are stored as relationships in {@code clothing_tags.csv} and loaded
+ * <p>
+ * Note: tags are <em>not</em> stored inside {@code clothing_items.csv}. They
+ * are stored as relationships in {@code clothing_tags.csv} and loaded
  * separately by the service layer via {@link TagRepository}.</p>
  *
  * @author Aleksandra Levenkova
  */
 public class ClothingRepository {
 
-    private static final String ITEMS_FILE         = "clothing_items.csv";
-    private static final String OUTFIT_ITEMS_FILE  = "outfit_items.csv";
+    private static final String ITEMS_FILE = "clothing_items.csv";
+    private static final String OUTFIT_ITEMS_FILE = "outfit_items.csv";
     private static final String CLOTHING_TAGS_FILE = "clothing_tags.csv";
 
     /**
@@ -68,8 +71,8 @@ public class ClothingRepository {
     }
 
     /**
-     * Returns all clothing items stored in {@code clothing_items.csv}.
-     * Tags are NOT loaded here; use the service layer to hydrate them.
+     * Returns all clothing items stored in {@code clothing_items.csv}. Tags are
+     * NOT loaded here; use the service layer to hydrate them.
      *
      * @return list of all {@link ClothingItem} objects; empty list on error
      */
@@ -86,11 +89,11 @@ public class ClothingRepository {
                 if (values.length < 5) {
                     continue; // malformed row – skip
                 }
-                int id               = Integer.parseInt(values[0].trim());
-                String name          = values[1].trim();
-                boolean isFavorite   = Boolean.parseBoolean(values[2].trim());
+                int id = Integer.parseInt(values[0].trim());
+                String name = values[1].trim();
+                boolean isFavorite = Boolean.parseBoolean(values[2].trim());
                 ClothingCategory cat = ClothingCategory.valueOf(values[3].trim());
-                int wornCount        = Integer.parseInt(values[4].trim());
+                int wornCount = Integer.parseInt(values[4].trim());
                 items.add(new ClothingItem(id, name, isFavorite, cat, wornCount));
             }
         } catch (IOException e) {
@@ -165,7 +168,6 @@ public class ClothingRepository {
         deleteItemFromTagRelationship(id);
     }
 
-
     /**
      * Increments the {@code wornCount} of the item with the given ID.
      *
@@ -181,7 +183,6 @@ public class ClothingRepository {
         }
         saveItems(items);
     }
-
 
     /**
      * Returns the top 5 favorite items sorted by {@code wornCount} descending.
@@ -221,7 +222,6 @@ public class ClothingRepository {
         return items.size() > 5 ? new ArrayList<>(items.subList(0, 5)) : items;
     }
 
-
     /**
      * Removes all rows in {@code outfit_items.csv} that reference the given
      * clothing item ID.
@@ -260,7 +260,8 @@ public class ClothingRepository {
      * Removes all rows in {@code clothing_tags.csv} that reference the given
      * clothing item ID.
      *
-     * @param itemId the clothing item ID whose tag relationships should be removed
+     * @param itemId the clothing item ID whose tag relationships should be
+     * removed
      */
     private void deleteItemFromTagRelationship(int itemId) {
         List<String> rows = new ArrayList<>();
@@ -294,7 +295,7 @@ public class ClothingRepository {
      * Atomically rewrites a CSV file with the supplied rows (header included).
      *
      * @param fileName destination file path
-     * @param rows     all rows (including header as first element)
+     * @param rows all rows (including header as first element)
      */
     private void writeRows(String fileName, List<String> rows) {
         try (FileWriter writer = new FileWriter(fileName)) {

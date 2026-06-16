@@ -2,6 +2,7 @@ package com.mycompany.irr00_group_project;
 
 import com.mycompany.irr00_group_project.database.DatabaseManager;
 import com.mycompany.irr00_group_project.ui.MainPage;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 

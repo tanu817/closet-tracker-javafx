@@ -1,18 +1,19 @@
 package com.mycompany.irr00_group_project.integration;
 
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
 import com.mycompany.irr00_group_project.CsvTestBase;
 import com.mycompany.irr00_group_project.model.ClothingCategory;
 import com.mycompany.irr00_group_project.model.ClothingItem;
 import com.mycompany.irr00_group_project.service.AddItemService;
 import com.mycompany.irr00_group_project.service.DashboardService;
 import com.mycompany.irr00_group_project.service.OutfitService;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Integration tests for the Dashboard flow
@@ -29,7 +30,7 @@ public class DashboardIntegrationTest extends CsvTestBase {
                 Collections.emptyList());
         ClothingItem bot = addService.addItem("Jeans", ClothingCategory.BOTTOM,
                 Collections.emptyList());
-        
+
         OutfitService outfitService = new OutfitService();
         var outfit = outfitService.createOutfit("Daily", top.getId(), bot.getId());
         outfitService.wearOutfit(outfit.getId());
@@ -48,7 +49,7 @@ public class DashboardIntegrationTest extends CsvTestBase {
                 Collections.emptyList());
         addService.addItem("Pants", ClothingCategory.BOTTOM,
                 Collections.emptyList());
-        
+
         DashboardService.DashboardStats stats = new DashboardService().getStats();
         assertEquals(2, stats.totalItems);
         assertEquals(0, stats.totalWears);
@@ -60,7 +61,7 @@ public class DashboardIntegrationTest extends CsvTestBase {
         AddItemService addService = new AddItemService();
         ClothingItem item = addService.addItem("Cap", ClothingCategory.HEADWEAR,
                 Collections.emptyList());
-        
+
         DashboardService service = new DashboardService();
         service.markItemWorn(item.getId());
         assertEquals(1, service.getStats().totalWears);
