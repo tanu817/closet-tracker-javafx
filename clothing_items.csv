@@ -7,3 +7,4 @@ id,name,isFavorite,category,wornCount
 10,Satin red pants,true,BOTTOM,1
 11,blue jeans,true,BOTTOM,2
 12,sweatshirt,false,TOP,1
+13,floral skirt,false,BOTTOM,0

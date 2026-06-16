@@ -134,7 +134,7 @@ public class MainPage {
         double progress = dashboardController.getWardrobeUsageProgress();
         int percentage = (int) (progress * 100);
 
-        Label progressTitle = new Label("Wardrobe Usage This Month");
+        Label progressTitle = new Label("Wardrobe Usage Overview");
         progressTitle.setFont(cardTitleFont);
 
         Label progressStats = new Label(wornItems + "/" + totalItems + " items  —  " + percentage + "%");

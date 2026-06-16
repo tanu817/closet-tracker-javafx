@@ -137,15 +137,15 @@ public class DashboardService {
     }
 
     /**
-     * Returns the number of items worn at least once in the current month.
+     * Returns the number of items worn more than once for the progress bar.
      *
-     * @return count of items worn this month
+     * @return count of items worn more than once
      */
     public int getItemsWornThisMonth() {
         List<ClothingItem> all = clothingRepository.getAllItems();
         int count = 0;
         for (ClothingItem item : all) {
-            if (item.getWornCount() > 0) {
+            if (item.getWornCount() > 1) {
                 count++;
             }
         }
