@@ -14,10 +14,10 @@ import com.mycompany.irr00_group_project.model.Outfit;
 /**
  * Service for managing outfits.
  *
- * An outfit groups exactly two clothing items (one top, one bottom, as enforced
- * by {@link OutfitRepository#addItemToOutfit}). This service handles creation,
- * retrieval, deletion, and wear-tracking while keeping the controller free of
- * any repository calls.
+ * An outfit groups exactly two clothing items (one top, one bottom, as
+ * enforced by {@link OutfitRepository#addItemToOutfit}). This service handles
+ * creation, retrieval, deletion, and wear-tracking while keeping the
+ * controller free of any repository calls.
  *
  * @author Arshiya Shaik
  */
@@ -27,25 +27,22 @@ public class OutfitService {
     private final ClothingRepository clothingRepository;
     private final TagRepository tagRepository;
 
-    /**
-     * Initialize the new repositories.
-     */
     public OutfitService() {
         this.outfitRepository = new OutfitRepository();
         this.clothingRepository = new ClothingRepository();
         this.tagRepository = new TagRepository();
     }
 
+
     /**
      * Creates a new outfit from two clothing item IDs and persists it.
      *
-     * <p>
-     * The outfit name is auto-generated from the item names if
+     * <p>The outfit name is auto-generated from the item names if
      * {@code outfitName} is blank.</p>
      *
-     * @param outfitName display name (may be blank for auto-generation)
-     * @param clothingId1 ID of the first item (e.g. top)
-     * @param clothingId2 ID of the second item (e.g. bottom)
+     * @param outfitName   display name (may be blank for auto-generation)
+     * @param clothingId1  ID of the first item (e.g. top)
+     * @param clothingId2  ID of the second item (e.g. bottom)
      * @return the newly created {@link Outfit}
      * @throws IllegalArgumentException when either item ID does not exist
      */
@@ -79,6 +76,7 @@ public class OutfitService {
 
         return outfit;
     }
+
 
     /**
      * Returns all outfits with their clothing items hydrated.
@@ -128,11 +126,13 @@ public class OutfitService {
         return items;
     }
 
+
+
     /**
      * Renames an outfit and persists the change.
      *
      * @param outfitId the ID of the outfit to rename
-     * @param newName the new display name
+     * @param newName  the new display name
      */
     public void renameOutfit(int outfitId, String newName) {
         Outfit outfit = getOutfitById(outfitId);
@@ -151,6 +151,8 @@ public class OutfitService {
         outfitRepository.deleteOutfit(outfitId);
     }
 
+
+
     /**
      * Records that an outfit was worn: increments {@code wornCount} on both
      * component items and persists the changes.
@@ -163,6 +165,8 @@ public class OutfitService {
             clothingRepository.markAsWorn(id);
         }
     }
+
+
 
     /**
      * Loads the two clothing items for an outfit into its in-memory item set.
@@ -177,8 +181,8 @@ public class OutfitService {
     }
 
     /**
-     * Deletes all outfits that contain the given clothing item. Called
-     * automatically when a clothing item is deleted.
+     * Deletes all outfits that contain the given clothing item.
+     * Called automatically when a clothing item is deleted.
      *
      * @param clothingId the ID of the deleted clothing item
      */
@@ -190,7 +194,6 @@ public class OutfitService {
     }
 
     /**
-     * Returns all items with tags.
      *
      * @return all {@link ClothingItem} objects with tags loaded
      */

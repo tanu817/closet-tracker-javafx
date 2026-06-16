@@ -30,14 +30,13 @@ import javafx.stage.Stage;
  * Outfits page: shows all outfits loaded from CSV storage.
  *
  * @author Bhavini Kopparam Ajay
- * @author Priyanshu Guha
  * @author Arshiya Shaik
  */
 public class OutfitsPage extends BorderPane {
 
     private static final String LIGHT_GREEN = "#D8CFBC";
-    private static final String DARK_GREEN = "#565448";
-    private static final String CREAM = "#FFFAF4";
+    private static final String DARK_GREEN  = "#565448";
+    private static final String CREAM       = "#FFFAF4";
 
     private final Stage stage;
 
@@ -55,11 +54,6 @@ public class OutfitsPage extends BorderPane {
     private final OutfitController outfitController = new OutfitController();
     private VBox outfitsRoot;
 
-    /**
-     * Page with outfits made.
-     *
-     * @param stage where outfits are displayed
-     */
     public OutfitsPage(Stage stage) {
         this.stage = stage;
         setStyle("-fx-background-color: " + CREAM + ";");
@@ -69,6 +63,7 @@ public class OutfitsPage extends BorderPane {
         root.getChildren().addAll(createTopSection(), createOutfitsSection());
         setCenter(root);
     }
+
 
     private VBox createTopSection() {
         Image backImg = new Image(
@@ -85,15 +80,15 @@ public class OutfitsPage extends BorderPane {
                 + "-fx-background-radius: 10;");
         backButton.setOnAction(e -> {
             MainPage mainPage = new MainPage();
-            mainPage.start(stage, stage.getScene().getWidth(), stage.getScene().getHeight());
+            mainPage.start(stage);
         });
 
         Label title = new Label("My Outfits");
         title.setFont(titleFont);
 
-        Region leftSpacer = new Region();
+        Region leftSpacer  = new Region();
         Region rightSpacer = new Region();
-        HBox.setHgrow(leftSpacer, Priority.ALWAYS);
+        HBox.setHgrow(leftSpacer,  Priority.ALWAYS);
         HBox.setHgrow(rightSpacer, Priority.ALWAYS);
 
         HBox topRow = new HBox();
@@ -104,6 +99,7 @@ public class OutfitsPage extends BorderPane {
         topSection.getChildren().add(topRow);
         return topSection;
     }
+
 
     private ScrollPane createOutfitsSection() {
         outfitsRoot = new VBox(25);
@@ -118,7 +114,7 @@ public class OutfitsPage extends BorderPane {
     }
 
     private void refreshOutfits() {
-        VBox leftColumn = new VBox(25);
+        VBox leftColumn  = new VBox(25);
         VBox rightColumn = new VBox(25);
 
         List<Outfit> outfits = outfitController.getAllOutfits();
@@ -155,10 +151,11 @@ public class OutfitsPage extends BorderPane {
         outfitsRoot.getChildren().setAll(outfitsRow);
     }
 
+
     private VBox createOutfitCard(int outfitId,
-            String outfitName,
-            ClothingItem item1,
-            ClothingItem item2) {
+                                  String outfitName,
+                                  ClothingItem item1,
+                                  ClothingItem item2) {
         VBox card = new VBox(20);
         card.setPadding(new Insets(25));
         card.setPrefSize(580, 260);
@@ -278,6 +275,7 @@ public class OutfitsPage extends BorderPane {
 
         return card;
     }
+
 
     private void showInfo(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

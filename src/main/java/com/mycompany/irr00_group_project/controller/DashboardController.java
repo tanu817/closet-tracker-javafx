@@ -14,6 +14,7 @@ import com.mycompany.irr00_group_project.service.DashboardService.DashboardStats
  * {@link DashboardService}. Contains no business logic and performs no I/O.</p>
  *
  * @author Arshiya Shaik
+ * @author Alexandra Varapai
  */
 public class DashboardController {
 
@@ -59,6 +60,27 @@ public class DashboardController {
      */
     public DashboardStats getStats() {
         return dashboardService.getStats();
+    }
+
+    /**
+     * Returns the wardrobe usage progress as a value between 0 and 1.
+     *
+     * @return progress value between 0.0 and 1.0
+     */
+    public double getWardrobeUsageProgress() {
+        DashboardService.DashboardStats stats = dashboardService.getStats();
+        if (stats.totalItems == 0) {
+            return 0.0;
+        }
+        return (double) dashboardService.getItemsWornMoreThanOnce() / stats.totalItems;
+    }
+
+    public int getItemsWornMoreThanOnce() {
+        return dashboardService.getItemsWornMoreThanOnce();
+    }
+
+    public int getTotalItems() {
+        return dashboardService.getStats().totalItems;
     }
 
     /**
