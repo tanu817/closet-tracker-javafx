@@ -71,7 +71,7 @@ public class DashboardService {
          */
         public final int totalWears;
         /**
-         * Total number of items marked as favourite.
+         * Total number of items marked as favorite.
          */
         public final int totalFavourites;
         /**

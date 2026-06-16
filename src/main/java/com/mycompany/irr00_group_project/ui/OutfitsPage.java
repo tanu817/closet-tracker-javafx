@@ -185,7 +185,8 @@ public class OutfitsPage extends BorderPane {
         // Action buttons row
         Button editBtn = new Button("Edit");
         editBtn.setFont(normalBoldFont);
-        editBtn.setStyle("-fx-background-color: #5C8A6E; -fx-background-radius: 8; -fx-border-radius: 8; -fx-text-fill: white;");
+        editBtn.setStyle("-fx-background-color: #5C8A6E; -fx-background-radius: 8; "
+                + "-fx-border-radius: 8; -fx-text-fill: white;");
         editBtn.setOnAction(e -> {
             TextInputDialog dialog = new TextInputDialog(title.getText());
             dialog.setTitle("Rename Outfit");
@@ -203,7 +204,8 @@ public class OutfitsPage extends BorderPane {
 
         Button wornBtn = new Button("Mark as Worn");
         wornBtn.setFont(normalBoldFont);
-        wornBtn.setStyle("-fx-background-color: " + DARK_GREEN + "; -fx-background-radius: 8; -fx-border-radius: 8; -fx-text-fill: white;");
+        wornBtn.setStyle("-fx-background-color: " + DARK_GREEN + "; -fx-background-radius: 8; "
+                + "-fx-border-radius: 8; -fx-text-fill: white;");
         wornBtn.setOnAction(e -> {
             outfitController.wearOutfit(outfitId);
             showInfo("Outfit Worn", "Outfit marked as worn. Wear counts updated.");
@@ -211,7 +213,8 @@ public class OutfitsPage extends BorderPane {
 
         Button deleteBtn = new Button("Delete");
         deleteBtn.setFont(normalBoldFont);
-        deleteBtn.setStyle("-fx-background-color: #c0392b; -fx-background-radius: 8; -fx-border-radius: 8; -fx-text-fill: white;");
+        deleteBtn.setStyle("-fx-background-color: #c0392b; -fx-background-radius: 8; "
+                + "-fx-border-radius: 8; -fx-text-fill: white;");
         deleteBtn.setOnAction(e -> {
             outfitController.deleteOutfit(outfitId);
             showInfo("Outfit Deleted", "Outfit \"" + outfitName + "\" has been deleted.");

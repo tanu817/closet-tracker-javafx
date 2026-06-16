@@ -299,7 +299,7 @@ public class ItemsPage extends BorderPane {
         Runnable refreshChips = () -> {
             currentTagsPane.getChildren().clear();
             for (String tn : new ArrayList<>(selectedTagNames)) {
-                
+
                 Image crossImg = new Image(
                         getClass().getResourceAsStream("/icons/cross.png")
                 );
@@ -308,7 +308,7 @@ public class ItemsPage extends BorderPane {
 
                 crossIcon.setFitWidth(12);
                 crossIcon.setFitHeight(12);
-                
+
                 Button chip = new Button(tn);
                 chip.setFont(smallFont);
                 chip.setGraphic(crossIcon);

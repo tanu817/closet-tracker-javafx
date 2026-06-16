@@ -365,12 +365,14 @@ public class SearchPage extends BorderPane {
     /**
      * Builds a full result card for one clothing item.
      *
-     * <p>The card contains:</p>
+     * <p>
+     * The card contains:</p>
      * <ul>
-     *   <li>Item name, category chip, heart favourite button</li>
-     *   <li>Tag chips</li>
-     *   <li>"Mark as Worn" button + worn count label</li>
-     *   <li>"Show Matches" toggle button for TOP/BOTTOM items (lazy-loads matches)</li>
+     * <li>Item name, category chip, heart favourite button</li>
+     * <li>Tag chips</li>
+     * <li>"Mark as Worn" button + worn count label</li>
+     * <li>"Show Matches" toggle button for TOP/BOTTOM items (lazy-loads
+     * matches)</li>
      * </ul>
      */
     private VBox buildResultCard(ClothingItem item) {
@@ -399,8 +401,7 @@ public class SearchPage extends BorderPane {
                 + "-fx-background-radius: 6;"
                 + "-fx-padding: 3 8 3 8;");
 
-        
-        Image emptyHeartImg  = new Image(
+        Image emptyHeartImg = new Image(
                 getClass().getResourceAsStream("/icons/heart.png"));
         Image filledHeartImg = new Image(
                 getClass().getResourceAsStream("/icons/heartFilled.png"));
@@ -426,7 +427,6 @@ public class SearchPage extends BorderPane {
         topRow.setAlignment(Pos.CENTER_LEFT);
         topRow.getChildren().addAll(name, cat, spacer, heartBtn);
 
-        
         FlowPane chips = new FlowPane();
         chips.setHgap(8);
         chips.setVgap(6);
@@ -441,7 +441,6 @@ public class SearchPage extends BorderPane {
             chips.getChildren().add(chip);
         }
 
-        
         Label wornLabel = new Label("Worn: " + item.getWornCount() + " time(s)");
         wornLabel.setFont(smallFont);
         wornLabel.setStyle("-fx-text-fill: #888;");
@@ -450,8 +449,7 @@ public class SearchPage extends BorderPane {
         Button wornBtn = new Button("Mark as Worn");
         wornBtn.setFont(normalBoldFont);
         wornBtn.setStyle(
-                "-fx-background-color: " + DARK_GREEN + ";"
-                + "-fx-text-fill: white;"
+                "-fx-background-color: #F3EEE6;"
                 + "-fx-background-radius: 8;"
                 + "-fx-padding: 6 14 6 14;");
         wornBtn.setOnAction(e -> {
@@ -461,34 +459,57 @@ public class SearchPage extends BorderPane {
             showDialog(Alert.AlertType.INFORMATION,
                     "Marked as Worn",
                     "\"" + item.getName() + "\" worn count updated to "
-                            + item.getWornCount() + ".");
+                    + item.getWornCount() + ".");
         });
 
         HBox actionRow = new HBox(10);
         actionRow.setAlignment(Pos.CENTER_LEFT);
-        actionRow.getChildren().addAll(wornBtn, wornLabel);
 
-        // ── TASK 2: "Show Matches" button for TOP/BOTTOM only (lazy) ──
         ClothingCategory category = item.getCategory();
-        if (category == ClothingCategory.TOP || category == ClothingCategory.BOTTOM) {
+
+        if (category == ClothingCategory.TOP
+                || category == ClothingCategory.BOTTOM) {
+
             Button matchBtn = new Button("Show Matches");
+
             matchBtn.setFont(normalBoldFont);
+
             matchBtn.setStyle(
                     "-fx-background-color: #F3EEE6;"
                     + "-fx-background-radius: 8;"
                     + "-fx-padding: 6 14 6 14;"
-                    + TEXT_COLOR);
+                    + TEXT_COLOR
+            );
+
             matchBtn.setOnAction(e -> {
-                // wrapper: index 0 = card; index 1 (if present) = matches panel
+
                 if (wrapper.getChildren().size() > 1) {
+
                     wrapper.getChildren().remove(1);
                     matchBtn.setText("Show Matches");
+
                 } else {
-                    wrapper.getChildren().add(buildMatchesPanel(item));
+
+                    wrapper.getChildren().add(
+                            buildMatchesPanel(item)
+                    );
+
                     matchBtn.setText("Hide Matches");
                 }
             });
-            actionRow.getChildren().add(matchBtn);
+
+            actionRow.getChildren().addAll(
+                    wornBtn,
+                    matchBtn,
+                    wornLabel
+            );
+
+        } else {
+
+            actionRow.getChildren().addAll(
+                    wornBtn,
+                    wornLabel
+            );
         }
 
         card.getChildren().addAll(topRow, chips, actionRow);
@@ -498,9 +519,11 @@ public class SearchPage extends BorderPane {
 
     /**
      * Builds the inline matches panel shown beneath a TOP or BOTTOM result.
-     * Each match row shows the match name/category and a "Create Outfit" button.
+     * Each match row shows the match name/category and a "Create Outfit"
+     * button.
      *
-     * <p>Outfit creation logic is handled in handleCreateOutfit():</p>
+     * <p>
+     * Outfit creation logic is handled in handleCreateOutfit():</p>
      */
     private VBox buildMatchesPanel(ClothingItem selectedItem) {
         List<ClothingItem> matches = viewItemController.getMatchingItems(selectedItem);
@@ -511,7 +534,7 @@ public class SearchPage extends BorderPane {
         String headingText = matches.isEmpty()
                 ? "No matching items found."
                 : "Matching " + (selectedItem.getCategory() == ClothingCategory.TOP
-                        ? "bottoms" : "tops") + ":";
+                ? "bottoms" : "tops") + ":";
 
         Label heading = new Label(headingText);
         heading.setFont(smallFont);
@@ -541,7 +564,6 @@ public class SearchPage extends BorderPane {
             info.getChildren().addAll(matchName, matchCat);
             HBox.setHgrow(info, Priority.ALWAYS);
 
-            
             Button outfitBtn = new Button("Create Outfit");
             outfitBtn.setFont(normalBoldFont);
             outfitBtn.setStyle(
@@ -549,8 +571,8 @@ public class SearchPage extends BorderPane {
                     + "-fx-text-fill: white;"
                     + "-fx-background-radius: 8;"
                     + "-fx-padding: 6 14 6 14;");
-            outfitBtn.setOnAction(e ->
-                    handleCreateOutfit(selectedItem, match, outfitBtn));
+            outfitBtn.setOnAction(e
+                    -> handleCreateOutfit(selectedItem, match, outfitBtn));
 
             matchRow.getChildren().addAll(info, outfitBtn);
             panel.getChildren().add(matchRow);
@@ -563,22 +585,35 @@ public class SearchPage extends BorderPane {
      * Attempts to create an outfit from the two given items.
      *
      * <ul>
-     *   <li>On success: disables the button, shows a confirmation dialog.</li>
-     *   <li>On duplicate: shows an informational dialog, disables the button.</li>
-     *   <li>On other error: shows an error dialog.</li>
+     * <li>On success: disables the button, shows a confirmation dialog.</li>
+     * <li>On duplicate: shows an informational dialog, disables the
+     * button.</li>
+     * <li>On other error: shows an error dialog.</li>
      * </ul>
      */
     private void handleCreateOutfit(ClothingItem selectedItem,
                                     ClothingItem matchItem,
                                     Button outfitBtn) {
+
         try {
+            Image tickImg = new Image(
+                    getClass().getResourceAsStream(
+                            "/icons/tick.png"
+                    )
+            );
+
+            ImageView tickIcon = new ImageView(tickImg);
+
+            tickIcon.setFitWidth(16);
+            tickIcon.setFitHeight(16);
             viewItemController.createOutfitFromMatch(selectedItem, matchItem);
             outfitBtn.setDisable(true);
-            outfitBtn.setText("Saved ✓");
+            outfitBtn.setText("Saved");
+            outfitBtn.setGraphic(tickIcon);
             showDialog(Alert.AlertType.INFORMATION,
                     "Outfit Created",
                     "\"" + selectedItem.getName() + " + " + matchItem.getName()
-                            + "\" has been saved to your outfits.");
+                    + "\" has been saved to your outfits.");
         } catch (IllegalStateException ex) {
             // Duplicate outfit — OutfitService throws this
             outfitBtn.setDisable(true);
@@ -593,7 +628,6 @@ public class SearchPage extends BorderPane {
         }
     }
 
-    
     private void showDialog(Alert.AlertType type, String title, String message) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
