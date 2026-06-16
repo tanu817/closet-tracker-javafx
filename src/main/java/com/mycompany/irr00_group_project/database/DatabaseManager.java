@@ -10,8 +10,7 @@ import java.io.IOException;
  * Creates and initialises the CSV files that act as the application database,
  * and seeds a standard set of tags on first run.
  *
- * <p>
- * Call {@link #initialiseFiles()} once at application startup (e.g. from
+ * <p>Call {@link #initialiseFiles()} once at application startup (e.g. from
  * {@code App.start()}). Each file is only created when it does not already
  * exist, so existing data is never overwritten.</p>
  *
@@ -25,9 +24,8 @@ import java.io.IOException;
  * </pre>
  *
  * <h2>Seeded tags (stable IDs)</h2>
- * <p>
- * A fixed set of common tags is written to {@code tags.csv} the first time the
- * file is created. Their IDs are stable integers (1–21) so that
+ * <p>A fixed set of common tags is written to {@code tags.csv} the first time
+ * the file is created. Their IDs are stable integers (1–21) so that
  * {@code clothing_tags.csv} relationships always resolve correctly.</p>
  *
  * @author Aleksandra Levenkova
@@ -39,18 +37,19 @@ public class DatabaseManager {
     }
 
     /**
-     * Creates all CSV files (with headers) if they do not yet exist, then seeds
-     * the standard tag list into {@code tags.csv} if it is still empty.
+     * Creates all CSV files (with headers) if they do not yet exist, then
+     * seeds the standard tag list into {@code tags.csv} if it is still empty.
      */
     public static void initialiseFiles() {
         createFileIfMissing("clothing_items.csv", "id,name,isFavorite,category,wornCount");
-        createFileIfMissing("tags.csv", "id,name,category");
-        createFileIfMissing("clothing_tags.csv", "clothingId,tagId");
-        createFileIfMissing("outfits.csv", "id,name");
-        createFileIfMissing("outfit_items.csv", "outfitId,clothingId1,clothingId2");
+        createFileIfMissing("tags.csv",            "id,name,category");
+        createFileIfMissing("clothing_tags.csv",   "clothingId,tagId");
+        createFileIfMissing("outfits.csv",         "id,name");
+        createFileIfMissing("outfit_items.csv",    "outfitId,clothingId1,clothingId2");
 
         seedDefaultTagsIfEmpty();
     }
+
 
     /**
      * Creates {@code fileName} and writes {@code header} as the first line.
@@ -72,14 +71,13 @@ public class DatabaseManager {
 
     /**
      * Checks whether {@code tags.csv} contains any data rows (beyond the
-     * header). If it is empty, writes the standard predefined tags with fixed
-     * stable IDs starting at 1.
+     * header). If it is empty, writes the standard predefined tags with
+     * fixed stable IDs starting at 1.
      *
-     * <p>
-     * These IDs are reserved. Any user-created tags receive IDs ≥ 100 (the
-     * {@link TagRepository#generateNextId()} starts after the max existing ID,
-     * so as long as the seed IDs are below 100 there is no collision with
-     * future user tags either).</p>
+     * <p>These IDs are reserved. Any user-created tags receive IDs ≥ 100
+     * (the {@link TagRepository#generateNextId()} starts after the max
+     * existing ID, so as long as the seed IDs are below 100 there is no
+     * collision with future user tags either).</p>
      */
     private static void seedDefaultTagsIfEmpty() {
         File tagsFile = new File("tags.csv");
@@ -121,6 +119,7 @@ public class DatabaseManager {
             "2,Bottom,OTHER",
             "3,One Piece,OTHER",
             "4,Accessory,OTHER",
+
             // Colour tags
             "5,White,COLOR",
             "6,Black,COLOR",
@@ -130,18 +129,22 @@ public class DatabaseManager {
             "10,Red,COLOR",
             "11,Beige,COLOR",
             "12,Brown,COLOR",
+
             // Weather tags
             "13,Summer,WEATHER",
             "14,Winter,WEATHER",
             "15,Spring,WEATHER",
             "16,Autumn,WEATHER",
+
             // Event tags
             "17,Casual,EVENT",
             "18,Formal,EVENT",
             "19,Party,EVENT",
+
             // Detail tags
             "20,Minimal,DETAIL",
-            "21,Vintage,DETAIL"};
+            "21,Vintage,DETAIL",
+        };
 
         try (FileWriter writer = new FileWriter(tagsFile, true)) { // append after header
             for (String row : seeds) {

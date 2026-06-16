@@ -25,7 +25,6 @@ import javafx.stage.Stage;
  * data via {@link DashboardController}.
  *
  * @author Bhavini Kopparam Ajay
- * @author Priyanshu Guha
  * @author Alexandra Varapai
  */
 public class MainPage {
@@ -36,11 +35,10 @@ public class MainPage {
      * Builds and shows the main page scene.
      *
      * @param stage the primary stage
-     * @param width the width of the scene of this stage
-     * @param height the height of the scene of this stage
      */
-    public void start(Stage stage, double width, double height) {
-        
+    public void start(Stage stage) {
+        BorderPane root = new BorderPane();
+
         Font titleFont = Font.loadFont(
                 getClass().getResourceAsStream("/fonts/YesevaOne-Regular.ttf"), 28);
         Font buttonFont = Font.loadFont(
@@ -69,8 +67,7 @@ public class MainPage {
                 + "-fx-alignment: CENTER-LEFT;");
         searchButton.setOnAction(e -> {
             SearchPage searchPage = new SearchPage(stage);
-            stage.setScene(new Scene(searchPage,
-                    stage.getScene().getWidth(), stage.getScene().getHeight()));
+            stage.setScene(new Scene(searchPage, 1200, 700));
         });
 
         // ITEMS BUTTON
@@ -83,8 +80,7 @@ public class MainPage {
                 + "-fx-background-radius: 10;");
         itemsButton.setOnAction(e -> {
             ItemsPage itemsPage = new ItemsPage(stage);
-            stage.setScene(new Scene(itemsPage,
-                    stage.getScene().getWidth(), stage.getScene().getHeight()));
+            stage.setScene(new Scene(itemsPage, 1200, 700));
         });
 
         // OUTFITS BUTTON
@@ -96,8 +92,7 @@ public class MainPage {
                 + "-fx-background-radius: 10;");
         outfitsButton.setOnAction(e -> {
             OutfitsPage outfitsPage = new OutfitsPage(stage);
-            stage.setScene(new Scene(outfitsPage,
-                    stage.getScene().getWidth(), stage.getScene().getHeight()));
+            stage.setScene(new Scene(outfitsPage, 1200, 700));
         });
 
         HBox searchRow = new HBox(15);
@@ -131,10 +126,8 @@ public class MainPage {
         cardsRow.setAlignment(Pos.CENTER);
         cardsRow.getChildren().addAll(favoritesCard, mostWornCard, leastWornCard);
 
-        BorderPane root = new BorderPane();
-
         root.setCenter(cardsRow);
-        BorderPane.setMargin(cardsRow, new Insets(20, 0, 0, 0));
+        root.setMargin(cardsRow, new Insets(20, 0, 0, 0));
 
         // PROGRESS BAR
         int totalItems = dashboardController.getTotalItems();
@@ -215,19 +208,10 @@ public class MainPage {
         StackPane stackRoot = new StackPane();
         stackRoot.getChildren().addAll(root, dimBackground, overlay);
 
-        Scene scene = new Scene(stackRoot, width, height);
+        Scene scene = new Scene(stackRoot, 1200, 700);
         stage.setTitle("Closet App");
         stage.setScene(scene);
         stage.show();
-    }
-    
-    /**
-     * Builds and shows the main page scene, with default width and height.
-     *
-     * @param stage the primary stage
-     */
-    public void start(Stage stage) {
-        start(stage, 1200, 700);
     }
 
     /**

@@ -34,9 +34,9 @@ public class DashboardController {
     }
 
     /**
-     * Returns the top 5 favorite items.
+     * Returns the top 5 favourite items.
      *
-     * @return up to 5 favorite {@link ClothingItem} objects sorted by
+     * @return up to 5 favourite {@link ClothingItem} objects sorted by
      * wornCount desc
      */
     public List<ClothingItem> getTop5Favourites() {
