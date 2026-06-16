@@ -15,15 +15,13 @@ import com.mycompany.irr00_group_project.model.ClothingItem;
  * repository call cannot satisfy on its own.
  *
  * @author Arshiya Shaik
+ * @author Alexandra Varapai
  */
 public class DashboardService {
 
     private final ClothingRepository clothingRepository;
     private final TagRepository tagRepository;
 
-    /**
-     * Initialize.
-     */
     public DashboardService() {
         this.clothingRepository = new ClothingRepository();
         this.tagRepository = new TagRepository();
@@ -81,14 +79,6 @@ public class DashboardService {
          */
         public final double avgWearsPerItem;
 
-        /**
-         * Dashboard Statistics.
-         *
-         * @param totalItems total items worn
-         * @param totalWears total times items have been worn
-         * @param totalFavourites number of favorites
-         * @param avgWearsPerItem average times an item has been worn
-         */
         DashboardStats(int totalItems, int totalWears,
                 int totalFavourites, double avgWearsPerItem) {
             this.totalItems = totalItems;
@@ -145,5 +135,21 @@ public class DashboardService {
                     .forEach(item::addTag);
         }
         return all;
+    }
+
+    /**
+     * Returns the number of items worn more than once for the progress bar.
+     *
+     * @return count of items worn more than once
+     */
+    public int getItemsWornMoreThanOnce() {
+        List<ClothingItem> all = clothingRepository.getAllItems();
+        int count = 0;
+        for (ClothingItem item : all) {
+            if (item.getWornCount() > 1) {
+                count++;
+            }
+        }
+        return count;
     }
 }

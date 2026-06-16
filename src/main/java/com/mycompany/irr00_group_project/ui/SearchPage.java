@@ -32,28 +32,22 @@ import javafx.stage.Stage;
 
 /**
  * Search page: filters are loaded from the database (seeded defaults + any
- * user-created tags). A Type row filters by {@link ClothingCategory}; all other
- * rows filter by tag ID. Both filters combine with AND logic.
- *
- * <p>
- * Each result card has a "Mark as Worn" button. If the item is a TOP or BOTTOM,
- * matching items of the opposite category are shown inline; each match has a
- * "Create Outfit" button.</p>
+ * user-created tags). A Type row filters by {@link ClothingCategory}; all
+ * other rows filter by tag ID. Both filters combine with AND logic.
  *
  * <p>Each result card has a "Mark as Worn" button. If the item is a TOP or
  * BOTTOM, matching items of the opposite category are shown inline; each
  * match has a "Create Outfit" button.</p>
  *
  * @author Bhavini Kopparam Ajay
- * @author Priyanshu Guha
  * @author Arshiya Tasneem Shaik
  */
 public class SearchPage extends BorderPane {
 
     private static final String LIGHT_GREEN = "#D8CFBC";
-    private static final String DARK_GREEN = "#565448";
-    private static final String CREAM = "#FFFAF4";
-    private static final String TEXT_COLOR = "-fx-text-fill: #1a1a1a;";
+    private static final String DARK_GREEN  = "#565448";
+    private static final String CREAM       = "#FFFAF4";
+    private static final String TEXT_COLOR  = "-fx-text-fill: #1a1a1a;";
 
     private final Stage stage;
     private FlowPane searchField;
@@ -64,14 +58,12 @@ public class SearchPage extends BorderPane {
     // Reuse ViewItemController for markAsWorn + createOutfitFromMatch
     private final ViewItemController viewItemController = new ViewItemController();
 
-    /**
-     * Tag IDs selected via the tag filter rows.
-     */
+    /** Tag IDs selected via the tag filter rows. */
     private final List<Integer> selectedTagIds = new ArrayList<>();
 
     /**
-     * The single ClothingCategory selected via the Type filter row, or
-     * {@code null} when no type is selected.
+     * The single ClothingCategory selected via the Type filter row,
+     * or {@code null} when no type is selected.
      */
     private ClothingCategory selectedCategory = null;
 
@@ -89,11 +81,6 @@ public class SearchPage extends BorderPane {
     private final Font smallFont = Font.loadFont(
             getClass().getResourceAsStream("/fonts/MuktaVaani-Regular.ttf"), 11);
 
-    /**
-     * Initialize search page.
-     *
-     * @param stage stage for items to be displayed
-     */
     public SearchPage(Stage stage) {
         this.stage = stage;
         setStyle("-fx-background-color: " + CREAM + ";");
@@ -134,10 +121,7 @@ public class SearchPage extends BorderPane {
                 + "-fx-background-radius: 10;"
                 + "-fx-border-radius: 10;");
         backButton.setPrefSize(40, 42);
-        backButton.setOnAction(e -> {
-            MainPage mainPage = new MainPage();
-            mainPage.start(stage, stage.getScene().getWidth(), stage.getScene().getHeight());
-        });
+        backButton.setOnAction(e -> new MainPage().start(stage));
 
         searchField = new FlowPane();
         searchField.setHgap(8);
@@ -159,8 +143,8 @@ public class SearchPage extends BorderPane {
                 + "-fx-border-radius: 10;"
                 + TEXT_COLOR);
         showAllButton.setPrefSize(110, 40);
-        showAllButton.setOnAction(e
-                -> showResults(searchController.searchByCategoryAndTags(null, new ArrayList<>())));
+        showAllButton.setOnAction(e ->
+                showResults(searchController.searchByCategoryAndTags(null, new ArrayList<>())));
 
         Button searchButton = new Button("Search");
         searchButton.setFont(buttonFont);
@@ -214,11 +198,11 @@ public class SearchPage extends BorderPane {
         }
 
         Map<TagCategory, String> labels = new LinkedHashMap<>();
-        labels.put(TagCategory.COLOR, "Colour");
+        labels.put(TagCategory.COLOR,   "Colour");
         labels.put(TagCategory.WEATHER, "Weather");
-        labels.put(TagCategory.EVENT, "Event");
-        labels.put(TagCategory.DETAIL, "Details");
-        labels.put(TagCategory.OTHER, "Other");
+        labels.put(TagCategory.EVENT,   "Event");
+        labels.put(TagCategory.DETAIL,  "Details");
+        labels.put(TagCategory.OTHER,   "Other");
 
         TagCategory[] order = {
             TagCategory.COLOR,
@@ -302,7 +286,7 @@ public class SearchPage extends BorderPane {
             btn.setFont(normalBoldFont);
             styleTagButton(btn);
 
-            final int tagId = tag.getId();
+            final int tagId   = tag.getId();
             final String name = tag.getName();
 
             btn.selectedProperty().addListener((obs, oldVal, selected) -> {
@@ -360,6 +344,7 @@ public class SearchPage extends BorderPane {
         searchField.getChildren().removeIf(
                 node -> Integer.valueOf(CATEGORY_CHIP_SENTINEL).equals(node.getUserData()));
     }
+
 
     private void showResults(List<ClothingItem> items) {
         resultsBox.getChildren().clear();
@@ -659,20 +644,20 @@ public class SearchPage extends BorderPane {
     }
 
     private void styleTagButton(ToggleButton btn) {
-        String normal
-                = "-fx-background-color: white;"
+        String normal =
+                "-fx-background-color: white;"
                 + "-fx-border-color: " + LIGHT_GREEN + ";"
                 + "-fx-background-radius: 8;"
                 + "-fx-border-radius: 8;"
                 + "-fx-text-fill: #1a1a1a;";
-        String selected
-                = "-fx-background-color:" + DARK_GREEN + ";"
+        String selected =
+                "-fx-background-color:" + DARK_GREEN + ";"
                 + "-fx-text-fill: white;"
                 + "-fx-background-radius: 8;"
                 + "-fx-border-radius: 8;";
 
         btn.setStyle(normal);
-        btn.selectedProperty().addListener((obs, oldVal, isSelected)
-                -> btn.setStyle(isSelected ? selected : normal));
+        btn.selectedProperty().addListener((obs, oldVal, isSelected) ->
+                btn.setStyle(isSelected ? selected : normal));
     }
 }

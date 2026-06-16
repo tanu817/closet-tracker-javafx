@@ -7,16 +7,17 @@ import java.util.Set;
 /**
  * Class for clothing items.
  *
- * A clothing item - is identified by a unique {@code id}, - is known by a
- * {@code name}, - may be marked as a {@code favorite}, - has a {@code category}
- * (defined in {@link ClothingCategory}), - has a set of {@code tags}
- * (identified by their IDs via {@link Tag}), - tracks how many times it has
- * been worn via {@code wornCount}.
+ * A clothing item
+ * - is identified by a unique {@code id},
+ * - is known by a {@code name},
+ * - may be marked as a {@code favorite},
+ * - has a {@code category} (defined in {@link ClothingCategory}),
+ * - has a set of {@code tags} (identified by their IDs via {@link Tag}),
+ * - tracks how many times it has been worn via {@code wornCount}.
  *
- * <p>
- * Tags inside a clothing item are keyed by the {@link Tag#getId()} value. The
- * in-memory set is populated by the repository after loading relationships from
- * {@code clothing_tags.csv}.</p>
+ * <p>Tags inside a clothing item are keyed by the {@link Tag#getId()} value.
+ * The in-memory set is populated by the repository after loading relationships
+ * from {@code clothing_tags.csv}.</p>
  *
  * @author Priyanshu Guha
  */
@@ -32,8 +33,8 @@ public class ClothingItem {
     /**
      * Initializes a new clothing item with required properties.
      *
-     * @param id the unique ID for this clothing item
-     * @param name the display name of this item
+     * @param id       the unique ID for this clothing item
+     * @param name     the display name of this item
      * @param category the clothing category/type
      */
     public ClothingItem(int id, String name, ClothingCategory category) {
@@ -48,11 +49,11 @@ public class ClothingItem {
     /**
      * Constructor for loading an existing item from CSV storage.
      *
-     * @param id the unique ID for this clothing item
-     * @param name the display name of this item
+     * @param id         the unique ID for this clothing item
+     * @param name       the display name of this item
      * @param isFavorite whether this item is marked as a favorite
-     * @param category the clothing category/type
-     * @param wornCount the number of times this item has been worn
+     * @param category   the clothing category/type
+     * @param wornCount  the number of times this item has been worn
      */
     public ClothingItem(int id, String name,
             boolean isFavorite, ClothingCategory category,
@@ -68,6 +69,7 @@ public class ClothingItem {
     // =======
     // Getters
     // =======
+
     public int getId() {
         return id;
     }
@@ -85,8 +87,8 @@ public class ClothingItem {
     }
 
     /**
-     * Returns an unmodifiable view of this item's tags. Use
-     * {@link #addTag(Tag)} and {@link #removeTag(Tag)} to mutate.
+     * Returns an unmodifiable view of this item's tags.
+     * Use {@link #addTag(Tag)} and {@link #removeTag(Tag)} to mutate.
      *
      * @return read-only view of all associated {@link Tag} objects
      */
@@ -101,6 +103,7 @@ public class ClothingItem {
     // =======
     // Setters
     // =======
+
     public void rename(String newName) {
         this.name = newName;
     }

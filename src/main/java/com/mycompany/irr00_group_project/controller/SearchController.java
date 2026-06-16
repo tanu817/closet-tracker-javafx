@@ -10,8 +10,7 @@ import com.mycompany.irr00_group_project.service.SearchService;
 /**
  * Controller for the Search page.
  *
- * <p>
- * Receives calls from {@code SearchPage} and forwards them to
+ * <p>Receives calls from {@code SearchPage} and forwards them to
  * {@link SearchService}. Contains no business logic and performs no I/O.</p>
  *
  * @author Arshiya Shaik
@@ -24,9 +23,10 @@ public class SearchController {
         this.searchService = new SearchService();
     }
 
+
     /**
-     * Returns the display names of all known tags. Used to pre-populate the
-     * filter UI.
+     * Returns the display names of all known tags.
+     * Used to pre-populate the filter UI.
      *
      * @return list of tag name strings
      */
@@ -56,8 +56,7 @@ public class SearchController {
     /**
      * Executes an AND-logic tag search using Tag IDs.
      *
-     * <p>
-     * Every ID in {@code selectedTagIds} must be present on a result item.
+     * <p>Every ID in {@code selectedTagIds} must be present on a result item.
      * Passing an empty list returns all items.</p>
      *
      * @param selectedTagIds list of tag IDs that must all match
@@ -70,11 +69,10 @@ public class SearchController {
     /**
      * Executes a combined category + tag search.
      *
-     * <p>
-     * Filters by {@link ClothingCategory} (when non-null) AND by all supplied
-     * tag IDs (AND logic). Either filter may be omitted.</p>
+     * <p>Filters by {@link ClothingCategory} (when non-null) AND by all
+     * supplied tag IDs (AND logic). Either filter may be omitted.</p>
      *
-     * @param category the required category, or {@code null} to skip
+     * @param category       the required category, or {@code null} to skip
      * @param selectedTagIds tag IDs that must all be present, may be empty
      * @return matching {@link ClothingItem} objects; never {@code null}
      */
