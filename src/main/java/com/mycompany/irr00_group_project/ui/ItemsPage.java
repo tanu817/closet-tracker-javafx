@@ -32,10 +32,11 @@ import javafx.stage.Stage;
 
 /**
  * Items page: shows all clothing items loaded from CSV storage. Supports
- * toggling favourites, marking items as worn, viewing matching items, creating
+ * toggling favorites, marking items as worn, viewing matching items, creating
  * outfits from matches, and removing items.
  *
  * @author Bhavini Kopparam Ajay
+ * @author Priyanshu Guha
  * @author Arshiya Shaik
  */
 public class ItemsPage extends BorderPane {
@@ -61,6 +62,11 @@ public class ItemsPage extends BorderPane {
     private final DashboardController dashboardController = new DashboardController();
     private final ViewItemController viewItemController = new ViewItemController();
 
+    /**
+     * Page with clothing items.
+     *
+     * @param stage where all the items are shown
+     */
     public ItemsPage(Stage stage) {
         this.stage = stage;
         setStyle("-fx-background-color: " + CREAM + ";");
@@ -192,8 +198,7 @@ public class ItemsPage extends BorderPane {
         Button wornBtn = new Button("Mark as Worn");
         wornBtn.setFont(normalBoldFont);
         wornBtn.setStyle(
-                "-fx-background-color: " + DARK_GREEN + ";"
-                + "-fx-text-fill: white;"
+                "-fx-background-color: #F3EEE6;"
                 + "-fx-background-radius: 8;"
                 + "-fx-padding: 6 14 6 14;");
         wornBtn.setOnAction(e -> {
@@ -309,6 +314,16 @@ public class ItemsPage extends BorderPane {
                 crossIcon.setFitWidth(12);
                 crossIcon.setFitHeight(12);
                 
+
+                Image crossImg = new Image(
+                        getClass().getResourceAsStream("/icons/cross.png")
+                );
+
+                ImageView crossIcon = new ImageView(crossImg);
+
+                crossIcon.setFitWidth(12);
+                crossIcon.setFitHeight(12);
+
                 Button chip = new Button(tn);
                 chip.setFont(smallFont);
                 chip.setGraphic(crossIcon);
@@ -547,7 +562,10 @@ public class ItemsPage extends BorderPane {
                 "-fx-background-color: #F3EEE6;"
                 + "-fx-background-radius: 10;"
                 + "-fx-border-radius: 10;");
-        backButton.setOnAction(e -> new MainPage().start(stage));
+        backButton.setOnAction(e -> {
+            MainPage mainPage = new MainPage();
+            mainPage.start(stage, stage.getScene().getWidth(), stage.getScene().getHeight());
+        });
 
         Label title = new Label("All Items");
         title.setFont(titleFont);
