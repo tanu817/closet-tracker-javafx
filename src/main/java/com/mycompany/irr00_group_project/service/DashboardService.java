@@ -21,6 +21,9 @@ public class DashboardService {
     private final ClothingRepository clothingRepository;
     private final TagRepository tagRepository;
 
+    /**
+     * Initialize.
+     */
     public DashboardService() {
         this.clothingRepository = new ClothingRepository();
         this.tagRepository = new TagRepository();
@@ -70,7 +73,7 @@ public class DashboardService {
          */
         public final int totalWears;
         /**
-         * Total number of items marked as favourite.
+         * Total number of items marked as favorite.
          */
         public final int totalFavourites;
         /**
@@ -78,6 +81,14 @@ public class DashboardService {
          */
         public final double avgWearsPerItem;
 
+        /**
+         * Dashboard Statistics.
+         *
+         * @param totalItems total items worn
+         * @param totalWears total times items have been worn
+         * @param totalFavourites number of favorites
+         * @param avgWearsPerItem average times an item has been worn
+         */
         DashboardStats(int totalItems, int totalWears,
                 int totalFavourites, double avgWearsPerItem) {
             this.totalItems = totalItems;
