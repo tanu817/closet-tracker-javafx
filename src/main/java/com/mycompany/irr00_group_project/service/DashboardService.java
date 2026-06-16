@@ -15,6 +15,7 @@ import com.mycompany.irr00_group_project.model.ClothingItem;
  * repository call cannot satisfy on its own.
  *
  * @author Arshiya Shaik
+ * @author Alexandra Varapai
  */
 public class DashboardService {
 
@@ -141,7 +142,7 @@ public class DashboardService {
      *
      * @return count of items worn more than once
      */
-    public int getItemsWornThisMonth() {
+    public int getItemsWornMoreThanOnce() {
         List<ClothingItem> all = clothingRepository.getAllItems();
         int count = 0;
         for (ClothingItem item : all) {

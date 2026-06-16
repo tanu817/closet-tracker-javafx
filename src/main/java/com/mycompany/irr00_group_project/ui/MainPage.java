@@ -25,6 +25,7 @@ import javafx.stage.Stage;
  * data via {@link DashboardController}.
  *
  * @author Bhavini Kopparam Ajay
+ * @author Alexandra Varapai
  */
 public class MainPage {
 
@@ -130,7 +131,7 @@ public class MainPage {
 
         // PROGRESS BAR
         int totalItems = dashboardController.getTotalItems();
-        int wornItems = dashboardController.getItemsWornThisMonth();
+        int wornItems = dashboardController.getItemsWornMoreThanOnce();
         double progress = dashboardController.getWardrobeUsageProgress();
         int percentage = (int) (progress * 100);
 
