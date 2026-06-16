@@ -1,5 +1,4 @@
 id,name,category
-1,Top,OTHER
 2,Bottom,OTHER
 3,One Piece,OTHER
 4,Accessory,OTHER
@@ -20,5 +19,29 @@ id,name,category
 19,Party,EVENT
 20,Minimal,DETAIL
 21,Vintage,DETAIL
+10,A,OTHER
+2,Red,COLOR
+5,Casual,EVENT
+5,Summer,WEATHER
+3,Formal,EVENT
+22,Formal,EVENT
+23,Sunny,WEATHER
+24,Party,EVENT
+25,Vintage,DETAIL
+26,Floral,OTHER
+27,Lightweight,OTHER
+10,A,OTHER
+1,Blue,COLOR
+2,Red,COLOR
+5,Casual,EVENT
+5,Summer,WEATHER
+1,Blue,COLOR
+1,Blue,COLOR
+3,Formal,EVENT
+28,B,OTHER
+29,Formal,EVENT
+30,Sunny,WEATHER
+31,Party,EVENT
+32,Vintage,DETAIL
 22,Satin,OTHER
 23,Cute,OTHER

@@ -300,6 +300,7 @@ public class ItemsPage extends BorderPane {
         }
 
         // Helper: rebuilds the chips from selectedTagNames
+
         Runnable refreshChips = () -> {
             currentTagsPane.getChildren().clear();
             for (String tn : new ArrayList<>(selectedTagNames)) {

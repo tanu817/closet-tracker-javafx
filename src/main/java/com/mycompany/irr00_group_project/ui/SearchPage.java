@@ -40,6 +40,10 @@ import javafx.stage.Stage;
  * matching items of the opposite category are shown inline; each match has a
  * "Create Outfit" button.</p>
  *
+ * <p>Each result card has a "Mark as Worn" button. If the item is a TOP or
+ * BOTTOM, matching items of the opposite category are shown inline; each
+ * match has a "Create Outfit" button.</p>
+ *
  * @author Bhavini Kopparam Ajay
  * @author Priyanshu Guha
  * @author Arshiya Tasneem Shaik
@@ -186,6 +190,7 @@ public class SearchPage extends BorderPane {
         return new VBox(15, searchRow);
     }
 
+
     private VBox createFiltersSection() {
         VBox filters = new VBox(15);
 
@@ -320,6 +325,7 @@ public class SearchPage extends BorderPane {
         row.getChildren().addAll(label, tagPane);
         return row;
     }
+
 
     private void addTagChip(String tagName, int tagId) {
         Label chip = new Label(tagName);
