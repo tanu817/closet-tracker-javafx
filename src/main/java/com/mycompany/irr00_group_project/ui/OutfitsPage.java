@@ -9,7 +9,6 @@ import java.util.Optional;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -18,7 +17,6 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -35,7 +33,7 @@ import javafx.stage.Stage;
  */
 public class OutfitsPage extends BorderPane {
 
-    private static final String LIGHT_GREEN = "#D8CFBC";
+    //private static final String LIGHT_GREEN = "#D8CFBC";
     private static final String DARK_GREEN = "#565448";
     private static final String CREAM = "#FFFAF4";
 

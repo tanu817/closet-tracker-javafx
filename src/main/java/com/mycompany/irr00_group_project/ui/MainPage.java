@@ -38,14 +38,8 @@ public class MainPage {
      * @param width the width of the scene of this stage
      * @param height the height of the scene of this stage
      */
-<<<<<<< HEAD
-    public void start(Stage stage) {
-        //BorderPane root = new BorderPane();
-=======
     public void start(Stage stage, double width, double height) {
-        BorderPane root = new BorderPane();
->>>>>>> 89fd534029e5d452800e04e358bf7703a8599caa
-
+        
         Font titleFont = Font.loadFont(
                 getClass().getResourceAsStream("/fonts/YesevaOne-Regular.ttf"), 28);
         Font buttonFont = Font.loadFont(
@@ -139,7 +133,7 @@ public class MainPage {
         BorderPane root = new BorderPane();
 
         root.setCenter(cardsRow);
-        root.setMargin(cardsRow, new Insets(20, 0, 0, 0));
+        BorderPane.setMargin(cardsRow, new Insets(20, 0, 0, 0));
 
         // ADD ITEM OVERLAY
         AddItemsPage addPage = new AddItemsPage();

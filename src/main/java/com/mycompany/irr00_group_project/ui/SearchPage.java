@@ -601,14 +601,9 @@ public class SearchPage extends BorderPane {
      * </ul>
      */
     private void handleCreateOutfit(ClothingItem selectedItem,
-<<<<<<< HEAD (b3ddea3) - Fixed more checkstyle e
-            ClothingItem matchItem,
-            Button outfitBtn) {
-=======
                                     ClothingItem matchItem,
                                     Button outfitBtn) {
 
->>>>>>> 89fd534029e5d452800e04e358bf7703a8599caa
         try {
             Image tickImg = new Image(
                     getClass().getResourceAsStream(
