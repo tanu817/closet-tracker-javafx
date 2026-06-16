@@ -71,5 +71,6 @@
         <maven.compiler.release>21</maven.compiler.release>
         <exec.mainClass>com.mycompany.irr00_group_project.App</exec.mainClass>
         <javafx.version>21.0.2</javafx.version>
+        <javafx.platform>win</javafx.platform>
     </properties>
 </project>
