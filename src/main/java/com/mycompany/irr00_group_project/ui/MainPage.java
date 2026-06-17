@@ -1,25 +1,25 @@
 package com.mycompany.irr00_group_project.ui;
 
+import java.util.List;
+
 import com.mycompany.irr00_group_project.controller.DashboardController;
 import com.mycompany.irr00_group_project.model.ClothingItem;
-
-import java.util.List;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.scene.chart.PieChart;
 
 /**
  * Main page / dashboard of the app. Dashboard cards are loaded from real CSV
@@ -335,6 +335,7 @@ public class MainPage {
     int tops = 0;
     int bottoms = 0;
     int accessories = 0;
+    int onePiece = 0;
 
     List<ClothingItem> allItems = dashboardController.getAllItemsWithTags();
 
@@ -347,6 +348,10 @@ public class MainPage {
             bottoms++;
         } else if (category.equalsIgnoreCase("ACCESSORY")) {
             accessories++;
+        } else if (category.equalsIgnoreCase("ONE_PIECE") 
+                || category.equalsIgnoreCase("ONEPIECE") 
+                || category.equalsIgnoreCase("ONE PIECE")) {
+            onePiece++;
         }
     }
 
@@ -354,6 +359,7 @@ public class MainPage {
     pieChart.getData().add(new PieChart.Data("Tops", tops));
     pieChart.getData().add(new PieChart.Data("Bottoms", bottoms));
     pieChart.getData().add(new PieChart.Data("Accessories", accessories));
+    pieChart.getData().add(new PieChart.Data("One Piece", onePiece));
     
     }
 }
