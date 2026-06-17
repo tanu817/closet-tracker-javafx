@@ -16,12 +16,17 @@ import com.mycompany.irr00_group_project.model.TagCategory;
  * untouched.</p>
  *
  * @author Arshiya Shaik
+ * @author Aleksandra Levenkova
  */
 public class EditItemService {
 
     private final ClothingRepository clothingRepository;
     private final TagRepository tagRepository;
 
+    /**
+     * Initializes the service with new instances of
+     * {@link ClothingRepository} and {@link TagRepository}.
+     */
     public EditItemService() {
         this.clothingRepository = new ClothingRepository();
         this.tagRepository = new TagRepository();
@@ -36,14 +41,33 @@ public class EditItemService {
      * @throws IllegalArgumentException if {@code newName} is blank
      */
     public void updateItem(ClothingItem item, String newName, List<String> tagNames) {
-        if (newName == null || newName.isBlank()) {
-            throw new IllegalArgumentException("Item name must not be blank.");
-        }
+        
+        validateName(newName);
 
         // Update name and persist
         item.rename(newName.trim());
         clothingRepository.changeItem(item);
 
+        clearTags(item);
+        addTags(item, tagNames);
+    }
+    
+    /**
+     * Validates new name of item.
+     * @param newName to be checked
+     * @throws IllegalArgumentException if {@code newName} is blank
+     */
+    private void validateName(String newName) {
+        if (newName == null || newName.isBlank()) {
+            throw new IllegalArgumentException("Item name must not be blank.");
+        }
+    }
+    
+    /**
+     * Remove all tag associations from the item in csv and in-memory object.
+     * @param item whose tags should be removed
+     */
+    private void clearTags(ClothingItem item) {
         // Remove all existing tag relationships from CSV
         List<Integer> existingTagIds = tagRepository.getTagIdsOfItem(item.getId());
         for (int tagId : existingTagIds) {
@@ -53,7 +77,14 @@ public class EditItemService {
         for (Tag t : new java.util.ArrayList<>(item.getTags())) {
             item.removeTag(t);
         }
-
+    }
+    
+    /**
+     * Adds supplied tags to item, creating new ones when needed.
+     * @param item to which tags are added
+     * @param tagNames the names of tags to assign
+     */
+    private void addTags(ClothingItem item, List<String> tagNames) {
         // Re-add desired tags
         if (tagNames != null) {
             for (String name : tagNames) {
