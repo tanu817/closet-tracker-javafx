@@ -644,16 +644,9 @@ public class SearchPage extends BorderPane {
             Button outfitBtn) {
 
         try {
-            Image tickImg = new Image(
-                    getClass().getResourceAsStream("/icons/tick.png"));
-            ImageView tickIcon = new ImageView(tickImg);
-            tickIcon.setFitWidth(16);
-            tickIcon.setFitHeight(16);
-
             viewItemController.createOutfitFromMatch(selectedItem, matchItem);
             outfitBtn.setDisable(true);
             outfitBtn.setText("Saved");
-            outfitBtn.setGraphic(tickIcon);
             showDialog(Alert.AlertType.INFORMATION,
                     "Outfit Created",
                     "\"" + selectedItem.getName() + " + " + matchItem.getName()
