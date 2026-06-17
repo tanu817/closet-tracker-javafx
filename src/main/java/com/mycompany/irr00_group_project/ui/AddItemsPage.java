@@ -1,22 +1,22 @@
 package com.mycompany.irr00_group_project.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mycompany.irr00_group_project.controller.AddItemController;
 import com.mycompany.irr00_group_project.model.ClothingCategory;
 import com.mycompany.irr00_group_project.model.Tag;
 import com.mycompany.irr00_group_project.model.TagCategory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
@@ -32,6 +32,7 @@ import javafx.scene.text.Text;
  *
  * @author Bhavini Kopparam Ajay
  * @author Arshiya Shaik
+ * @author Tanusri Madhalam
  */
 public class AddItemsPage {
 
