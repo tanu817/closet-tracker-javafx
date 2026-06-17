@@ -45,6 +45,46 @@ public class MainPage {
                 getClass().getResourceAsStream("/fonts/YesevaOne-Regular.ttf"), 28);
         Font buttonFont = Font.loadFont(
                 getClass().getResourceAsStream("/fonts/MuktaVaani-SemiBold.ttf"), 14);
+        Font cardTitleFont = Font.loadFont(
+                getClass().getResourceAsStream("/fonts/YesevaOne-Regular.ttf"), 20);
+
+        VBox topSection = buildTopSection(stage, titleFont, buttonFont);
+        HBox cardsRow = buildDashboardCards(cardTitleFont, buttonFont);
+        StackPane bottomBar = buildBottomBar(cardTitleFont, buttonFont);
+
+        BorderPane root = new BorderPane();
+        root.setCenter(cardsRow);
+        root.setMargin(cardsRow, new Insets(20, 0, 0, 0));
+        root.setBottom(bottomBar);
+        BorderPane.setMargin(bottomBar, new Insets(20));
+        root.setTop(topSection);
+        root.setPadding(new Insets(20));
+        root.setStyle("-fx-background-color: #FFFAF4;");
+
+        StackPane stackRoot = new StackPane();
+        stackRoot.getChildren().addAll(root, dimBackground, overlay);
+
+        Scene scene = new Scene(stackRoot, 1200, 700);
+        stage.setTitle("Closet App");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    // Overlay + dim background are built once and reused by buildBottomBar(),
+    // but must exist before start() assembles the StackPane root.
+    private final AddItemsPage addPage = new AddItemsPage();
+    private final VBox overlay = addPage.createAddItemsOverlay();
+    private final Region dimBackground = new Region();
+
+    /**
+     * Builds the title row and the search/items/outfits navigation row.
+     *
+     * @param stage the primary stage, used for page navigation
+     * @param titleFont font for the page title
+     * @param buttonFont font for the nav buttons
+     * @return the assembled top section
+     */
+    private VBox buildTopSection(Stage stage, Font titleFont, Font buttonFont) {
 
         Label title = new Label("Home");
         title.setFont(titleFont);
@@ -105,9 +145,17 @@ public class MainPage {
         title.setAlignment(Pos.CENTER);
         topSection.getChildren().addAll(title, searchRow);
 
-        // DASHBOARD CARDS — loaded from real data
-        Font cardTitleFont = Font.loadFont(
-                getClass().getResourceAsStream("/fonts/YesevaOne-Regular.ttf"), 20);
+        return topSection;
+    }
+
+    /**
+     * Builds the row of dashboard cards (favorites + stats, most worn, least worn).
+     *
+     * @param cardTitleFont font for card headings
+     * @param buttonFont font for item label rows
+     * @return the assembled cards row
+     */
+    private HBox buildDashboardCards(Font cardTitleFont, Font buttonFont) {
 
         VBox favoritesCard = buildCard(
                 "Favorites", "/icons/heart.png",
@@ -124,59 +172,31 @@ public class MainPage {
                 dashboardController.getLeast5Worn(),
                 cardTitleFont, buttonFont, 30, 30, true);
 
-        VBox leftColumn = new VBox(20);
-
-        // create stats card
         VBox statsCard = createStatsCard(cardTitleFont);
 
-        // stack favorites + stats
+        VBox leftColumn = new VBox(20);
         leftColumn.getChildren().addAll(favoritesCard, statsCard);
 
         HBox cardsRow = new HBox(20);
         cardsRow.setAlignment(Pos.CENTER);
-
-        // replace favorites with left column
         cardsRow.getChildren().addAll(leftColumn, mostWornCard, leastWornCard);
 
-        BorderPane root = new BorderPane();
+        return cardsRow;
+    }
 
-        root.setCenter(cardsRow);
-        root.setMargin(cardsRow, new Insets(20, 0, 0, 0));
+    /**
+     * Builds the bottom bar: wardrobe usage progress section, the add-item
+     * overlay wiring, and the plus button that triggers it.
+     *
+     * @param cardTitleFont font for the progress section title
+     * @param buttonFont font for stats text and overlay controls
+     * @return the assembled bottom bar
+     */
+    private StackPane buildBottomBar(Font cardTitleFont, Font buttonFont) {
 
-        // PROGRESS BAR
-        int totalItems = dashboardController.getTotalItems();
-        int wornItems = dashboardController.getItemsWornMoreThanOnce();
-        double progress = dashboardController.getWardrobeUsageProgress();
-        int percentage = (int) (progress * 100);
+        VBox progressSection = buildProgressSection(cardTitleFont, buttonFont);
+        Button addButton = buildAddButton();
 
-        Label progressTitle = new Label("Wardrobe Usage Overview");
-        progressTitle.setFont(cardTitleFont);
-
-        Label progressStats = new Label(wornItems + "/" + totalItems + " items  —  " 
-            + percentage + "%");
-        progressStats.setFont(buttonFont);
-
-        javafx.scene.control.ProgressBar progressBar = 
-            new javafx.scene.control.ProgressBar(progress);
-        progressBar.setPrefWidth(860);
-        progressBar.setPrefHeight(10);
-        progressBar.setStyle(
-                "-fx-accent: #565448;"
-                + "-fx-background-color: #D8CFBC;"
-                + "-fx-background-radius: 10;"
-                + "-fx-border-radius: 10;");
-
-        VBox progressSection = new VBox(10);
-        progressSection.getChildren().addAll(progressTitle, progressBar, progressStats);
-        HBox.setHgrow(progressSection, javafx.scene.layout.Priority.ALWAYS);
-
-        progressSection.setAlignment(Pos.CENTER);
-
-        // ADD ITEM OVERLAY
-        AddItemsPage addPage = new AddItemsPage();
-        VBox overlay = addPage.createAddItemsOverlay();
-
-        Region dimBackground = new Region();
         dimBackground.setStyle("-fx-background-color: rgba(0,0,0,0.35);");
         dimBackground.setVisible(false);
         dimBackground.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
@@ -191,7 +211,65 @@ public class MainPage {
         overlay.setMaxHeight(560);
         StackPane.setAlignment(overlay, Pos.CENTER);
 
-        // PLUS BUTTON
+        addButton.setOnAction(e -> {
+            dimBackground.setVisible(true);
+            overlay.setVisible(true);
+        });
+
+        StackPane bottomBar = new StackPane();
+        StackPane.setAlignment(progressSection, Pos.CENTER);
+        StackPane.setAlignment(addButton, Pos.CENTER_RIGHT);
+        bottomBar.getChildren().addAll(progressSection, addButton);
+
+        return bottomBar;
+    }
+
+    /**
+     * Builds the wardrobe usage progress bar and its labels.
+     *
+     * @param cardTitleFont font for the section title
+     * @param buttonFont font for the stats label
+     * @return the assembled progress section
+     */
+    private VBox buildProgressSection(Font cardTitleFont, Font buttonFont) {
+
+        int totalItems = dashboardController.getTotalItems();
+        int wornItems = dashboardController.getItemsWornMoreThanOnce();
+        double progress = dashboardController.getWardrobeUsageProgress();
+        int percentage = (int) (progress * 100);
+
+        Label progressTitle = new Label("Wardrobe Usage Overview");
+        progressTitle.setFont(cardTitleFont);
+
+        Label progressStats = new Label(wornItems + "/" + totalItems + " items  —  "
+            + percentage + "%");
+        progressStats.setFont(buttonFont);
+
+        javafx.scene.control.ProgressBar progressBar =
+            new javafx.scene.control.ProgressBar(progress);
+        progressBar.setPrefWidth(860);
+        progressBar.setPrefHeight(10);
+        progressBar.setStyle(
+                "-fx-accent: #565448;"
+                + "-fx-background-color: #D8CFBC;"
+                + "-fx-background-radius: 10;"
+                + "-fx-border-radius: 10;");
+
+        VBox progressSection = new VBox(10);
+        progressSection.getChildren().addAll(progressTitle, progressBar, progressStats);
+        HBox.setHgrow(progressSection, javafx.scene.layout.Priority.ALWAYS);
+        progressSection.setAlignment(Pos.CENTER);
+
+        return progressSection;
+    }
+
+    /**
+     * Builds the circular plus button used to open the add-item overlay.
+     *
+     * @return the assembled add button (action handler attached by caller)
+     */
+    private Button buildAddButton() {
+
         Image plusImg = new Image(
                 getClass().getResourceAsStream("/icons/plus.png"));
         ImageView plusIcon = new ImageView(plusImg);
@@ -205,29 +283,8 @@ public class MainPage {
                 "-fx-background-color: #D8CFBC;"
                 + "-fx-background-radius: 30;"
                 + "-fx-border-radius: 30;");
-        addButton.setOnAction(e -> {
-            dimBackground.setVisible(true);
-            overlay.setVisible(true);
-        });
 
-        StackPane bottomBar = new StackPane();
-        StackPane.setAlignment(progressSection, Pos.CENTER);
-        StackPane.setAlignment(addButton, Pos.CENTER_RIGHT);
-        bottomBar.getChildren().addAll(progressSection, addButton);
-
-        root.setBottom(bottomBar);
-        BorderPane.setMargin(bottomBar, new Insets(20));
-        root.setTop(topSection);
-        root.setPadding(new Insets(20));
-        root.setStyle("-fx-background-color: #FFFAF4;");
-
-        StackPane stackRoot = new StackPane();
-        stackRoot.getChildren().addAll(root, dimBackground, overlay);
-
-        Scene scene = new Scene(stackRoot, 1200, 700);
-        stage.setTitle("Closet App");
-        stage.setScene(scene);
-        stage.show();
+        return addButton;
     }
 
     /**
