@@ -115,11 +115,9 @@ public class ItemsPage extends BorderPane {
         }
     }
 
-    /**
-     * Builds one item card. The {@code wrapper} is passed in so the "Show
-     * Matches" button can append/remove the matches panel into it.
-     */
-    private VBox createItemCard(ClothingItem item, VBox wrapper) {
+    // Auxiliary functions
+    
+    private VBox createCard() {
         VBox card = new VBox(12);
         card.setPadding(new Insets(18));
         card.setStyle(
@@ -129,33 +127,56 @@ public class ItemsPage extends BorderPane {
                 + "-fx-border-radius: 10;");
         card.setMinWidth(480);
         card.setPrefWidth(480);
-
-        // TOP ROW: name + favourite heart
+        return card;
+    }
+    
+    private HBox createTopRow() {
         HBox topRow = new HBox();
         topRow.setAlignment(Pos.CENTER_LEFT);
-
+        return topRow;
+    }
+    
+    private Label createNameLabel(ClothingItem item) {
         Label nameLabel = new Label(item.getName());
         nameLabel.setFont(buttonFont);
         nameLabel.setStyle("-fx-text-fill: black;");
-
+        return nameLabel;
+    }
+    
+    private Region createSpacer() {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
+        return spacer;
+    }
+    
+    private ImageView createHeart(ClothingItem item) {
+        Image emptyHeartImg = getEmptyHeartImage();
 
-        Image emptyHeartImg = new Image(
-                getClass().getResourceAsStream("/icons/heart.png")
-        );
-
-        Image filledHeartImg = new Image(
-                getClass().getResourceAsStream("/icons/heartFilled.png")
-        );
-
+        Image filledHeartImg = getFilledHeartImage();
+        
         ImageView heart = new ImageView(
                 item.isFavorite() ? filledHeartImg : emptyHeartImg
         );
 
         heart.setFitWidth(26);
         heart.setFitHeight(26);
-
+        
+        return heart;
+    }
+    
+    private Image getEmptyHeartImage() {
+        return new Image(
+                getClass().getResourceAsStream("/icons/heart.png")
+        );
+    }
+    
+    private Image getFilledHeartImage() {
+        return new Image(
+                getClass().getResourceAsStream("/icons/heartFilled.png")
+        );
+    }
+    
+    private Button createHeartButton(ImageView heart, ClothingItem item) {
         Button heartBtn = new Button();
         heartBtn.setGraphic(heart);
         heartBtn.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
@@ -164,15 +185,15 @@ public class ItemsPage extends BorderPane {
             viewItemController.toggleFavourite(item);
 
             if (item.isFavorite()) {
-                heart.setImage(filledHeartImg);
+                heart.setImage(getFilledHeartImage());
             } else {
-                heart.setImage(emptyHeartImg);
+                heart.setImage(getEmptyHeartImage());
             }
         });
-
-        topRow.getChildren().addAll(nameLabel, spacer, heartBtn);
-
-        // CATEGORY chip
+        return heartBtn;
+    }
+    
+    private Label createCategoryLabel(ClothingItem item) {
         Label catLabel = new Label(cap(item.getCategory().name()));
         catLabel.setFont(smallFont);
         catLabel.setStyle(
@@ -180,21 +201,27 @@ public class ItemsPage extends BorderPane {
                 + "-fx-background-color: " + DARK_GREEN + ";"
                 + "-fx-background-radius: 6;"
                 + "-fx-padding: 3 8 3 8;");
-
-        // TAGS row
+        return catLabel;
+    }
+    
+    private FlowPane createTagsPane(ClothingItem item) {
         FlowPane tagsPane = new FlowPane();
         tagsPane.setHgap(8);
         tagsPane.setVgap(6);
         for (Tag tag : item.getTags()) {
             tagsPane.getChildren().add(createTagChip(tag.getName()));
         }
-
-        // WORN COUNT label (updated by Mark as Worn button)
+        return tagsPane;
+    }
+    
+    private Label createWornLabel(ClothingItem item) {
         Label wornLabel = new Label("Worn: " + item.getWornCount() + " time(s)");
         wornLabel.setFont(smallFont);
         wornLabel.setStyle("-fx-text-fill: #888;");
-
-        // ACTION BUTTONS
+        return wornLabel;
+    }
+    
+    private Button createWornButton(ClothingItem item, Label wornLabel) {
         Button wornBtn = new Button("Mark as Worn");
         wornBtn.setFont(normalBoldFont);
         wornBtn.setStyle(
@@ -207,8 +234,11 @@ public class ItemsPage extends BorderPane {
             item.wear();
             wornLabel.setText("Worn: " + item.getWornCount() + " time(s)");
         });
-
-        // "Show Matches" toggles the matches panel in the wrapper
+        
+        return wornBtn;
+    }
+    
+    private Button createMatchButton(ClothingItem item, VBox wrapper) {
         Button matchBtn = new Button("Show Matches");
         matchBtn.setFont(normalBoldFont);
         matchBtn.setStyle(
@@ -216,7 +246,11 @@ public class ItemsPage extends BorderPane {
                 + "-fx-background-radius: 8;"
                 + "-fx-padding: 6 14 6 14;");
         matchBtn.setOnAction(e -> toggleMatchesPanel(item, wrapper, matchBtn));
-
+        
+        return matchBtn;
+    }
+    
+    private Button createDeleteButton(ClothingItem item) {
         Button deleteBtn = new Button("Remove");
         deleteBtn.setFont(normalBoldFont);
         deleteBtn.setStyle(
@@ -233,7 +267,10 @@ public class ItemsPage extends BorderPane {
             alert.showAndWait();
             loadItemsFromDb();
         });
-
+        return deleteBtn;
+    }
+    
+    private Button createEditButton(ClothingItem item, Label nameLabel, FlowPane tagsPane) {
         Button editBtn = new Button("Edit");
         editBtn.setFont(normalBoldFont);
         editBtn.setStyle(
@@ -242,6 +279,45 @@ public class ItemsPage extends BorderPane {
                 + "-fx-background-radius: 8;"
                 + "-fx-padding: 6 14 6 14;");
         editBtn.setOnAction(e -> openEditDialog(item, nameLabel, tagsPane));
+        return editBtn;
+    }
+    
+    /**
+     * Builds one item card. The {@code wrapper} is passed in so the "Show
+     * Matches" button can append/remove the matches panel into it.
+     */
+    private VBox createItemCard(ClothingItem item, VBox wrapper) {
+        VBox card = createCard();
+
+        // TOP ROW: name + favourite heart
+        HBox topRow = createTopRow();
+
+        Label nameLabel = createNameLabel(item);
+        Region spacer = createSpacer();
+        ImageView heart = createHeart(item);
+
+        Button heartBtn = createHeartButton(heart, item);
+
+        topRow.getChildren().addAll(nameLabel, spacer, heartBtn);
+
+        // CATEGORY chip
+        Label catLabel = createCategoryLabel(item);
+
+        // TAGS row
+        FlowPane tagsPane = createTagsPane(item);
+
+        // WORN COUNT label (updated by Mark as Worn button)
+        Label wornLabel = createWornLabel(item);
+
+        // ACTION BUTTONS
+        Button wornBtn = createWornButton(item, wornLabel);
+
+        // "Show Matches" toggles the matches panel in the wrapper
+        Button matchBtn = createMatchButton(item, wrapper);
+
+        Button deleteBtn = createDeleteButton(item);
+
+        Button editBtn = createEditButton(item, nameLabel, tagsPane);
 
         HBox actionRow = new HBox(10);
         actionRow.setAlignment(Pos.CENTER_LEFT);
