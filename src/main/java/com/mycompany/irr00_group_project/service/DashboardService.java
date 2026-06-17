@@ -16,6 +16,7 @@ import com.mycompany.irr00_group_project.model.ClothingItem;
  *
  * @author Arshiya Shaik
  * @author Alexandra Varapai
+ * @author Tanusri Madhalam
  */
 public class DashboardService {
 
