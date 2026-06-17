@@ -54,6 +54,11 @@ public class OutfitsPage extends BorderPane {
     private final OutfitController outfitController = new OutfitController();
     private VBox outfitsRoot;
 
+    /**
+     * Constructs the OutfitsPage and initialises the layout.
+     *
+     * @param stage the primary application stage
+     */
     public OutfitsPage(Stage stage) {
         this.stage = stage;
         setStyle("-fx-background-color: " + CREAM + ";");
@@ -63,7 +68,6 @@ public class OutfitsPage extends BorderPane {
         root.getChildren().addAll(createTopSection(), createOutfitsSection());
         setCenter(root);
     }
-
 
     private VBox createTopSection() {
         Image backImg = new Image(
@@ -99,7 +103,6 @@ public class OutfitsPage extends BorderPane {
         topSection.getChildren().add(topRow);
         return topSection;
     }
-
 
     private ScrollPane createOutfitsSection() {
         outfitsRoot = new VBox(25);
@@ -151,7 +154,6 @@ public class OutfitsPage extends BorderPane {
         outfitsRoot.getChildren().setAll(outfitsRow);
     }
 
-
     private VBox createOutfitCard(int outfitId,
                                   String outfitName,
                                   ClothingItem item1,
@@ -169,6 +171,21 @@ public class OutfitsPage extends BorderPane {
         title.setFont(outfitFont);
         title.setStyle("-fx-text-fill: black;");
 
+        HBox itemsRow = buildOutfitItemsRow(item1, item2);
+        HBox actionsRow = buildOutfitActionsRow(outfitId, outfitName, title);
+
+        card.getChildren().addAll(title, itemsRow, actionsRow);
+        return card;
+    }
+
+    /**
+     * Builds the items row showing the two outfit items with a plus icon between them.
+     *
+     * @param item1 first clothing item (may be null)
+     * @param item2 second clothing item (may be null)
+     * @return HBox with mini-cards and plus icon
+     */
+    private HBox buildOutfitItemsRow(ClothingItem item1, ClothingItem item2) {
         Image plusImg = new Image(
                 getClass().getResourceAsStream("/icons/plus.png"));
         ImageView plusIcon = new ImageView(plusImg);
@@ -178,29 +195,26 @@ public class OutfitsPage extends BorderPane {
         VBox miniCard1 = createMiniItemCard(item1);
         VBox miniCard2 = createMiniItemCard(item2);
 
-        HBox itemsRow = new HBox(30);
-        itemsRow.setAlignment(Pos.CENTER);
-        itemsRow.getChildren().addAll(miniCard1, plusIcon, miniCard2);
+        HBox row = new HBox(30);
+        row.setAlignment(Pos.CENTER);
+        row.getChildren().addAll(miniCard1, plusIcon, miniCard2);
+        return row;
+    }
 
-        // Action buttons row
+    /**
+     * Builds the actions row (Edit, Mark as Worn, Delete) for an outfit card.
+     *
+     * @param outfitId id of the outfit
+     * @param outfitName name of the outfit
+     * @param titleLabel label reference so rename can update it
+     * @return HBox with action buttons
+     */
+    private HBox buildOutfitActionsRow(int outfitId, String outfitName, Label titleLabel) {
         Button editBtn = new Button("Edit");
         editBtn.setFont(normalBoldFont);
         editBtn.setStyle("-fx-background-color: #5C8A6E; -fx-background-radius: 8; "
                 + "-fx-border-radius: 8; -fx-text-fill: white;");
-        editBtn.setOnAction(e -> {
-            TextInputDialog dialog = new TextInputDialog(title.getText());
-            dialog.setTitle("Rename Outfit");
-            dialog.setHeaderText(null);
-            dialog.setContentText("New name:");
-            Optional<String> result = dialog.showAndWait();
-            result.ifPresent(newName -> {
-                if (!newName.isBlank()) {
-                    outfitController.renameOutfit(outfitId, newName);
-                    title.setText(newName);
-                    showInfo("Outfit Updated", "Outfit renamed to \"" + newName + "\".");
-                }
-            });
-        });
+        editBtn.setOnAction(e -> handleRenameOutfit(outfitId, titleLabel));
 
         Button wornBtn = new Button("Mark as Worn");
         wornBtn.setFont(normalBoldFont);
@@ -223,9 +237,28 @@ public class OutfitsPage extends BorderPane {
 
         HBox actionsRow = new HBox(10);
         actionsRow.getChildren().addAll(wornBtn, editBtn, deleteBtn);
+        return actionsRow;
+    }
 
-        card.getChildren().addAll(title, itemsRow, actionsRow);
-        return card;
+    /**
+     * Opens a rename dialog for the given outfit and updates the label on success.
+     *
+     * @param outfitId id of the outfit to rename
+     * @param titleLabel label in the card to update after rename
+     */
+    private void handleRenameOutfit(int outfitId, Label titleLabel) {
+        TextInputDialog dialog = new TextInputDialog(titleLabel.getText());
+        dialog.setTitle("Rename Outfit");
+        dialog.setHeaderText(null);
+        dialog.setContentText("New name:");
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(newName -> {
+            if (!newName.isBlank()) {
+                outfitController.renameOutfit(outfitId, newName);
+                titleLabel.setText(newName);
+                showInfo("Outfit Updated", "Outfit renamed to \"" + newName + "\".");
+            }
+        });
     }
 
     private VBox createMiniItemCard(ClothingItem item) {
@@ -260,7 +293,6 @@ public class OutfitsPage extends BorderPane {
 
         card.getChildren().addAll(name, catLabel);
 
-        // Show first tag if available
         if (!item.getTags().isEmpty()) {
             String tagName = item.getTags().iterator().next().getName();
             Label tagChip = new Label(tagName);
@@ -275,7 +307,6 @@ public class OutfitsPage extends BorderPane {
 
         return card;
     }
-
 
     private void showInfo(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
