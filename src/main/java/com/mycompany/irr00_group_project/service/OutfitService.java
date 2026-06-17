@@ -25,6 +25,9 @@ public class OutfitService {
     private final ClothingRepository clothingRepository;
     private final TagRepository tagRepository;
 
+    /**
+     * Initialize.
+     */
     public OutfitService() {
         this.outfitRepository = new OutfitRepository();
         this.clothingRepository = new ClothingRepository();
@@ -185,7 +188,7 @@ public class OutfitService {
     }
 
     /**
-     *
+     * Gets all the clothing items stored.
      * @return all {@link ClothingItem} objects with tags loaded
      */
     public List<ClothingItem> getAllClothingItems() {

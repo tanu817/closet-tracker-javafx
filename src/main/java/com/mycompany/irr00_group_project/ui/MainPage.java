@@ -37,7 +37,6 @@ public class MainPage {
      * @param stage the primary stage
      */
     public void start(Stage stage) {
-        BorderPane root = new BorderPane();
 
         Font titleFont = Font.loadFont(
                 getClass().getResourceAsStream("/fonts/YesevaOne-Regular.ttf"), 28);
@@ -125,6 +124,8 @@ public class MainPage {
         HBox cardsRow = new HBox(20);
         cardsRow.setAlignment(Pos.CENTER);
         cardsRow.getChildren().addAll(favoritesCard, mostWornCard, leastWornCard);
+        
+        BorderPane root = new BorderPane();
 
         root.setCenter(cardsRow);
         root.setMargin(cardsRow, new Insets(20, 0, 0, 0));
@@ -138,10 +139,12 @@ public class MainPage {
         Label progressTitle = new Label("Wardrobe Usage Overview");
         progressTitle.setFont(cardTitleFont);
 
-        Label progressStats = new Label(wornItems + "/" + totalItems + " items  —  " + percentage + "%");
+        Label progressStats = new Label(wornItems + "/" + totalItems + " items  —  " 
+                + percentage + "%");
         progressStats.setFont(buttonFont);
 
-        javafx.scene.control.ProgressBar progressBar = new javafx.scene.control.ProgressBar(progress);
+        javafx.scene.control.ProgressBar progressBar = 
+                new javafx.scene.control.ProgressBar(progress);
         progressBar.setPrefWidth(860);
         progressBar.setPrefHeight(10);
         progressBar.setStyle(

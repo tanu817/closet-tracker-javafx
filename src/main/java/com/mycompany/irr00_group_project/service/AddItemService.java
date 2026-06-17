@@ -30,6 +30,9 @@ public class AddItemService {
     private final ClothingRepository clothingRepository;
     private final TagRepository tagRepository;
 
+    /**
+     * Initialize.
+     */
     public AddItemService() {
         this.clothingRepository = new ClothingRepository();
         this.tagRepository = new TagRepository();

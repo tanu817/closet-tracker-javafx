@@ -83,7 +83,6 @@ public class AddItemsPage {
                 + "-fx-border-radius: 15;");
 
         // TOP ROW (back button + item name field)
-        HBox topRow = new HBox(20);
 
         Image backImg = new Image(
                 getClass().getResourceAsStream("/icons/arrow.png"));
@@ -106,6 +105,8 @@ public class AddItemsPage {
         itemName.setMinHeight(42);
         itemName.setMaxHeight(42);
         itemName.setFont(normalFont);
+        
+        HBox topRow = new HBox(20);
 
         topRow.getChildren().addAll(backButton, itemName);
 

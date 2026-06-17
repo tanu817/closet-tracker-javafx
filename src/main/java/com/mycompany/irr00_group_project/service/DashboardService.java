@@ -22,6 +22,9 @@ public class DashboardService {
     private final ClothingRepository clothingRepository;
     private final TagRepository tagRepository;
 
+    /**
+     * Initialize.
+     */
     public DashboardService() {
         this.clothingRepository = new ClothingRepository();
         this.tagRepository = new TagRepository();
@@ -78,7 +81,13 @@ public class DashboardService {
          * Average wears per item (0.0 when {@code totalItems} is 0).
          */
         public final double avgWearsPerItem;
-
+        /**
+         * Statistics for dashboard.
+         * @param totalItems total items in the database
+         * @param totalWears total number of times worn
+         * @param totalFavourites number of favorites
+         * @param avgWearsPerItem average wears per item
+         */
         DashboardStats(int totalItems, int totalWears,
                 int totalFavourites, double avgWearsPerItem) {
             this.totalItems = totalItems;

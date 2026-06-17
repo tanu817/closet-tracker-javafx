@@ -52,6 +52,10 @@ public class OutfitsPage extends BorderPane {
     private final OutfitController outfitController = new OutfitController();
     private VBox outfitsRoot;
 
+    /**
+     * Page with all the outfit combinations.
+     * @param stage where the outfits are displayed.
+     */
     public OutfitsPage(Stage stage) {
         this.stage = stage;
         setStyle("-fx-background-color: " + CREAM + ";");

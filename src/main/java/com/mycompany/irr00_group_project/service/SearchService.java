@@ -23,6 +23,9 @@ public class SearchService {
     private final ClothingRepository clothingRepository;
     private final TagRepository tagRepository;
 
+    /**
+     * Initialize.
+     */
     public SearchService() {
         this.clothingRepository = new ClothingRepository();
         this.tagRepository = new TagRepository();

@@ -23,6 +23,9 @@ public class RecommendationService {
     private final ClothingRepository clothingRepository;
     private final TagRepository tagRepository;
 
+    /**
+     * Initialize.
+     */
     public RecommendationService() {
         this.clothingRepository = new ClothingRepository();
         this.tagRepository = new TagRepository();

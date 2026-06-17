@@ -250,7 +250,8 @@ public class ClothingRepository {
                 }
             }
         } catch (IOException e) {
-            System.err.println("ClothingRepository.deleteItemFromOutfitRelationship: " + e.getMessage());
+            System.err.println("ClothingRepository.deleteItemFromOutfitRelationship: " 
+                    + e.getMessage());
             return;
         }
         writeRows(OUTFIT_ITEMS_FILE, rows);
@@ -285,7 +286,8 @@ public class ClothingRepository {
                 }
             }
         } catch (IOException e) {
-            System.err.println("ClothingRepository.deleteItemFromTagRelationship: " + e.getMessage());
+            System.err.println("ClothingRepository.deleteItemFromTagRelationship: " 
+                    + e.getMessage());
             return;
         }
         writeRows(CLOTHING_TAGS_FILE, rows);

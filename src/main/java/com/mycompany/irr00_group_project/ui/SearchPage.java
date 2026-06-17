@@ -84,6 +84,10 @@ public class SearchPage extends BorderPane {
     private final Font smallFont = Font.loadFont(
             getClass().getResourceAsStream("/fonts/MuktaVaani-Regular.ttf"), 11);
 
+    /**
+     * Search page to search items.
+     * @param stage where objects are placed.
+     */
     public SearchPage(Stage stage) {
         this.stage = stage;
         setStyle("-fx-background-color: " + CREAM + ";");

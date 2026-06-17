@@ -141,7 +141,7 @@ public class DatabaseManager {
             "19,Party,EVENT",
             // Detail tags
             "20,Minimal,DETAIL",
-            "21,Vintage,DETAIL",};
+            "21,Vintage,DETAIL"};
 
         try (FileWriter writer = new FileWriter(tagsFile, true)) { // append after header
             for (String row : seeds) {
