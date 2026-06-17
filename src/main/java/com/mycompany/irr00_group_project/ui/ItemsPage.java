@@ -116,7 +116,6 @@ public class ItemsPage extends BorderPane {
     }
 
     // Auxiliary functions
-    
     private VBox createCard() {
         VBox card = new VBox(12);
         card.setPadding(new Insets(18));
@@ -129,53 +128,53 @@ public class ItemsPage extends BorderPane {
         card.setPrefWidth(480);
         return card;
     }
-    
+
     private HBox createTopRow() {
         HBox topRow = new HBox();
         topRow.setAlignment(Pos.CENTER_LEFT);
         return topRow;
     }
-    
+
     private Label createNameLabel(ClothingItem item) {
         Label nameLabel = new Label(item.getName());
         nameLabel.setFont(buttonFont);
         nameLabel.setStyle("-fx-text-fill: black;");
         return nameLabel;
     }
-    
+
     private Region createSpacer() {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
         return spacer;
     }
-    
+
     private ImageView createHeart(ClothingItem item) {
         Image emptyHeartImg = getEmptyHeartImage();
 
         Image filledHeartImg = getFilledHeartImage();
-        
+
         ImageView heart = new ImageView(
                 item.isFavorite() ? filledHeartImg : emptyHeartImg
         );
 
         heart.setFitWidth(26);
         heart.setFitHeight(26);
-        
+
         return heart;
     }
-    
+
     private Image getEmptyHeartImage() {
         return new Image(
                 getClass().getResourceAsStream("/icons/heart.png")
         );
     }
-    
+
     private Image getFilledHeartImage() {
         return new Image(
                 getClass().getResourceAsStream("/icons/heartFilled.png")
         );
     }
-    
+
     private Button createHeartButton(ImageView heart, ClothingItem item) {
         Button heartBtn = new Button();
         heartBtn.setGraphic(heart);
@@ -192,7 +191,7 @@ public class ItemsPage extends BorderPane {
         });
         return heartBtn;
     }
-    
+
     private Label createCategoryLabel(ClothingItem item) {
         Label catLabel = new Label(cap(item.getCategory().name()));
         catLabel.setFont(smallFont);
@@ -203,7 +202,7 @@ public class ItemsPage extends BorderPane {
                 + "-fx-padding: 3 8 3 8;");
         return catLabel;
     }
-    
+
     private FlowPane createTagsPane(ClothingItem item) {
         FlowPane tagsPane = new FlowPane();
         tagsPane.setHgap(8);
@@ -213,14 +212,14 @@ public class ItemsPage extends BorderPane {
         }
         return tagsPane;
     }
-    
+
     private Label createWornLabel(ClothingItem item) {
         Label wornLabel = new Label("Worn: " + item.getWornCount() + " time(s)");
         wornLabel.setFont(smallFont);
         wornLabel.setStyle("-fx-text-fill: #888;");
         return wornLabel;
     }
-    
+
     private Button createWornButton(ClothingItem item, Label wornLabel) {
         Button wornBtn = new Button("Mark as Worn");
         wornBtn.setFont(normalBoldFont);
@@ -234,10 +233,10 @@ public class ItemsPage extends BorderPane {
             item.wear();
             wornLabel.setText("Worn: " + item.getWornCount() + " time(s)");
         });
-        
+
         return wornBtn;
     }
-    
+
     private Button createMatchButton(ClothingItem item, VBox wrapper) {
         Button matchBtn = new Button("Show Matches");
         matchBtn.setFont(normalBoldFont);
@@ -246,10 +245,10 @@ public class ItemsPage extends BorderPane {
                 + "-fx-background-radius: 8;"
                 + "-fx-padding: 6 14 6 14;");
         matchBtn.setOnAction(e -> toggleMatchesPanel(item, wrapper, matchBtn));
-        
+
         return matchBtn;
     }
-    
+
     private Button createDeleteButton(ClothingItem item) {
         Button deleteBtn = new Button("Remove");
         deleteBtn.setFont(normalBoldFont);
@@ -269,7 +268,7 @@ public class ItemsPage extends BorderPane {
         });
         return deleteBtn;
     }
-    
+
     private Button createEditButton(ClothingItem item, Label nameLabel, FlowPane tagsPane) {
         Button editBtn = new Button("Edit");
         editBtn.setFont(normalBoldFont);
@@ -281,7 +280,7 @@ public class ItemsPage extends BorderPane {
         editBtn.setOnAction(e -> openEditDialog(item, nameLabel, tagsPane));
         return editBtn;
     }
-    
+
     /**
      * Builds one item card. The {@code wrapper} is passed in so the "Show
      * Matches" button can append/remove the matches panel into it.
@@ -349,68 +348,159 @@ public class ItemsPage extends BorderPane {
      * tags. On confirmation, persists changes and refreshes the card in-place
      * (no full reload needed for the card itself).
      */
-    private void openEditDialog(ClothingItem item, Label nameLabel, FlowPane tagsPane) {
+    private void openEditDialog(
+            ClothingItem item,
+            Label nameLabel,
+            FlowPane tagsPane
+    ) {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Edit Item");
         dialog.setHeaderText("Editing: " + item.getName());
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        dialog.getDialogPane().getButtonTypes().addAll(
+                ButtonType.OK,
+                ButtonType.CANCEL
+        );
 
-        // ── Name field ──
-        Label nameFieldLabel = new Label("Item name:");
-        nameFieldLabel.setFont(normalBoldFont);
         TextField nameField = new TextField(item.getName());
         nameField.setFont(normalFont);
         nameField.setPrefWidth(340);
-
-        // ── Current tags ──
-        Label currentTagsLabel = new Label("Current tags (click x to remove):");
-        currentTagsLabel.setFont(normalBoldFont);
 
         FlowPane currentTagsPane = new FlowPane();
         currentTagsPane.setHgap(8);
         currentTagsPane.setVgap(6);
 
-        // Mutable list of tag names the user intends to keep
         List<String> selectedTagNames = new ArrayList<>();
         for (Tag t : item.getTags()) {
             selectedTagNames.add(t.getName());
         }
 
-        // Helper: rebuilds the chips from selectedTagNames
+        VBox content = createEditDialogContent(
+                item,
+                nameField,
+                selectedTagNames,
+                currentTagsPane
+        );
+
+        dialog.getDialogPane().setContent(content);
+
+        dialog.showAndWait().ifPresent(result -> {
+            if (result == ButtonType.OK) {
+                handleEditSave(
+                        item,
+                        nameField,
+                        selectedTagNames,
+                        nameLabel,
+                        tagsPane
+                );
+            }
+        });
+    }
+
+    private void showAlert(
+            Alert.AlertType type,
+            String title,
+            String message
+    ) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private boolean tagsChanged(
+            ClothingItem item,
+            List<String> selectedTagNames
+    ) {
+        List<String> oldTags = new ArrayList<>();
+
+        for (Tag t : item.getTags()) {
+            oldTags.add(t.getName());
+        }
+
+        return !new java.util.HashSet<>(oldTags)
+                .equals(new java.util.HashSet<>(selectedTagNames));
+    }
+
+    private void handleEditSave(
+            ClothingItem item,
+            TextField nameField,
+            List<String> selectedTagNames,
+            Label nameLabel,
+            FlowPane tagsPane
+    ) {
+        String newName = nameField.getText().trim();
+        boolean nameChanged = !newName.equals(item.getName());
+        boolean tagsChanged = tagsChanged(item, selectedTagNames);
+
+        if (!nameChanged && !tagsChanged) {
+            showAlert(
+                    Alert.AlertType.INFORMATION,
+                    "No Changes",
+                    "No changes detected."
+            );
+            return;
+        }
+
+        if (newName.isEmpty()) {
+            showAlert(
+                    Alert.AlertType.ERROR,
+                    "Invalid Name",
+                    "Item name must not be blank."
+            );
+            return;
+        }
+
+        viewItemController.editItem(item, newName, selectedTagNames);
+
+        nameLabel.setText(item.getName());
+        tagsPane.getChildren().clear();
+
+        for (Tag t : item.getTags()) {
+            tagsPane.getChildren().add(
+                    createTagChip(t.getName())
+            );
+        }
+
+        showAlert(
+                Alert.AlertType.INFORMATION,
+                "Item Updated",
+                "Item updated successfully."
+        );
+    }
+
+    private VBox createEditDialogContent(
+            ClothingItem item,
+            TextField nameField,
+            List<String> selectedTagNames,
+            FlowPane currentTagsPane
+    ) {
+        Label nameFieldLabel = new Label("Item name:");
+        nameFieldLabel.setFont(normalBoldFont);
+
+        Label currentTagsLabel = new Label(
+                "Current tags (click x to remove):"
+        );
+        currentTagsLabel.setFont(normalBoldFont);
+
         Runnable refreshChips = () -> {
             currentTagsPane.getChildren().clear();
             for (String tn : new ArrayList<>(selectedTagNames)) {
-
-                Image crossImg = new Image(
-                        getClass().getResourceAsStream("/icons/cross.png")
+                currentTagsPane.getChildren().add(
+                        createRemovableTagChip(
+                                tn,
+                                selectedTagNames,
+                                currentTagsPane
+                        )
                 );
-
-                ImageView crossIcon = new ImageView(crossImg);
-
-                crossIcon.setFitWidth(12);
-                crossIcon.setFitHeight(12);
-
-                Button chip = new Button(tn);
-                chip.setFont(smallFont);
-                chip.setGraphic(crossIcon);
-                chip.setContentDisplay(ContentDisplay.RIGHT);
-                chip.setGraphicTextGap(6);
-                chip.setStyle(
-                        "-fx-background-color: " + DARK_GREEN + ";"
-                        + "-fx-text-fill: white;"
-                        + "-fx-background-radius: 8;"
-                        + "-fx-padding: 4 10 4 10;");
-                chip.setOnAction(ev -> {
-                    selectedTagNames.remove(tn);
-                    currentTagsPane.getChildren().remove(chip);
-                });
-                currentTagsPane.getChildren().add(chip);
             }
         };
+
         refreshChips.run();
 
-        // ── Add tag field ──
-        Label addTagLabel = new Label("Add a tag (type and press Enter or click Add):");
+        Label addTagLabel = new Label(
+                "Add a tag (type and press Enter or click Add):"
+        );
         addTagLabel.setFont(normalBoldFont);
 
         TextField addTagField = new TextField();
@@ -424,7 +514,8 @@ public class ItemsPage extends BorderPane {
                 "-fx-background-color: " + DARK_GREEN + ";"
                 + "-fx-text-fill: white;"
                 + "-fx-background-radius: 8;"
-                + "-fx-padding: 4 12 4 12;");
+                + "-fx-padding: 4 12 4 12;"
+        );
 
         Runnable doAddTag = () -> {
             String tn = addTagField.getText().trim();
@@ -434,70 +525,60 @@ public class ItemsPage extends BorderPane {
             }
             addTagField.clear();
         };
-        addTagBtn.setOnAction(ev -> doAddTag.run());
-        addTagField.setOnAction(ev -> doAddTag.run());
+
+        addTagBtn.setOnAction(e -> doAddTag.run());
+        addTagField.setOnAction(e -> doAddTag.run());
 
         HBox addTagRow = new HBox(8, addTagField, addTagBtn);
         addTagRow.setAlignment(Pos.CENTER_LEFT);
 
-        VBox content = new VBox(12,
-                nameFieldLabel, nameField,
-                currentTagsLabel, currentTagsPane,
-                addTagLabel, addTagRow);
+        VBox content = new VBox(
+                12,
+                nameFieldLabel,
+                nameField,
+                currentTagsLabel,
+                currentTagsPane,
+                addTagLabel,
+                addTagRow
+        );
         content.setPadding(new Insets(10));
         content.setPrefWidth(400);
 
-        dialog.getDialogPane().setContent(content);
+        return content;
+    }
 
-        // ── Handle OK ──
-        dialog.showAndWait().ifPresent(result -> {
-            if (result != ButtonType.OK) {
-                return;
-            }
-            String newName = nameField.getText().trim();
-            boolean nameChanged = !newName.equals(item.getName());
+    private Button createRemovableTagChip(
+            String tn,
+            List<String> selectedTagNames,
+            FlowPane currentTagsPane
+    ) {
+        Image crossImg = new Image(
+                getClass().getResourceAsStream("/icons/cross.png")
+        );
 
-            // Compare tag sets
-            List<String> oldTags = new ArrayList<>();
-            for (Tag t : item.getTags()) {
-                oldTags.add(t.getName());
-            }
-            boolean tagsChanged = !new java.util.HashSet<>(oldTags)
-                    .equals(new java.util.HashSet<>(selectedTagNames));
+        ImageView crossIcon = new ImageView(crossImg);
+        crossIcon.setFitWidth(12);
+        crossIcon.setFitHeight(12);
 
-            if (!nameChanged && !tagsChanged) {
-                Alert noChange = new Alert(Alert.AlertType.INFORMATION);
-                noChange.setTitle("No Changes");
-                noChange.setHeaderText(null);
-                noChange.setContentText("No changes detected.");
-                noChange.showAndWait();
-                return;
-            }
+        Button chip = new Button(tn);
+        chip.setFont(smallFont);
+        chip.setGraphic(crossIcon);
+        chip.setContentDisplay(ContentDisplay.RIGHT);
+        chip.setGraphicTextGap(6);
 
-            if (newName.isEmpty()) {
-                Alert err = new Alert(Alert.AlertType.ERROR);
-                err.setTitle("Invalid Name");
-                err.setHeaderText(null);
-                err.setContentText("Item name must not be blank.");
-                err.showAndWait();
-                return;
-            }
+        chip.setStyle(
+                "-fx-background-color: " + DARK_GREEN + ";"
+                + "-fx-text-fill: white;"
+                + "-fx-background-radius: 8;"
+                + "-fx-padding: 4 10 4 10;"
+        );
 
-            viewItemController.editItem(item, newName, selectedTagNames);
-
-            // Refresh the card's name label and tags pane in-place
-            nameLabel.setText(item.getName());
-            tagsPane.getChildren().clear();
-            for (Tag t : item.getTags()) {
-                tagsPane.getChildren().add(createTagChip(t.getName()));
-            }
-
-            Alert ok = new Alert(Alert.AlertType.INFORMATION);
-            ok.setTitle("Item Updated");
-            ok.setHeaderText(null);
-            ok.setContentText("Item updated successfully.");
-            ok.showAndWait();
+        chip.setOnAction(e -> {
+            selectedTagNames.remove(tn);
+            currentTagsPane.getChildren().remove(chip);
         });
+
+        return chip;
     }
 
     /**
