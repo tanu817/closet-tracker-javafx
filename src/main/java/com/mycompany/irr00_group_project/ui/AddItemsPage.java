@@ -66,14 +66,9 @@ public class AddItemsPage {
     private final Font saveButtonFont = Font.loadFont(
             getClass().getResourceAsStream("/fonts/MuktaVaani-SemiBold.ttf"), 19);
 
-    /**
-     * Builds the Add Items overlay VBox.
-     *
-     * @return VBox with all components
-     */
-    public VBox createAddItemsOverlay() {
-
-        // MAIN LAYOUT
+    // Auxiliary functions:
+    
+    private VBox createOverlay() {
         VBox overlay = new VBox(20);
         overlay.setPadding(new Insets(30));
         overlay.setStyle(
@@ -81,16 +76,17 @@ public class AddItemsPage {
                 + "-fx-background-radius: 15;"
                 + "-fx-border-color: #D8CFBC;"
                 + "-fx-border-radius: 15;");
-
-        // TOP ROW (back button + item name field)
-        
-
-        Image backImg = new Image(
-                getClass().getResourceAsStream("/icons/arrow.png"));
+        return overlay;
+    }
+    
+    private ImageView createBackIcon(Image backImg) {
         ImageView backIcon = new ImageView(backImg);
         backIcon.setFitWidth(35);
         backIcon.setFitHeight(35);
-
+        return backIcon;
+    }
+    
+    private void createBackButton(ImageView backIcon) {
         backButton = new Button();
         backButton.setGraphic(backIcon);
         backButton.setStyle(
@@ -98,7 +94,9 @@ public class AddItemsPage {
                 + "-fx-background-radius: 10;"
                 + "-fx-border-radius: 10;");
         backButton.setPrefSize(40, 35);
-
+    }
+    
+    private void createItemName() {
         itemName = new TextField();
         itemName.setPromptText("Enter Name");
         itemName.setPrefWidth(900);
@@ -106,24 +104,80 @@ public class AddItemsPage {
         itemName.setMinHeight(42);
         itemName.setMaxHeight(42);
         itemName.setFont(normalFont);
-
-        HBox topRow = new HBox(20);
-        topRow.getChildren().addAll(backButton, itemName);
-
-        // NOTE LABEL
+    }
+    
+    private Text createNote() {
         Text note = new Text(
                 "Note: You can create tags by typing in the + field or choose from existing ones. "
                 + "It is mandatory to choose the type. "
                 + "To delete a new tag right-click it; to edit double-click it.");
         note.setFont(normalFont);
         note.setWrappingWidth(900);
-
+        return note;
+    }
+    
+    private HBox createNoteBox(Text note) {
         HBox noteBox = new HBox(note);
         noteBox.setPadding(new Insets(10, 15, 10, 15));
         noteBox.setStyle(
                 "-fx-background-color: #F3EEE6;"
                 + "-fx-background-radius: 8;");
         noteBox.setAlignment(Pos.CENTER_LEFT);
+        return noteBox;
+    }
+    
+    private Label createTypeLabel() {
+        Label typeLabel = new Label("Type *");
+        typeLabel.setFont(subTitleFont);
+        typeLabel.setPrefWidth(80);
+        return typeLabel;
+    }
+    
+    private HBox createTypeRow() {
+        HBox typeRow = new HBox(20);
+        typeRow.setAlignment(Pos.CENTER_LEFT);
+        Label typeLabel = createTypeLabel();
+        typeRow.getChildren().addAll(typeLabel, topBtn, bottomBtn, onePieceBtn, accessoryBtn);
+        return typeRow;
+    }
+    
+    private Button createSaveButton() {
+        Button saveButton = new Button("Save");
+        saveButton.setFont(saveButtonFont);
+        saveButton.setPrefSize(140, 50);
+        saveButton.setStyle(
+                "-fx-background-color: #565448;"
+                + "-fx-text-fill: white;"
+                + "-fx-background-radius: 10;");
+        saveButton.setOnAction(e -> handleSave());
+        return saveButton;
+    }
+    
+    private HBox createSaveRow(Button saveButton) {
+        HBox saveRow = new HBox();
+        saveRow.setAlignment(Pos.CENTER_RIGHT);
+        saveRow.getChildren().add(saveButton);
+        return saveRow;
+    }
+    
+    /**
+     * Builds the Add Items overlay VBox.
+     *
+     * @return VBox with all components
+     */
+    public VBox createAddItemsOverlay() {
+        // TOP ROW (back button + item name field)
+        Image backImg = new Image(
+                getClass().getResourceAsStream("/icons/arrow.png"));
+        ImageView backIcon = createBackIcon(backImg);
+
+        createBackButton(backIcon);
+
+        createItemName();
+
+        HBox topRow = new HBox(20);
+        topRow.getChildren().addAll(backButton, itemName);
+
 
         // CHOOSE TAGS TITLE
         Label chooseTags = new Label("Choose Tags");
@@ -136,12 +190,7 @@ public class AddItemsPage {
         onePieceBtn = makeTypeButton("One Piece", typeGroup);
         accessoryBtn = makeTypeButton("Accessory", typeGroup);
 
-        HBox typeRow = new HBox(20);
-        typeRow.setAlignment(Pos.CENTER_LEFT);
-        Label typeLabel = new Label("Type *");
-        typeLabel.setFont(subTitleFont);
-        typeLabel.setPrefWidth(80);
-        typeRow.getChildren().addAll(typeLabel, topBtn, bottomBtn, onePieceBtn, accessoryBtn);
+        HBox typeRow = createTypeRow();
 
         // TAG CATEGORY ROWS — pre-populate from DB, then allow custom additions
         colorPane = createTagSection(TagCategory.COLOR);
@@ -157,19 +206,13 @@ public class AddItemsPage {
         HBox otherRow = makeTagRow("Other", otherPane);
 
         // SAVE BUTTON
-        Button saveButton = new Button("Save");
-        saveButton.setFont(saveButtonFont);
-        saveButton.setPrefSize(140, 50);
-        saveButton.setStyle(
-                "-fx-background-color: #565448;"
-                + "-fx-text-fill: white;"
-                + "-fx-background-radius: 10;");
-        saveButton.setOnAction(e -> handleSave());
+        Button saveButton = createSaveButton();
+        HBox saveRow = createSaveRow(saveButton);
 
-        HBox saveRow = new HBox();
-        saveRow.setAlignment(Pos.CENTER_RIGHT);
-        saveRow.getChildren().add(saveButton);
-
+        // NOTE LABEL
+        Text note = createNote();
+        HBox noteBox = createNoteBox(note);
+        
         // SCROLLABLE CONTENT — everything above the Save row. Wrapping this in
         // a ScrollPane keeps all fields/tags reachable even when a large
         // number of tags pushes the natural content height past the overlay's
@@ -192,6 +235,9 @@ public class AddItemsPage {
         scrollPane.setFitToWidth(true);
         scrollPane.setStyle("-fx-background-color: transparent;");
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
+        
+        // MAIN LAYOUT
+        VBox overlay = createOverlay();
 
         overlay.getChildren().addAll(scrollPane, saveRow);
 
