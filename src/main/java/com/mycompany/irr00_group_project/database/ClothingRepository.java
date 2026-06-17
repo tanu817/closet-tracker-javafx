@@ -1,122 +1,145 @@
 package com.mycompany.irr00_group_project.database;
 
-import java.util.List;
 import java.util.ArrayList;
-import java.io.IOException;
-import java.io.FileWriter;
+import java.util.List;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import com.mycompany.irr00_group_project.model.ClothingItem;
 import com.mycompany.irr00_group_project.model.ClothingCategory;
 
 /**
- * Class for managing clothing items in clothing_items.
- * 
+ * Repository for {@link ClothingItem} objects persisted in
+ * {@code clothing_items.csv}.
+ *
+ * <p>
+ * This class is purely I/O: it reads and writes CSV files and performs no
+ * business logic.</p>
+ *
+ * <h2>CSV schema</h2>
+ * <pre>
+ *   clothing_items.csv – id, name, isFavorite, category, wornCount
+ *   outfit_items.csv   – outfitId, clothingId  (one row per item per outfit)
+ *   clothing_tags.csv  – clothingId, tagId
+ * </pre>
+ *
+ * <p>
+ * Note: tags are <em>not</em> stored inside {@code clothing_items.csv}. They
+ * are stored as relationships in {@code clothing_tags.csv} and loaded
+ * separately by the service layer via {@link TagRepository}.</p>
+ *
  * @author Aleksandra Levenkova
  */
 public class ClothingRepository {
-    
+
+    private static final String ITEMS_FILE = "clothing_items.csv";
+    private static final String OUTFIT_ITEMS_FILE = "outfit_items.csv";
+    private static final String CLOTHING_TAGS_FILE = "clothing_tags.csv";
+
     /**
-     * Method for storing a new clothing item in the database.
-     * 
-     * @param item clothing item to add
+     * Appends a new clothing item to {@code clothing_items.csv}.
+     *
+     * @param item the item to persist
      */
     public void addItem(ClothingItem item) {
-        
-        try (FileWriter writer = new FileWriter("clothing_items.csv", true)) { 
+        try (FileWriter writer = new FileWriter(ITEMS_FILE, true)) {
             writer.write(item.getId() + ","
-                + item.getName() + ","
-                + item.isFavorite() + ","
-                + item.getCategory() + ","
-                + item.getWornCount() + "\n");
+                    + escapeCsv(item.getName()) + ","
+                    + item.isFavorite() + ","
+                    + item.getCategory() + ","
+                    + item.getWornCount() + "\n");
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.err.println("ClothingRepository.addItem: " + e.getMessage());
         }
-    }    
-    
-    //USE THE BELOW METHOD IN UI TO ASSIGN AN ID BEFORE USING addItem()
-    
+    }
+
     /**
-     * Generate the next item ID for the UI to use.
-     * 
+     * Generates the next available item ID (max existing ID + 1).
+     *
      * @return next available ID
      */
     public int generateNextId() {
-        List<ClothingItem> items = getAllItems();
         int maxId = 0;
-        for (ClothingItem item : items) {
+        for (ClothingItem item : getAllItems()) {
             if (item.getId() > maxId) {
                 maxId = item.getId();
             }
         }
         return maxId + 1;
     }
-    
+
     /**
-     * Get all clothing items.
-     * 
-     * @return all clothing items
+     * Returns all clothing items stored in {@code clothing_items.csv}. Tags are
+     * NOT loaded here; use the service layer to hydrate them.
+     *
+     * @return list of all {@link ClothingItem} objects; empty list on error
      */
     public List<ClothingItem> getAllItems() {
         List<ClothingItem> items = new ArrayList<>();
-        
-        try (BufferedReader reader = new BufferedReader(new FileReader("clothing_items.csv"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(ITEMS_FILE))) {
+            reader.readLine(); // skip header
             String line;
-            reader.readLine();
             while ((line = reader.readLine()) != null) {
-                String[] values = line.split(",");
-                int id = Integer.parseInt(values[0]);
-                String name = values[1];
-                boolean isFavorite = Boolean.parseBoolean(values[2]);
-                ClothingCategory category = ClothingCategory.valueOf(values[3]);
-                int wornCount = Integer.parseInt(values[4]);
-                ClothingItem item = new ClothingItem(id, name, isFavorite, category, wornCount);
-                items.add(item);
+                if (line.isBlank()) {
+                    continue;
+                }
+                String[] values = line.split(",", -1);
+                if (values.length < 5) {
+                    continue; // malformed row – skip
+                }
+                int id = Integer.parseInt(values[0].trim());
+                String name = values[1].trim();
+                boolean isFavorite = Boolean.parseBoolean(values[2].trim());
+                ClothingCategory cat = ClothingCategory.valueOf(values[3].trim());
+                int wornCount = Integer.parseInt(values[4].trim());
+                items.add(new ClothingItem(id, name, isFavorite, cat, wornCount));
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.err.println("ClothingRepository.getAllItems: " + e.getMessage());
         }
         return items;
     }
-    
+
     /**
-     * Method to save an updated list of items into the csv.
-     * 
-     * @param items that are used to update the csv
+     * Finds a single clothing item by its ID.
+     *
+     * @param id the item ID to find
+     * @return the matching {@link ClothingItem}, or {@code null} if not found
+     */
+    public ClothingItem getItemById(int id) {
+        for (ClothingItem item : getAllItems()) {
+            if (item.getId() == id) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Overwrites {@code clothing_items.csv} with the supplied list.
+     *
+     * @param items the complete list of items to persist
      */
     public void saveItems(List<ClothingItem> items) {
-        try (FileWriter writer = new FileWriter("clothing_items.csv")) { //overwrite
+        try (FileWriter writer = new FileWriter(ITEMS_FILE)) {
             writer.write("id,name,isFavorite,category,wornCount\n");
             for (ClothingItem item : items) {
                 writer.write(item.getId() + ","
-                    + item.getName() + ","
-                    + item.isFavorite() + ","
-                    + item.getCategory() + ","
-                    + item.getWornCount() + "\n");
+                        + escapeCsv(item.getName()) + ","
+                        + item.isFavorite() + ","
+                        + item.getCategory() + ","
+                        + item.getWornCount() + "\n");
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.err.println("ClothingRepository.saveItems: " + e.getMessage());
         }
     }
-    
+
     /**
-     * Method for removing a clothing item from the database.
-     * 
-     * @param id to be deleted
-     */
-    public void deleteItem(int id) {
-        List<ClothingItem> items = getAllItems();
-        items.removeIf(item -> item.getId() == id);
-        saveItems(items);
-        
-        deleteItemFromOutfitRelationship(id);
-        deleteItemFromTagRelationship(id);
-    }
-    
-    /**
-     * Method for changing properties of a clothing item.
-     * 
-     * @param item to be updated
+     * Updates a single clothing item record identified by its ID.
+     *
+     * @param item the item with updated values
      */
     public void changeItem(ClothingItem item) {
         List<ClothingItem> items = getAllItems();
@@ -128,40 +151,26 @@ public class ClothingRepository {
         }
         saveItems(items);
     }
-    
+
     /**
-     * Get top 5 favorites with highest worn count.
-     * 
-     * @return 5 favorites with highest worn count
+     * Deletes a clothing item by ID and removes all its relationships from
+     * {@code outfit_items.csv} and {@code clothing_tags.csv}.
+     *
+     * @param id the ID of the item to delete
      */
-    public List<ClothingItem> getTop5FavouriteItems() {
+    public void deleteItem(int id) {
         List<ClothingItem> items = getAllItems();
-        List<ClothingItem> favorites = new ArrayList<>();
-        for (ClothingItem item : items) {
-            if (item.isFavorite()) {
-                favorites.add(item);
-            }
-        }
-        for (int i = 0; i < favorites.size() - 1; i++) {
-            for (int j = 0; j < favorites.size() - i - 1; j++) {
-                if (favorites.get(j).getWornCount() < favorites.get(j + 1).getWornCount()) {
-                    ClothingItem temp = favorites.get(j);
-                    favorites.set(j, favorites.get(j + 1));
-                    favorites.set(j + 1, temp);
-                }
-            }
-        }
-        if (favorites.size() > 5) {
-            return favorites.subList(0, 5);
-        } else {
-            return favorites;
-        }
+        items.removeIf(item -> item.getId() == id);
+        saveItems(items);
+
+        deleteItemFromOutfitRelationship(id);
+        deleteItemFromTagRelationship(id);
     }
-    
+
     /**
-     * Update the wearCount of an item from the search outfit page.
-     * 
-     * @param id of item whose wearCoutn needs to be updated
+     * Increments the {@code wornCount} of the item with the given ID.
+     *
+     * @param id the ID of the item to mark as worn
      */
     public void markAsWorn(int id) {
         List<ClothingItem> items = getAllItems();
@@ -173,113 +182,176 @@ public class ClothingRepository {
         }
         saveItems(items);
     }
-    
+
     /**
-     * Return top 5 most worn items with the highest wearCount.
-     * 
-     * @return top 5 most worn items with the highest wearCount
+     * Returns the top 5 favorite items sorted by {@code wornCount} descending.
+     *
+     * @return up to 5 favorite {@link ClothingItem} objects
+     */
+    public List<ClothingItem> getTop5FavouriteItems() {
+        List<ClothingItem> favorites = new ArrayList<>();
+        for (ClothingItem item : getAllItems()) {
+            if (item.isFavorite()) {
+                favorites.add(item);
+            }
+        }
+        bubbleSortDescending(favorites);
+        return favorites.size() > 5 ? favorites.subList(0, 5) : favorites;
+    }
+
+    /**
+     * Returns the top 5 most-worn items sorted by {@code wornCount} descending.
+     *
+     * @return up to 5 most-worn {@link ClothingItem} objects
      */
     public List<ClothingItem> getTop5Worn() {
         List<ClothingItem> items = getAllItems();
-        for (int i = 0; i < items.size() - 1; i++) {
-            for (int j = 0; j < items.size() - i - 1; j++) {
-                if (items.get(j).getWornCount() < items.get(j + 1).getWornCount()) {
-                    ClothingItem temp = items.get(j);
-                    items.set(j, items.get(j + 1));
-                    items.set(j + 1, temp);
-                }
-            }
-        }
-        if (items.size() > 5) {
-            return items.subList(0, 5);
-        } else {
-            return items;
-        }
+        bubbleSortDescending(items);
+        return items.size() > 5 ? items.subList(0, 5) : items;
     }
-    
+
     /**
-     * Return top 5 least worn items with the lowest wearCount.
-     * 
-     * @return top 5 least worn items with the lowest wearCount
+     * Returns the 5 least-worn items sorted by {@code wornCount} ascending.
+     *
+     * @return up to 5 least-worn {@link ClothingItem} objects
      */
     public List<ClothingItem> getLeast5Worn() {
         List<ClothingItem> items = getAllItems();
-        for (int i = 0; i < items.size() - 1; i++) {
-            for (int j = 0; j < items.size() - i - 1; j++) {
-                if (items.get(j).getWornCount() < items.get(j + 1).getWornCount()) {
-                    ClothingItem temp = items.get(j);
-                    items.set(j, items.get(j + 1));
-                    items.set(j + 1, temp);
-                }
-            }
-        }
-        if (items.size() > 5) {
-            return items.subList(items.size(), items.size() - 5);
-        } else {
-            return items;
-        }
+        bubbleSortAscending(items);
+        return items.size() > 5 ? new ArrayList<>(items.subList(0, 5)) : items;
     }
-    
+
     /**
-     * Method for deleting an item from the outfit relationship table.
-     * 
-     * @param itemId of the item to delete (so we can use it to find the row)
+     * Removes all rows in {@code outfit_items.csv} that reference the given
+     * clothing item ID.
+     *
+     * @param itemId the clothing item ID to remove
      */
     private void deleteItemFromOutfitRelationship(int itemId) {
         List<String> rows = new ArrayList<>();
-        
-        try (BufferedReader reader = new BufferedReader(new FileReader("outfit_items.csv"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(OUTFIT_ITEMS_FILE))) {
+            String header = reader.readLine();
+            if (header != null) {
+                rows.add(header);
+            }
             String line;
-            rows.add(reader.readLine()); // header
             while ((line = reader.readLine()) != null) {
-                String[] values = line.split(",");
-                int clothingId1 = Integer.parseInt(values[1]);
-                int clothingId2 = Integer.parseInt(values[2]);
-                if (clothingId1 != itemId && clothingId2 != itemId) {
+                if (line.isBlank()) {
+                    continue;
+                }
+                String[] values = line.split(",", -1);
+                if (values.length < 2) {
+                    continue;
+                }
+                int clothingId = Integer.parseInt(values[1].trim());
+                if (clothingId != itemId) {
                     rows.add(line);
                 }
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.err.println("ClothingRepository.deleteItemFromOutfitRelationship: " + e.getMessage());
+            return;
         }
-
-        try (FileWriter writer = new FileWriter("outfit_items.csv")) {
-            for (String row : rows) {
-                writer.write(row + "\n");
-            }
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+        writeRows(OUTFIT_ITEMS_FILE, rows);
     }
-    
+
     /**
-     * Method for deleting an item from the tag relationship table.
-     * 
-     * @param tagID of the tag to delete
+     * Removes all rows in {@code clothing_tags.csv} that reference the given
+     * clothing item ID.
+     *
+     * @param itemId the clothing item ID whose tag relationships should be
+     * removed
      */
     private void deleteItemFromTagRelationship(int itemId) {
         List<String> rows = new ArrayList<>();
-        
-        try (BufferedReader reader = new BufferedReader(new FileReader("clothing_tags.csv"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(CLOTHING_TAGS_FILE))) {
+            String header = reader.readLine();
+            if (header != null) {
+                rows.add(header);
+            }
             String line;
-            rows.add(reader.readLine()); // header
             while ((line = reader.readLine()) != null) {
-                String[] values = line.split(",");
-                int currentItemId = Integer.parseInt(values[0]);
+                if (line.isBlank()) {
+                    continue;
+                }
+                String[] values = line.split(",", -1);
+                if (values.length < 2) {
+                    continue;
+                }
+                int currentItemId = Integer.parseInt(values[0].trim());
                 if (currentItemId != itemId) {
                     rows.add(line);
                 }
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.err.println("ClothingRepository.deleteItemFromTagRelationship: " + e.getMessage());
+            return;
         }
+        writeRows(CLOTHING_TAGS_FILE, rows);
+    }
 
-        try (FileWriter writer = new FileWriter("clothing_tags.csv")) {
+    /**
+     * Atomically rewrites a CSV file with the supplied rows (header included).
+     *
+     * @param fileName destination file path
+     * @param rows all rows (including header as first element)
+     */
+    private void writeRows(String fileName, List<String> rows) {
+        try (FileWriter writer = new FileWriter(fileName)) {
             for (String row : rows) {
                 writer.write(row + "\n");
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.err.println("ClothingRepository.writeRows(" + fileName + "): " + e.getMessage());
         }
+    }
+
+    /**
+     * In-place bubble sort — descending by {@code wornCount}.
+     */
+    private void bubbleSortDescending(List<ClothingItem> list) {
+        int n = list.size();
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                if (list.get(j).getWornCount() < list.get(j + 1).getWornCount()) {
+                    ClothingItem tmp = list.get(j);
+                    list.set(j, list.get(j + 1));
+                    list.set(j + 1, tmp);
+                }
+            }
+        }
+    }
+
+    /**
+     * In-place bubble sort — ascending by {@code wornCount}.
+     */
+    private void bubbleSortAscending(List<ClothingItem> list) {
+        int n = list.size();
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                if (list.get(j).getWornCount() > list.get(j + 1).getWornCount()) {
+                    ClothingItem tmp = list.get(j);
+                    list.set(j, list.get(j + 1));
+                    list.set(j + 1, tmp);
+                }
+            }
+        }
+    }
+
+    /**
+     * Wraps a field value in double-quotes if it contains a comma, a
+     * double-quote, or a newline — minimal RFC 4180 escaping.
+     *
+     * @param value raw field value
+     * @return safe CSV field value
+     */
+    private String escapeCsv(String value) {
+        if (value == null) {
+            return "";
+        }
+        if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
+            return "\"" + value.replace("\"", "\"\"") + "\"";
+        }
+        return value;
     }
 }

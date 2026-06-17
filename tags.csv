@@ -1,0 +1,23 @@
+id,name,category
+2,Bottom,OTHER
+3,One Piece,OTHER
+4,Accessory,OTHER
+5,White,COLOR
+6,Black,COLOR
+7,Blue,COLOR
+8,Pink,COLOR
+9,Green,COLOR
+10,Red,COLOR
+11,Beige,COLOR
+12,Brown,COLOR
+13,Summer,WEATHER
+14,Winter,WEATHER
+15,Spring,WEATHER
+16,Autumn,WEATHER
+17,Casual,EVENT
+18,Formal,EVENT
+19,Party,EVENT
+20,Minimal,DETAIL
+21,Vintage,DETAIL
+3,Formal,EVENT
+24,Party,EVENT
