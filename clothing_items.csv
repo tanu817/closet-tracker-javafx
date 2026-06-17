@@ -1,10 +1,7 @@
 id,name,isFavorite,category,wornCount
-3,Brown Pants,false,BOTTOM,14
-4,pearl earrings,false,ACCESSORY,7
-6,prom dress,true,ONE_PIECE,1
-7,green t-shirt,false,TOP,11
-8,Satin brown shirt,true,TOP,3
-10,Satin red pants,false,BOTTOM,0
-11,blue jeans,false,BOTTOM,1
-12,sweatshirt,false,TOP,0
-13,White Shirt,true,TOP,0
+1,White T-Shirt,false,TOP,2
+2,Brown Pants,false,BOTTOM,2
+3,Floral Dress,true,ONE_PIECE,0
+4,Pearl Earrings,false,ACCESSORY,0
+5,Pink Top,false,TOP,1
+6,Blue jeans,false,BOTTOM,0
