@@ -1,334 +1,663 @@
 package com.mycompany.irr00_group_project.ui;
 
-import javafx.animation.FadeTransition;
+import com.mycompany.irr00_group_project.controller.SearchController;
+import com.mycompany.irr00_group_project.controller.ViewItemController;
+import com.mycompany.irr00_group_project.model.ClothingCategory;
+import com.mycompany.irr00_group_project.model.ClothingItem;
+import com.mycompany.irr00_group_project.model.Tag;
+import com.mycompany.irr00_group_project.model.TagCategory;
+
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Label;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
-
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
-import java.util.ArrayList;
-import java.util.List;
-
-//to run: mvn clean javafx:run
 /**
- * Search page of the closet tracker app.
+ * Search page: filters are loaded from the database (seeded defaults + any
+ * user-created tags). A Type row filters by {@link ClothingCategory}; all other
+ * rows filter by tag ID. Both filters combine with AND logic.
  *
- * @author Arshiya Shaik
+ * <p>
+ * Each result card has a "Mark as Worn" button. If the item is a TOP or BOTTOM,
+ * matching items of the opposite category are shown inline; each match has a
+ * "Create Outfit" button.</p>
+ *
+ * @author Bhavini Kopparam Ajay
+ * @author Arshiya Tasneem Shaik
  */
 public class SearchPage extends BorderPane {
 
-    // COLOR PALETTE
-    private static final String GREEN = "#606c38";
-    private static final String DARK_GREEN = "#283618";
-    private static final String CREAM = "#fefae0";
-    private static final String GOLD = "#dda15e";
-    private static final String BROWN = "#bc6c25";
+    private static final String LIGHT_GREEN = "#D8CFBC";
+    private static final String DARK_GREEN = "#565448";
+    private static final String CREAM = "#FFFAF4";
+    private static final String TEXT_COLOR = "-fx-text-fill: #1a1a1a;";
 
-    // UI COMPONENTS
-    private TextField searchField;
-    private FlowPane tagPane;
-    private FlowPane masonry;
-    private Label emptyLabel;
+    private final Stage stage;
+    private FlowPane searchField;
+    private VBox resultsBox;
+    private Label noFilterWarning;
 
-    private ImageView imagePreview;
-
-    // DATA
-    private final List<Item> allItems = new ArrayList<>();
+    private final SearchController searchController = new SearchController();
+    // Reuse ViewItemController for markAsWorn + createOutfitFromMatch
+    private final ViewItemController viewItemController = new ViewItemController();
 
     /**
-     * Set up the search page.
+     * Tag IDs selected via the tag filter rows.
      */
-    public SearchPage() {
+    private final List<Integer> selectedTagIds = new ArrayList<>();
+
+    /**
+     * The single ClothingCategory selected via the Type filter row, or
+     * {@code null} when no type is selected.
+     */
+    private ClothingCategory selectedCategory = null;
+
+    // Chip sentinel value used to identify the category chip in searchField
+    private static final int CATEGORY_CHIP_SENTINEL = -999;
+
+    private final Font normalBoldFont = Font.loadFont(
+            getClass().getResourceAsStream("/fonts/MuktaVaani-SemiBold.ttf"), 14);
+    private final Font normalFont = Font.loadFont(
+            getClass().getResourceAsStream("/fonts/MuktaVaani-Regular.ttf"), 13);
+    private final Font subTitleFont = Font.loadFont(
+            getClass().getResourceAsStream("/fonts/YesevaOne-Regular.ttf"), 15);
+    private final Font buttonFont = Font.loadFont(
+            getClass().getResourceAsStream("/fonts/MuktaVaani-SemiBold.ttf"), 19);
+    private final Font smallFont = Font.loadFont(
+            getClass().getResourceAsStream("/fonts/MuktaVaani-Regular.ttf"), 11);
+
+    public SearchPage(Stage stage) {
+        this.stage = stage;
         setStyle("-fx-background-color: " + CREAM + ";");
 
-        setTop(createStickySearchBar());
-        setCenter(createResultsArea());
+        resultsBox = new VBox(10);
 
-        loadMockData();
-        renderItems(allItems);
-    }
+        noFilterWarning = new Label("Please select at least one tag.");
+        noFilterWarning.setFont(normalFont);
+        noFilterWarning.setStyle("-fx-text-fill: #c0392b;");
+        noFilterWarning.setVisible(false);
+        noFilterWarning.setManaged(false);
 
-    // TOP SEARCH BAR 
-    private VBox createStickySearchBar() {
+        VBox root = new VBox(20);
+        root.setPadding(new Insets(25));
+        root.getChildren().addAll(
+                createTopSection(),
+                createFiltersSection(),
+                noFilterWarning,
+                resultsBox
+        );
 
-        VBox container = new VBox(10);
-        container.setPadding(new Insets(15));
-        container.setStyle("-fx-background-color: " + CREAM + ";");
-
-        // SEARCH BAR
-        HBox searchBar = new HBox(10);
-        searchBar.setAlignment(Pos.CENTER_LEFT);
-
-        searchField = new TextField();
-        searchField.setPromptText("Search items...");
-        searchField.setPrefWidth(350);
-        searchField.setStyle(inputStyle());
-
-        Button searchBtn = new Button("Search");
-        searchBtn.setStyle(buttonStyle());
-
-        searchBtn.setOnAction(e -> applySearch());
-
-        searchBar.getChildren().addAll(searchField, searchBtn);
-
-        // TAG CHIPS
-        tagPane = new FlowPane();
-        tagPane.setHgap(8);
-        tagPane.setVgap(8);
-        tagPane.setPadding(new Insets(5));
-
-        addTag("Sunny");
-        addTag("Rainy");
-        addTag("Top");
-        addTag("Bottom");
-        addTag("One Piece");
-        addTag("Accessory");
-        addTag("Casual");
-        addTag("Party");
-        addTag("Minimal");
-        addTag("Streetwear");
-
-        container.getChildren().addAll(searchBar, tagPane);
-
-        return container;
-    }
-
-    // RESULTS AREA (Pinterest masonry)
-    private VBox createResultsArea() {
-
-        VBox container = new VBox(10);
-        container.setPadding(new Insets(15));
-
-        ScrollPane scroll = new ScrollPane();
+        ScrollPane scroll = new ScrollPane(root);
         scroll.setFitToWidth(true);
-
-        masonry = new FlowPane();
-        masonry.setHgap(15);
-        masonry.setVgap(15);
-        masonry.setPrefWrapLength(900);
-
-        scroll.setContent(masonry);
-
-        emptyLabel = new Label("No items match your filters");
-        emptyLabel.setStyle("-fx-text-fill: " + DARK_GREEN + "; -fx-font-size: 16px;");
-        emptyLabel.setVisible(false);
-
-        container.getChildren().addAll(scroll, emptyLabel);
-
-        return container;
+        scroll.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
+        setCenter(scroll);
     }
 
-    // TAG PILLS
-    private void addTag(String name) {
-        ToggleButton pill = new ToggleButton(name);
+    private VBox createTopSection() {
+        Image backImg = new Image(getClass().getResourceAsStream("/icons/arrow.png"));
+        ImageView backIcon = new ImageView(backImg);
+        backIcon.setFitWidth(35);
+        backIcon.setFitHeight(35);
 
-        pill.setStyle(pillStyle(false));
+        Button backButton = new Button();
+        backButton.setGraphic(backIcon);
+        backButton.setStyle(
+                "-fx-background-color: #F3EEE6;"
+                + "-fx-background-radius: 10;"
+                + "-fx-border-radius: 10;");
+        backButton.setPrefSize(40, 42);
+        backButton.setOnAction(e -> new MainPage().start(stage));
 
-        pill.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            pill.setStyle(pillStyle(newVal));
-            applySearch();
+        searchField = new FlowPane();
+        searchField.setHgap(8);
+        searchField.setVgap(8);
+        searchField.setPrefHeight(45);
+        searchField.setPadding(new Insets(5));
+        searchField.setStyle(
+                "-fx-background-color: white;"
+                + "-fx-border-color: " + LIGHT_GREEN + ";"
+                + "-fx-background-radius: 10;"
+                + "-fx-border-radius: 10;");
+        HBox.setHgrow(searchField, Priority.ALWAYS);
+
+        Button showAllButton = new Button("Show All");
+        showAllButton.setFont(normalBoldFont);
+        showAllButton.setStyle(
+                "-fx-background-color: #F3EEE6;"
+                + "-fx-background-radius: 10;"
+                + "-fx-border-radius: 10;"
+                + TEXT_COLOR);
+        showAllButton.setPrefSize(110, 40);
+        showAllButton.setOnAction(e
+                -> showResults(searchController.searchByCategoryAndTags(null, new ArrayList<>())));
+
+        Button searchButton = new Button("Search");
+        searchButton.setFont(buttonFont);
+        searchButton.setStyle(
+                "-fx-background-color:" + DARK_GREEN + ";"
+                + "-fx-background-radius: 10;"
+                + "-fx-border-radius: 10;"
+                + "-fx-text-fill: white;");
+        searchButton.setPrefSize(110, 40);
+        searchButton.setOnAction(e -> {
+            if (selectedCategory == null && selectedTagIds.isEmpty()) {
+                noFilterWarning.setVisible(true);
+                noFilterWarning.setManaged(true);
+                resultsBox.getChildren().clear();
+                return;
+            }
+            noFilterWarning.setVisible(false);
+            noFilterWarning.setManaged(false);
+            showResults(searchController.searchByCategoryAndTags(
+                    selectedCategory, new ArrayList<>(selectedTagIds)));
         });
 
-        tagPane.getChildren().add(pill);
+        HBox searchRow = new HBox(10);
+        searchRow.setAlignment(Pos.CENTER_LEFT);
+        searchRow.getChildren().addAll(backButton, searchField, showAllButton, searchButton);
+
+        return new VBox(15, searchRow);
     }
 
-    private String pillStyle(boolean selected) {
-        if (selected) {
-            return """
-                -fx-background-color: #606c38;
-                -fx-text-fill: white;
-                -fx-background-radius: 18;
-                -fx-padding: 6 12;
-                """;
+    private VBox createFiltersSection() {
+        VBox filters = new VBox(15);
+
+        // Row 1: Type filter (ClothingCategory-based, not tag IDs)
+        filters.getChildren().add(createTypeFilterRow());
+
+        // Rows 2-N: Tag-based filters (Color, Weather, Event, Detail, Other)
+        List<Tag> allTags = searchController.getAllTags();
+
+        Map<TagCategory, List<Tag>> grouped = new EnumMap<>(TagCategory.class);
+        for (TagCategory cat : TagCategory.values()) {
+            grouped.put(cat, new ArrayList<>());
+        }
+        for (Tag tag : allTags) {
+            // Skip the four seeded clothing-type tags (ids 1-4, category=OTHER).
+            // Clothing type is handled via the Type row above using ClothingCategory.
+            if (tag.getCategory() == TagCategory.OTHER && tag.getId() <= 4) {
+                continue;
+            }
+            grouped.get(tag.getCategory()).add(tag);
         }
 
-        return """
-            -fx-background-color: #dda15e;
-            -fx-text-fill: #283618;
-            -fx-background-radius: 18;
-            -fx-padding: 6 12;
-            """;
-    }
+        Map<TagCategory, String> labels = new LinkedHashMap<>();
+        labels.put(TagCategory.COLOR, "Colour");
+        labels.put(TagCategory.WEATHER, "Weather");
+        labels.put(TagCategory.EVENT, "Event");
+        labels.put(TagCategory.DETAIL, "Details");
+        labels.put(TagCategory.OTHER, "Other");
 
-    // SEARCH LOGIC
-    private void applySearch() {
+        TagCategory[] order = {
+            TagCategory.COLOR,
+            TagCategory.WEATHER,
+            TagCategory.EVENT,
+            TagCategory.DETAIL,
+            TagCategory.OTHER
+        };
 
-        String query = searchField.getText().toLowerCase();
-
-        List<Item> filtered = new ArrayList<>();
-
-        for (Item item : allItems) {
-
-            boolean matchesText = item.name.toLowerCase().contains(query);
-
-            boolean matchesTags = tagPane.getChildren().stream()
-                    .filter(n -> ((ToggleButton) n).isSelected())
-                    .map(n -> ((ToggleButton) n).getText().toLowerCase())
-                    .allMatch(item.tags::contains);
-
-            if (matchesText && matchesTags) {
-                filtered.add(item);
+        for (TagCategory cat : order) {
+            List<Tag> catTags = grouped.get(cat);
+            if (catTags != null && !catTags.isEmpty()) {
+                String label = labels.getOrDefault(cat, cap(cat.name()));
+                filters.getChildren().add(createTagFilterRow(label, catTags));
             }
         }
 
-        renderItems(filtered);
+        return filters;
     }
 
-    // RENDER (Pinterest Masonry)
-    private void renderItems(List<Item> items) {
+    private HBox createTypeFilterRow() {
+        Label label = new Label("Type");
+        label.setFont(subTitleFont);
+        label.setPrefWidth(80);
+        label.setStyle(TEXT_COLOR);
 
-        masonry.getChildren().clear();
+        FlowPane tagPane = new FlowPane();
+        tagPane.setHgap(10);
+        tagPane.setVgap(8);
 
-        if (items.isEmpty()) {
-            emptyLabel.setVisible(true);
+        ClothingCategory[] types = {
+            ClothingCategory.TOP,
+            ClothingCategory.BOTTOM,
+            ClothingCategory.ONE_PIECE,
+            ClothingCategory.ACCESSORY
+        };
+        String[] typeLabels = {"Top", "Bottom", "One Piece", "Accessory"};
+
+        for (int i = 0; i < types.length; i++) {
+            final ClothingCategory category = types[i];
+            final String displayName = typeLabels[i];
+
+            ToggleButton btn = new ToggleButton(displayName);
+            btn.setFont(normalBoldFont);
+            styleTagButton(btn);
+
+            btn.selectedProperty().addListener((obs, oldVal, selected) -> {
+                if (selected) {
+                    selectedCategory = category;
+                    removeCategoryChip();
+                    addCategoryChip(displayName);
+                } else {
+                    if (selectedCategory == category) {
+                        selectedCategory = null;
+                        removeCategoryChip();
+                    }
+                }
+            });
+
+            tagPane.getChildren().add(btn);
+        }
+
+        HBox row = new HBox(20);
+        row.setAlignment(Pos.CENTER_LEFT);
+        row.getChildren().addAll(label, tagPane);
+        return row;
+    }
+
+    private HBox createTagFilterRow(String categoryLabel, List<Tag> tags) {
+        Label label = new Label(categoryLabel);
+        label.setFont(subTitleFont);
+        label.setPrefWidth(80);
+        label.setStyle(TEXT_COLOR);
+
+        FlowPane tagPane = new FlowPane();
+        tagPane.setHgap(10);
+        tagPane.setVgap(8);
+
+        for (Tag tag : tags) {
+            ToggleButton btn = new ToggleButton(tag.getName());
+            btn.setFont(normalBoldFont);
+            styleTagButton(btn);
+
+            final int tagId = tag.getId();
+            final String name = tag.getName();
+
+            btn.selectedProperty().addListener((obs, oldVal, selected) -> {
+                if (selected) {
+                    if (!selectedTagIds.contains(tagId)) {
+                        selectedTagIds.add(tagId);
+                    }
+                    addTagChip(name, tagId);
+                } else {
+                    selectedTagIds.remove(Integer.valueOf(tagId));
+                    removeTagChip(tagId);
+                }
+            });
+
+            tagPane.getChildren().add(btn);
+        }
+
+        HBox row = new HBox(20);
+        row.setAlignment(Pos.CENTER_LEFT);
+        row.getChildren().addAll(label, tagPane);
+        return row;
+    }
+
+    private void addTagChip(String tagName, int tagId) {
+        Label chip = new Label(tagName);
+        chip.setFont(normalBoldFont);
+        chip.setStyle(
+                "-fx-background-color: #F3EEE6;"
+                + "-fx-background-radius: 8;"
+                + "-fx-padding: 4 10 4 10;"
+                + TEXT_COLOR);
+        chip.setUserData(tagId);
+        searchField.getChildren().add(chip);
+    }
+
+    private void removeTagChip(int tagId) {
+        searchField.getChildren().removeIf(
+                node -> Integer.valueOf(tagId).equals(node.getUserData()));
+    }
+
+    private void addCategoryChip(String displayName) {
+        Label chip = new Label(displayName);
+        chip.setFont(normalBoldFont);
+        chip.setStyle(
+                "-fx-background-color: " + DARK_GREEN + ";"
+                + "-fx-background-radius: 8;"
+                + "-fx-padding: 4 10 4 10;"
+                + "-fx-text-fill: white;");
+        chip.setUserData(CATEGORY_CHIP_SENTINEL);
+        searchField.getChildren().add(0, chip);
+    }
+
+    private void removeCategoryChip() {
+        searchField.getChildren().removeIf(
+                node -> Integer.valueOf(CATEGORY_CHIP_SENTINEL).equals(node.getUserData()));
+    }
+
+    private void showResults(List<ClothingItem> items) {
+        resultsBox.getChildren().clear();
+
+        if (items == null || items.isEmpty()) {
+            Label empty = new Label("No items match your selection.");
+            empty.setFont(normalFont);
+            empty.setStyle(TEXT_COLOR);
+            resultsBox.getChildren().add(empty);
             return;
         }
 
-        emptyLabel.setVisible(false);
-
-        for (Item item : items) {
-            VBox card = createCard(item);
-
-            card.setOpacity(0);
-            masonry.getChildren().add(card);
-
-            fadeIn(card);
+        for (ClothingItem item : items) {
+            resultsBox.getChildren().add(buildResultCard(item));
         }
     }
 
-    // ITEM CARD
-    private VBox createCard(Item item) {
+    /**
+     * Builds a full result card for one clothing item.
+     *
+     * <p>
+     * The card contains:</p>
+     * <ul>
+     * <li>Item name, category chip, heart favourite button</li>
+     * <li>Tag chips</li>
+     * <li>"Mark as Worn" button + worn count label</li>
+     * <li>"Show Matches" toggle button for TOP/BOTTOM items (lazy-loads
+     * matches)</li>
+     * </ul>
+     */
+    private VBox buildResultCard(ClothingItem item) {
+        // Outer wrapper: card + optional matches panel appended below it
+        VBox wrapper = new VBox(6);
 
         VBox card = new VBox(8);
-        card.setPadding(new Insets(10));
-        card.setAlignment(Pos.CENTER);
-        card.setPrefWidth(160);
+        card.setPadding(new Insets(12));
+        card.setStyle(
+                "-fx-background-color: white;"
+                + "-fx-background-radius: 10;"
+                + "-fx-border-color: " + LIGHT_GREEN + ";"
+                + "-fx-border-radius: 10;");
 
-        card.setStyle("""
-            -fx-background-color: #fefae0;
-            -fx-border-color: #dda15e;
-            -fx-border-radius: 12;
-            -fx-background-radius: 12;
-            """);
+        // Item name
+        Label name = new Label(item.getName());
+        name.setFont(normalBoldFont);
+        name.setStyle(TEXT_COLOR);
 
-        ImageView img = new ImageView(item.image);
-        img.setFitWidth(120);
-        img.setFitHeight(120);
-        img.setPreserveRatio(true);
+        // Category chip
+        Label cat = new Label(cap(item.getCategory().name()));
+        cat.setFont(smallFont);
+        cat.setStyle(
+                "-fx-text-fill: white;"
+                + "-fx-background-color: " + DARK_GREEN + ";"
+                + "-fx-background-radius: 6;"
+                + "-fx-padding: 3 8 3 8;");
 
-        Label name = new Label(item.name);
-        name.setStyle("-fx-text-fill: #283618; -fx-font-weight: bold;");
+        Image emptyHeartImg = new Image(
+                getClass().getResourceAsStream("/icons/heart.png"));
+        Image filledHeartImg = new Image(
+                getClass().getResourceAsStream("/icons/heartFilled.png"));
 
-        card.getChildren().addAll(img, name);
+        ImageView heart = new ImageView(
+                item.isFavorite() ? filledHeartImg : emptyHeartImg);
+        heart.setFitWidth(22);
+        heart.setFitHeight(22);
 
-        // HOVER EFFECT
-        card.setOnMouseEntered(e -> card.setScaleX(1.05));
-        card.setOnMouseEntered(e -> card.setScaleY(1.05));
-        card.setOnMouseExited(e -> {
-            card.setScaleX(1.0);
-            card.setScaleY(1.0);
+        Button heartBtn = new Button();
+        heartBtn.setGraphic(heart);
+        heartBtn.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
+        heartBtn.setOnAction(e -> {
+            viewItemController.toggleFavourite(item);
+            heart.setImage(item.isFavorite() ? filledHeartImg : emptyHeartImg);
         });
 
-        // CLICK → OUTFIT BUILDER
-        card.setOnMouseClicked(e -> openOutfitBuilder(item));
+        // Spacer pushes heart to the right of the top row
+        javafx.scene.layout.Region spacer = new javafx.scene.layout.Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        return card;
+        HBox topRow = new HBox(10);
+        topRow.setAlignment(Pos.CENTER_LEFT);
+        topRow.getChildren().addAll(name, cat, spacer, heartBtn);
+
+        FlowPane chips = new FlowPane();
+        chips.setHgap(8);
+        chips.setVgap(6);
+        for (Tag t : item.getTags()) {
+            Label chip = new Label(t.getName());
+            chip.setFont(normalFont);
+            chip.setStyle(
+                    "-fx-background-color: " + DARK_GREEN + ";"
+                    + "-fx-background-radius: 8;"
+                    + "-fx-padding: 4 10 4 10;"
+                    + "-fx-text-fill: white;");
+            chips.getChildren().add(chip);
+        }
+
+        Label wornLabel = new Label("Worn: " + item.getWornCount() + " time(s)");
+        wornLabel.setFont(smallFont);
+        wornLabel.setStyle("-fx-text-fill: #888;");
+
+        //Mark as Worn button
+        Button wornBtn = new Button("Mark as Worn");
+        wornBtn.setFont(normalBoldFont);
+        wornBtn.setStyle(
+                "-fx-background-color: #F3EEE6;"
+                + "-fx-background-radius: 8;"
+                + "-fx-padding: 6 14 6 14;");
+        wornBtn.setOnAction(e -> {
+            viewItemController.markAsWorn(item.getId());
+            item.wear();
+            wornLabel.setText("Worn: " + item.getWornCount() + " time(s)");
+            showDialog(Alert.AlertType.INFORMATION,
+                    "Marked as Worn",
+                    "\"" + item.getName() + "\" worn count updated to "
+                    + item.getWornCount() + ".");
+        });
+
+        HBox actionRow = new HBox(10);
+        actionRow.setAlignment(Pos.CENTER_LEFT);
+
+        ClothingCategory category = item.getCategory();
+
+        if (category == ClothingCategory.TOP
+                || category == ClothingCategory.BOTTOM) {
+
+            Button matchBtn = new Button("Show Matches");
+
+            matchBtn.setFont(normalBoldFont);
+
+            matchBtn.setStyle(
+                    "-fx-background-color: #F3EEE6;"
+                    + "-fx-background-radius: 8;"
+                    + "-fx-padding: 6 14 6 14;"
+                    + TEXT_COLOR
+            );
+
+            matchBtn.setOnAction(e -> {
+
+                if (wrapper.getChildren().size() > 1) {
+
+                    wrapper.getChildren().remove(1);
+                    matchBtn.setText("Show Matches");
+
+                } else {
+
+                    wrapper.getChildren().add(
+                            buildMatchesPanel(item)
+                    );
+
+                    matchBtn.setText("Hide Matches");
+                }
+            });
+
+            actionRow.getChildren().addAll(
+                    wornBtn,
+                    matchBtn,
+                    wornLabel
+            );
+
+        } else {
+
+            actionRow.getChildren().addAll(
+                    wornBtn,
+                    wornLabel
+            );
+        }
+
+        card.getChildren().addAll(topRow, chips, actionRow);
+        wrapper.getChildren().add(card);
+        return wrapper;
     }
 
-    // FADE ANIMATION
-    private void fadeIn(javafx.scene.Node node) {
-        FadeTransition ft = new FadeTransition(Duration.millis(250), node);
-        ft.setFromValue(0);
-        ft.setToValue(1);
-        ft.play();
+    /**
+     * Builds the inline matches panel shown beneath a TOP or BOTTOM result.
+     * Each match row shows the match name/category and a "Create Outfit"
+     * button.
+     *
+     * <p>
+     * Outfit creation logic is handled in handleCreateOutfit():</p>
+     */
+    private VBox buildMatchesPanel(ClothingItem selectedItem) {
+        List<ClothingItem> matches = viewItemController.getMatchingItems(selectedItem);
+
+        VBox panel = new VBox(8);
+        panel.setPadding(new Insets(10, 0, 2, 0));
+
+        String headingText = matches.isEmpty()
+                ? "No matching items found."
+                : "Matching " + (selectedItem.getCategory() == ClothingCategory.TOP
+                ? "bottoms" : "tops") + ":";
+
+        Label heading = new Label(headingText);
+        heading.setFont(smallFont);
+        heading.setStyle("-fx-text-fill: #666;");
+        panel.getChildren().add(heading);
+
+        for (ClothingItem match : matches) {
+            HBox matchRow = new HBox(12);
+            matchRow.setAlignment(Pos.CENTER_LEFT);
+            matchRow.setPadding(new Insets(8));
+            matchRow.setStyle(
+                    "-fx-background-color: #F8F4ED;"
+                    + "-fx-background-radius: 8;"
+                    + "-fx-border-color: " + LIGHT_GREEN + ";"
+                    + "-fx-border-radius: 8;");
+
+            // Match info
+            VBox info = new VBox(2);
+            Label matchName = new Label(match.getName());
+            matchName.setFont(normalBoldFont);
+            matchName.setStyle(TEXT_COLOR);
+
+            Label matchCat = new Label(cap(match.getCategory().name()));
+            matchCat.setFont(smallFont);
+            matchCat.setStyle("-fx-text-fill: #888;");
+
+            info.getChildren().addAll(matchName, matchCat);
+            HBox.setHgrow(info, Priority.ALWAYS);
+
+            Button outfitBtn = new Button("Create Outfit");
+            outfitBtn.setFont(normalBoldFont);
+            outfitBtn.setStyle(
+                    "-fx-background-color: " + DARK_GREEN + ";"
+                    + "-fx-text-fill: white;"
+                    + "-fx-background-radius: 8;"
+                    + "-fx-padding: 6 14 6 14;");
+            outfitBtn.setOnAction(e
+                    -> handleCreateOutfit(selectedItem, match, outfitBtn));
+
+            matchRow.getChildren().addAll(info, outfitBtn);
+            panel.getChildren().add(matchRow);
+        }
+
+        return panel;
     }
 
-    // OUTFIT BUILDER POPUP
-    private void openOutfitBuilder(Item item) {
+    /**
+     * Attempts to create an outfit from the two given items.
+     *
+     * <ul>
+     * <li>On success: disables the button, shows a confirmation dialog.</li>
+     * <li>On duplicate: shows an informational dialog, disables the
+     * button.</li>
+     * <li>On other error: shows an error dialog.</li>
+     * </ul>
+     */
+    private void handleCreateOutfit(ClothingItem selectedItem,
+            ClothingItem matchItem,
+            Button outfitBtn) {
 
-        Stage stage = new Stage();
+        try {
+            Image tickImg = new Image(
+                    getClass().getResourceAsStream(
+                            "/icons/tick.png"
+                    )
+            );
 
-        VBox root = new VBox(10);
-        root.setPadding(new Insets(15));
-        root.setStyle("-fx-background-color: " + CREAM + ";");
+            ImageView tickIcon = new ImageView(tickImg);
 
-        Label title = new Label("Outfit Builder");
-        title.setStyle("-fx-font-size: 18px; -fx-text-fill: " + DARK_GREEN + ";");
-
-        ImageView img = new ImageView(item.image);
-        img.setFitWidth(150);
-        img.setFitHeight(150);
-
-        Button top = new Button("Add as Top");
-        Button bottom = new Button("Add as Bottom");
-        Button save = new Button("Save Outfit");
-
-        top.setStyle(buttonStyle());
-        bottom.setStyle(buttonStyle());
-        save.setStyle(buttonStyle());
-
-        root.getChildren().addAll(title, img, top, bottom, save);
-
-        stage.setScene(new Scene(root, 300, 400));
-        stage.show();
-    }
-
-    // MOCK DATA - ned to sync with the tags in the UI
-    private void loadMockData() {
-
-        allItems.add(new Item("Blue Shirt", List.of("top", "casual"),
-                new Image("https://via.placeholder.com/120")));
-
-        allItems.add(new Item("Black Jeans", List.of("bottom", "streetwear"),
-                new Image("https://via.placeholder.com/120")));
-
-        allItems.add(new Item("Red Dress", List.of("one piece", "party"),
-                new Image("https://via.placeholder.com/120")));
-    }
-
-    // ITEM CLASS
-    private static class Item {
-
-        String name;
-        List<String> tags;
-        Image image;
-
-        Item(String name, List<String> tags, Image image) {
-            this.name = name;
-            this.tags = tags;
-            this.image = image;
+            tickIcon.setFitWidth(16);
+            tickIcon.setFitHeight(16);
+            viewItemController.createOutfitFromMatch(selectedItem, matchItem);
+            outfitBtn.setDisable(true);
+            outfitBtn.setText("Saved");
+            outfitBtn.setGraphic(tickIcon);
+            showDialog(Alert.AlertType.INFORMATION,
+                    "Outfit Created",
+                    "\"" + selectedItem.getName() + " + " + matchItem.getName()
+                    + "\" has been saved to your outfits.");
+        } catch (IllegalStateException ex) {
+            // Duplicate outfit — OutfitService throws this
+            outfitBtn.setDisable(true);
+            outfitBtn.setText("Already exists");
+            showDialog(Alert.AlertType.INFORMATION,
+                    "Duplicate Outfit",
+                    "An outfit with these two items already exists.");
+        } catch (Exception ex) {
+            showDialog(Alert.AlertType.ERROR,
+                    "Error",
+                    "Could not create outfit: " + ex.getMessage());
         }
     }
 
-    // STYLES
-    private String buttonStyle() {
-        return """
-            -fx-background-color: #606c38;
-            -fx-text-fill: white;
-            -fx-background-radius: 12;
-            -fx-padding: 8 12;
-            """;
+    private void showDialog(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
-    private String inputStyle() {
-        return """
-            -fx-background-radius: 18;
-            -fx-border-radius: 18;
-            -fx-border-color: #283618;
-            -fx-padding: 6 10;
-            """;
+    private String cap(String s) {
+        if (s == null || s.isEmpty()) {
+            return s;
+        }
+        return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+    }
+
+    private void styleTagButton(ToggleButton btn) {
+        String normal
+                = "-fx-background-color: white;"
+                + "-fx-border-color: " + LIGHT_GREEN + ";"
+                + "-fx-background-radius: 8;"
+                + "-fx-border-radius: 8;"
+                + "-fx-text-fill: #1a1a1a;";
+        String selected
+                = "-fx-background-color:" + DARK_GREEN + ";"
+                + "-fx-text-fill: white;"
+                + "-fx-background-radius: 8;"
+                + "-fx-border-radius: 8;";
+
+        btn.setStyle(normal);
+        btn.selectedProperty().addListener((obs, oldVal, isSelected)
+                -> btn.setStyle(isSelected ? selected : normal));
     }
 }
