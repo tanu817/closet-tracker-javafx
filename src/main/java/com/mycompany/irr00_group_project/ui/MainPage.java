@@ -19,6 +19,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.scene.chart.PieChart;
 
 /**
  * Main page / dashboard of the app. Dashboard cards are loaded from real CSV
@@ -26,10 +27,12 @@ import javafx.stage.Stage;
  *
  * @author Bhavini Kopparam Ajay
  * @author Alexandra Varapai
+ * @author Tanusri Madhalam
  */
 public class MainPage {
 
     private final DashboardController dashboardController = new DashboardController();
+    private PieChart pieChart;
 
     /**
      * Builds and shows the main page scene.
@@ -122,9 +125,19 @@ public class MainPage {
                 dashboardController.getLeast5Worn(),
                 cardTitleFont, buttonFont, 30, 30, true);
 
+        VBox leftColumn = new VBox(20);
+
+        // create stats card
+        VBox statsCard = createStatsCard(cardTitleFont);
+
+        // stack favorites + stats
+        leftColumn.getChildren().addAll(favoritesCard, statsCard);
+
         HBox cardsRow = new HBox(20);
         cardsRow.setAlignment(Pos.CENTER);
-        cardsRow.getChildren().addAll(favoritesCard, mostWornCard, leastWornCard);
+
+        // replace favorites with left column
+        cardsRow.getChildren().addAll(leftColumn, mostWornCard, leastWornCard);
 
         root.setCenter(cardsRow);
         root.setMargin(cardsRow, new Insets(20, 0, 0, 0));
@@ -240,7 +253,13 @@ public class MainPage {
         VBox card = new VBox(12);
         card.setPadding(new Insets(15));
         card.setPrefWidth(320);
-        card.setPrefHeight(330);
+        
+        if (titleText.equals("Favorites")) {
+            card.setPrefHeight(250);
+        } else {
+            card.setPrefHeight(330);
+        }
+        
         card.setStyle(
                 "-fx-background-color: white;"
                 + "-fx-background-radius: 12;"
@@ -275,5 +294,66 @@ public class MainPage {
         }
 
         return card;
+    }
+    
+    /**
+     * Creates a card for the statistics pie chart. 
+     * @param cardTitleFont for the title.
+     * @return return the card used to display stats.
+     */
+    private VBox createStatsCard(Font cardTitleFont) {
+
+    VBox card = new VBox(12);
+    card.setPadding(new Insets(15));
+    card.setPrefWidth(320);
+    card.setPrefHeight(200);
+
+    card.setStyle(
+            "-fx-background-color: white;"
+            + "-fx-background-radius: 12;"
+            + "-fx-border-color: #D8CFBC;"
+            + "-fx-border-radius: 12;");
+
+    Label title = new Label("Item Stats");
+    title.setFont(cardTitleFont);
+
+    pieChart = new PieChart();
+    pieChart.setLabelsVisible(true);
+
+    updatePieChart();
+
+    card.getChildren().addAll(title, pieChart);
+
+    return card;
+    
+    }
+    
+    /**
+     * Method to update pie chart in dashboard.
+     */
+    private void updatePieChart() {
+    int tops = 0;
+    int bottoms = 0;
+    int accessories = 0;
+
+    List<ClothingItem> allItems = dashboardController.getAllItemsWithTags();
+
+    for (ClothingItem item : allItems) {
+        String category = item.getCategory().toString();
+
+        if (category.equalsIgnoreCase("TOP")) {
+            tops++;
+        } else if (category.equalsIgnoreCase("BOTTOM")) {
+            bottoms++;
+        } else if (category.equalsIgnoreCase("ACCESSORY")) {
+            accessories++;
+        }
+    }
+
+    pieChart.getData().clear();
+    pieChart.getData().add(new PieChart.Data("Tops", tops));
+    pieChart.getData().add(new PieChart.Data("Bottoms", bottoms));
+    pieChart.getData().add(new PieChart.Data("Accessories", accessories));
+    
     }
 }
