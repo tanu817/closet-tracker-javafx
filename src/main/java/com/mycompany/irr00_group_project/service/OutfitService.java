@@ -27,6 +27,10 @@ public class OutfitService {
     private final ClothingRepository clothingRepository;
     private final TagRepository tagRepository;
 
+    /**
+     * Initializes the service with new instances of
+     * {@link OutfitRepository}, {@link ClothingRepository} and {@link TagRepository}.
+     */
     public OutfitService() {
         this.outfitRepository = new OutfitRepository();
         this.clothingRepository = new ClothingRepository();
@@ -187,7 +191,7 @@ public class OutfitService {
     }
 
     /**
-     *
+     * Returns all clothing items with tags loaded.
      * @return all {@link ClothingItem} objects with tags loaded
      */
     public List<ClothingItem> getAllClothingItems() {

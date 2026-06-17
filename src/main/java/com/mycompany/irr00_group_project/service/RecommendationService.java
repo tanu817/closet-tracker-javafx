@@ -22,6 +22,10 @@ public class RecommendationService {
     private final ClothingRepository clothingRepository;
     private final TagRepository tagRepository;
 
+    /**
+     * Initializes the service with new instances of
+     * {@link ClothingRepository} and {@link TagRepository}.
+     */
     public RecommendationService() {
         this.clothingRepository = new ClothingRepository();
         this.tagRepository = new TagRepository();
