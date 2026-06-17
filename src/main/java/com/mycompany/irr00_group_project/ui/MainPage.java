@@ -40,7 +40,6 @@ public class MainPage {
      * @param stage the primary stage
      */
     public void start(Stage stage) {
-        BorderPane root = new BorderPane();
 
         Font titleFont = Font.loadFont(
                 getClass().getResourceAsStream("/fonts/YesevaOne-Regular.ttf"), 28);
@@ -139,6 +138,8 @@ public class MainPage {
         // replace favorites with left column
         cardsRow.getChildren().addAll(leftColumn, mostWornCard, leastWornCard);
 
+        BorderPane root = new BorderPane();
+
         root.setCenter(cardsRow);
         root.setMargin(cardsRow, new Insets(20, 0, 0, 0));
 
@@ -151,10 +152,12 @@ public class MainPage {
         Label progressTitle = new Label("Wardrobe Usage Overview");
         progressTitle.setFont(cardTitleFont);
 
-        Label progressStats = new Label(wornItems + "/" + totalItems + " items  —  " + percentage + "%");
+        Label progressStats = new Label(wornItems + "/" + totalItems + " items  —  " 
+            + percentage + "%");
         progressStats.setFont(buttonFont);
 
-        javafx.scene.control.ProgressBar progressBar = new javafx.scene.control.ProgressBar(progress);
+        javafx.scene.control.ProgressBar progressBar = 
+            new javafx.scene.control.ProgressBar(progress);
         progressBar.setPrefWidth(860);
         progressBar.setPrefHeight(10);
         progressBar.setStyle(
@@ -253,13 +256,13 @@ public class MainPage {
         VBox card = new VBox(12);
         card.setPadding(new Insets(15));
         card.setPrefWidth(320);
-        
+
         if (titleText.equals("Favorites")) {
             card.setPrefHeight(250);
         } else {
             card.setPrefHeight(330);
         }
-        
+
         card.setStyle(
                 "-fx-background-color: white;"
                 + "-fx-background-radius: 12;"
@@ -295,80 +298,81 @@ public class MainPage {
 
         return card;
     }
-    
+
     /**
-     * Creates a card for the statistics pie chart. 
+     * Creates a card for the statistics pie chart.
+     *
      * @param cardTitleFont for the title.
      * @return return the card used to display stats.
      */
     private VBox createStatsCard(Font cardTitleFont) {
 
-    VBox card = new VBox(12);
-    card.setPadding(new Insets(15));
-    card.setPrefWidth(320);
-    card.setPrefHeight(200);
+        VBox card = new VBox(12);
+        card.setPadding(new Insets(15));
+        card.setPrefWidth(320);
+        card.setPrefHeight(200);
 
-    card.setStyle(
-            "-fx-background-color: white;"
-            + "-fx-background-radius: 12;"
-            + "-fx-border-color: #D8CFBC;"
-            + "-fx-border-radius: 12;");
+        card.setStyle(
+                "-fx-background-color: white;"
+                + "-fx-background-radius: 12;"
+                + "-fx-border-color: #D8CFBC;"
+                + "-fx-border-radius: 12;");
 
-    Label title = new Label("Item Stats");
-    title.setFont(cardTitleFont);
+        Label title = new Label("Item Stats");
+        title.setFont(cardTitleFont);
 
-    pieChart = new PieChart();
-    pieChart.setLabelsVisible(true);
+        pieChart = new PieChart();
+        pieChart.setLabelsVisible(true);
 
-    updatePieChart();
+        updatePieChart();
 
-    card.getChildren().addAll(title, pieChart);
+        card.getChildren().addAll(title, pieChart);
 
-    return card;
-    
+        return card;
+
     }
-    
+
     /**
      * Method to update pie chart in dashboard.
      */
     private void updatePieChart() {
-    int tops = 0;
-    int bottoms = 0;
-    int accessories = 0;
-    int onePiece = 0;
+        int tops = 0;
+        int bottoms = 0;
+        int accessories = 0;
+        int onePiece = 0;
 
-    List<ClothingItem> allItems = dashboardController.getAllItemsWithTags();
+        List<ClothingItem> allItems = dashboardController.getAllItemsWithTags();
 
-    for (ClothingItem item : allItems) {
-        String category = item.getCategory().toString();
+        for (ClothingItem item : allItems) {
+            String category = item.getCategory().toString();
 
-        if (category.equalsIgnoreCase("TOP")) {
-            tops++;
-        } else if (category.equalsIgnoreCase("BOTTOM")) {
-            bottoms++;
-        } else if (category.equalsIgnoreCase("ACCESSORY")) {
-            accessories++;
-        } else if (category.equalsIgnoreCase("ONE_PIECE") 
-                || category.equalsIgnoreCase("ONEPIECE") 
-                || category.equalsIgnoreCase("ONE PIECE")) {
-            onePiece++;
+            if (category.equalsIgnoreCase("TOP")) {
+                tops++;
+            } else if (category.equalsIgnoreCase("BOTTOM")) {
+                bottoms++;
+            } else if (category.equalsIgnoreCase("ACCESSORY")) {
+                accessories++;
+            } else if (category.equalsIgnoreCase("ONE_PIECE")
+                    || category.equalsIgnoreCase("ONEPIECE")
+                    || category.equalsIgnoreCase("ONE PIECE")) {
+                onePiece++;
+            }
         }
+
+        pieChart.getData().clear();
+
+        PieChart.Data topsSlice = new PieChart.Data("Tops", tops);
+        PieChart.Data bottomsSlice = new PieChart.Data("Bottoms", bottoms);
+        PieChart.Data accessoriesSlice = new PieChart.Data("Accessories", accessories);
+        PieChart.Data onePieceSlice = new PieChart.Data("One Piece", onePiece);
+
+        pieChart.getData().addAll(topsSlice, bottomsSlice, accessoriesSlice, onePieceSlice);
+
+        // Apply custom colors after chart renders
+        applyPieChartColors();
+
     }
 
-    pieChart.getData().clear();
-
-    PieChart.Data topsSlice = new PieChart.Data("Tops", tops);
-    PieChart.Data bottomsSlice = new PieChart.Data("Bottoms", bottoms);
-    PieChart.Data accessoriesSlice = new PieChart.Data("Accessories", accessories);
-    PieChart.Data onePieceSlice = new PieChart.Data("One Piece", onePiece);
-
-    pieChart.getData().addAll(topsSlice, bottomsSlice, accessoriesSlice, onePieceSlice);
-
-    // Apply custom colors after chart renders
-    applyPieChartColors();
-    
-    }
-    
     /**
      * To change colors of the pie chart.
      */
@@ -376,10 +380,10 @@ public class MainPage {
         // Delay needed so nodes exist
         javafx.application.Platform.runLater(() -> {
             if (pieChart.getData().size() >= 4) {
-                pieChart.getData().get(0).getNode().setStyle("-fx-pie-color: #565448;"); // Tops
-                pieChart.getData().get(1).getNode().setStyle("-fx-pie-color: #D8CFBC;"); // Bottoms
-                pieChart.getData().get(2).getNode().setStyle("-fx-pie-color: #A9A48E;"); // Accessories
-                pieChart.getData().get(3).getNode().setStyle("-fx-pie-color: #EDE6D6;"); // One Piece
+                pieChart.getData().get(0).getNode().setStyle("-fx-pie-color: #565448;"); 
+                pieChart.getData().get(1).getNode().setStyle("-fx-pie-color: #D8CFBC;"); 
+                pieChart.getData().get(2).getNode().setStyle("-fx-pie-color: #A9A48E;"); 
+                pieChart.getData().get(3).getNode().setStyle("-fx-pie-color: #EDE6D6;"); 
             }
         });
     }
