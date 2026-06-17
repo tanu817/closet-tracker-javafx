@@ -56,7 +56,6 @@ public class SearchPage extends BorderPane {
     private Label noFilterWarning;
 
     private final SearchController searchController = new SearchController();
-    // Reuse ViewItemController for markAsWorn + createOutfitFromMatch
     private final ViewItemController viewItemController = new ViewItemController();
 
     /**
@@ -70,7 +69,6 @@ public class SearchPage extends BorderPane {
      */
     private ClothingCategory selectedCategory = null;
 
-    // Chip sentinel value used to identify the category chip in searchField
     private static final int CATEGORY_CHIP_SENTINEL = -999;
 
     private final Font normalBoldFont = Font.loadFont(
@@ -85,10 +83,9 @@ public class SearchPage extends BorderPane {
             getClass().getResourceAsStream("/fonts/MuktaVaani-Regular.ttf"), 11);
 
     /**
-     * Constructs the SearchPage UI and initializes filters, search controls,
-     * and results display.
+     * Constructs the SearchPage and initialises the layout.
      *
-     * @param stage the primary application stage used for navigation
+     * @param stage the primary application stage
      */
     public SearchPage(Stage stage) {
         this.stage = stage;
@@ -186,10 +183,8 @@ public class SearchPage extends BorderPane {
     private VBox createFiltersSection() {
         VBox filters = new VBox(15);
 
-        // Row 1: Type filter (ClothingCategory-based, not tag IDs)
         filters.getChildren().add(createTypeFilterRow());
 
-        // Rows 2-N: Tag-based filters (Color, Weather, Event, Detail, Other)
         List<Tag> allTags = searchController.getAllTags();
 
         Map<TagCategory, List<Tag>> grouped = new EnumMap<>(TagCategory.class);
@@ -197,8 +192,6 @@ public class SearchPage extends BorderPane {
             grouped.put(cat, new ArrayList<>());
         }
         for (Tag tag : allTags) {
-            // Skip the four seeded clothing-type tags (ids 1-4, category=OTHER).
-            // Clothing type is handled via the Type row above using ClothingCategory.
             if (tag.getCategory() == TagCategory.OTHER && tag.getId() <= 4) {
                 continue;
             }
@@ -380,9 +373,11 @@ public class SearchPage extends BorderPane {
      * <li>"Show Matches" toggle button for TOP/BOTTOM items (lazy-loads
      * matches)</li>
      * </ul>
+     *
+     * @param item the item to render
+     * @return VBox wrapper containing the card and optional matches panel
      */
     private VBox buildResultCard(ClothingItem item) {
-        // Outer wrapper: card + optional matches panel appended below it
         VBox wrapper = new VBox(6);
 
         VBox card = new VBox(8);
@@ -393,12 +388,29 @@ public class SearchPage extends BorderPane {
                 + "-fx-border-color: " + LIGHT_GREEN + ";"
                 + "-fx-border-radius: 10;");
 
-        // Item name
+        Label wornLabel = buildWornLabel(item);
+
+        card.getChildren().addAll(
+                buildResultCardTopRow(item),
+                buildResultCardChips(item),
+                buildResultCardActionRow(item, wrapper, wornLabel)
+        );
+
+        wrapper.getChildren().add(card);
+        return wrapper;
+    }
+
+    /**
+     * Builds the top row of a result card (name, category chip, heart button).
+     *
+     * @param item the item to render
+     * @return HBox top row
+     */
+    private HBox buildResultCardTopRow(ClothingItem item) {
         Label name = new Label(item.getName());
         name.setFont(normalBoldFont);
         name.setStyle(TEXT_COLOR);
 
-        // Category chip
         Label cat = new Label(cap(item.getCategory().name()));
         cat.setFont(smallFont);
         cat.setStyle(
@@ -425,14 +437,22 @@ public class SearchPage extends BorderPane {
             heart.setImage(item.isFavorite() ? filledHeartImg : emptyHeartImg);
         });
 
-        // Spacer pushes heart to the right of the top row
         javafx.scene.layout.Region spacer = new javafx.scene.layout.Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
         HBox topRow = new HBox(10);
         topRow.setAlignment(Pos.CENTER_LEFT);
         topRow.getChildren().addAll(name, cat, spacer, heartBtn);
+        return topRow;
+    }
 
+    /**
+     * Builds the tag chips pane for a result card.
+     *
+     * @param item the item whose tags to render
+     * @return FlowPane with one chip per tag
+     */
+    private FlowPane buildResultCardChips(ClothingItem item) {
         FlowPane chips = new FlowPane();
         chips.setHgap(8);
         chips.setVgap(6);
@@ -446,12 +466,31 @@ public class SearchPage extends BorderPane {
                     + "-fx-text-fill: white;");
             chips.getChildren().add(chip);
         }
+        return chips;
+    }
 
+    /**
+     * Builds the worn count label for a result card.
+     *
+     * @param item the item whose worn count to display
+     * @return Label showing worn count
+     */
+    private Label buildWornLabel(ClothingItem item) {
         Label wornLabel = new Label("Worn: " + item.getWornCount() + " time(s)");
         wornLabel.setFont(smallFont);
         wornLabel.setStyle("-fx-text-fill: #888;");
+        return wornLabel;
+    }
 
-        //Mark as Worn button
+    /**
+     * Builds the action row of a result card (worn button, optional match button, worn label).
+     *
+     * @param item the item
+     * @param wrapper the outer wrapper for matches panel toggling
+     * @param wornLabel the label to update on wear
+     * @return HBox action row
+     */
+    private HBox buildResultCardActionRow(ClothingItem item, VBox wrapper, Label wornLabel) {
         Button wornBtn = new Button("Mark as Worn");
         wornBtn.setFont(normalBoldFont);
         wornBtn.setStyle(
@@ -472,55 +511,41 @@ public class SearchPage extends BorderPane {
         actionRow.setAlignment(Pos.CENTER_LEFT);
 
         ClothingCategory category = item.getCategory();
-
-        if (category == ClothingCategory.TOP
-                || category == ClothingCategory.BOTTOM) {
-
-            Button matchBtn = new Button("Show Matches");
-
-            matchBtn.setFont(normalBoldFont);
-
-            matchBtn.setStyle(
-                    "-fx-background-color: #F3EEE6;"
-                    + "-fx-background-radius: 8;"
-                    + "-fx-padding: 6 14 6 14;"
-                    + TEXT_COLOR
-            );
-
-            matchBtn.setOnAction(e -> {
-
-                if (wrapper.getChildren().size() > 1) {
-
-                    wrapper.getChildren().remove(1);
-                    matchBtn.setText("Show Matches");
-
-                } else {
-
-                    wrapper.getChildren().add(
-                            buildMatchesPanel(item)
-                    );
-
-                    matchBtn.setText("Hide Matches");
-                }
-            });
-
-            actionRow.getChildren().addAll(
-                    wornBtn,
-                    matchBtn,
-                    wornLabel
-            );
-
+        if (category == ClothingCategory.TOP || category == ClothingCategory.BOTTOM) {
+            Button matchBtn = buildMatchesToggleButton(item, wrapper);
+            actionRow.getChildren().addAll(wornBtn, matchBtn, wornLabel);
         } else {
-
-            actionRow.getChildren().addAll(
-                    wornBtn,
-                    wornLabel
-            );
+            actionRow.getChildren().addAll(wornBtn, wornLabel);
         }
 
-        card.getChildren().addAll(topRow, chips, actionRow);
-        wrapper.getChildren().add(card);
-        return wrapper;
+        return actionRow;
+    }
+
+    /**
+     * Builds the "Show/Hide Matches" toggle button for TOP and BOTTOM items.
+     *
+     * @param item the item whose matches to show/hide
+     * @param wrapper the outer wrapper to append/remove the matches panel from
+     * @return the toggle Button
+     */
+    private Button buildMatchesToggleButton(ClothingItem item, VBox wrapper) {
+        Button matchBtn = new Button("Show Matches");
+        matchBtn.setFont(normalBoldFont);
+        matchBtn.setStyle(
+                "-fx-background-color: #F3EEE6;"
+                + "-fx-background-radius: 8;"
+                + "-fx-padding: 6 14 6 14;"
+                + TEXT_COLOR);
+        matchBtn.setOnAction(e -> {
+            if (wrapper.getChildren().size() > 1) {
+                wrapper.getChildren().remove(1);
+                matchBtn.setText("Show Matches");
+            } else {
+                wrapper.getChildren().add(buildMatchesPanel(item));
+                matchBtn.setText("Hide Matches");
+            }
+        });
+        return matchBtn;
     }
 
     /**
@@ -530,6 +555,9 @@ public class SearchPage extends BorderPane {
      *
      * <p>
      * Outfit creation logic is handled in handleCreateOutfit():</p>
+     *
+     * @param selectedItem the item for which matches are shown
+     * @return VBox matches panel
      */
     private VBox buildMatchesPanel(ClothingItem selectedItem) {
         List<ClothingItem> matches = viewItemController.getMatchingItems(selectedItem);
@@ -548,43 +576,53 @@ public class SearchPage extends BorderPane {
         panel.getChildren().add(heading);
 
         for (ClothingItem match : matches) {
-            HBox matchRow = new HBox(12);
-            matchRow.setAlignment(Pos.CENTER_LEFT);
-            matchRow.setPadding(new Insets(8));
-            matchRow.setStyle(
-                    "-fx-background-color: #F8F4ED;"
-                    + "-fx-background-radius: 8;"
-                    + "-fx-border-color: " + LIGHT_GREEN + ";"
-                    + "-fx-border-radius: 8;");
-
-            // Match info
-            VBox info = new VBox(2);
-            Label matchName = new Label(match.getName());
-            matchName.setFont(normalBoldFont);
-            matchName.setStyle(TEXT_COLOR);
-
-            Label matchCat = new Label(cap(match.getCategory().name()));
-            matchCat.setFont(smallFont);
-            matchCat.setStyle("-fx-text-fill: #888;");
-
-            info.getChildren().addAll(matchName, matchCat);
-            HBox.setHgrow(info, Priority.ALWAYS);
-
-            Button outfitBtn = new Button("Create Outfit");
-            outfitBtn.setFont(normalBoldFont);
-            outfitBtn.setStyle(
-                    "-fx-background-color: " + DARK_GREEN + ";"
-                    + "-fx-text-fill: white;"
-                    + "-fx-background-radius: 8;"
-                    + "-fx-padding: 6 14 6 14;");
-            outfitBtn.setOnAction(e
-                    -> handleCreateOutfit(selectedItem, match, outfitBtn));
-
-            matchRow.getChildren().addAll(info, outfitBtn);
-            panel.getChildren().add(matchRow);
+            panel.getChildren().add(buildMatchRow(selectedItem, match));
         }
 
         return panel;
+    }
+
+    /**
+     * Builds a single match row inside the matches panel.
+     *
+     * @param selectedItem the item being searched
+     * @param match the matching item
+     * @return HBox match row
+     */
+    private HBox buildMatchRow(ClothingItem selectedItem, ClothingItem match) {
+        HBox matchRow = new HBox(12);
+        matchRow.setAlignment(Pos.CENTER_LEFT);
+        matchRow.setPadding(new Insets(8));
+        matchRow.setStyle(
+                "-fx-background-color: #F8F4ED;"
+                + "-fx-background-radius: 8;"
+                + "-fx-border-color: " + LIGHT_GREEN + ";"
+                + "-fx-border-radius: 8;");
+
+        VBox info = new VBox(2);
+        Label matchName = new Label(match.getName());
+        matchName.setFont(normalBoldFont);
+        matchName.setStyle(TEXT_COLOR);
+
+        Label matchCat = new Label(cap(match.getCategory().name()));
+        matchCat.setFont(smallFont);
+        matchCat.setStyle("-fx-text-fill: #888;");
+
+        info.getChildren().addAll(matchName, matchCat);
+        HBox.setHgrow(info, Priority.ALWAYS);
+
+        Button outfitBtn = new Button("Create Outfit");
+        outfitBtn.setFont(normalBoldFont);
+        outfitBtn.setStyle(
+                "-fx-background-color: " + DARK_GREEN + ";"
+                + "-fx-text-fill: white;"
+                + "-fx-background-radius: 8;"
+                + "-fx-padding: 6 14 6 14;");
+        outfitBtn.setOnAction(e
+                -> handleCreateOutfit(selectedItem, match, outfitBtn));
+
+        matchRow.getChildren().addAll(info, outfitBtn);
+        return matchRow;
     }
 
     /**
@@ -596,6 +634,10 @@ public class SearchPage extends BorderPane {
      * button.</li>
      * <li>On other error: shows an error dialog.</li>
      * </ul>
+     *
+     * @param selectedItem first outfit item
+     * @param matchItem second outfit item
+     * @param outfitBtn button to disable after saving
      */
     private void handleCreateOutfit(ClothingItem selectedItem,
             ClothingItem matchItem,
@@ -603,15 +645,11 @@ public class SearchPage extends BorderPane {
 
         try {
             Image tickImg = new Image(
-                    getClass().getResourceAsStream(
-                            "/icons/tick.png"
-                    )
-            );
-
+                    getClass().getResourceAsStream("/icons/tick.png"));
             ImageView tickIcon = new ImageView(tickImg);
-
             tickIcon.setFitWidth(16);
             tickIcon.setFitHeight(16);
+
             viewItemController.createOutfitFromMatch(selectedItem, matchItem);
             outfitBtn.setDisable(true);
             outfitBtn.setText("Saved");
@@ -621,7 +659,6 @@ public class SearchPage extends BorderPane {
                     "\"" + selectedItem.getName() + " + " + matchItem.getName()
                     + "\" has been saved to your outfits.");
         } catch (IllegalStateException ex) {
-            // Duplicate outfit — OutfitService throws this
             outfitBtn.setDisable(true);
             outfitBtn.setText("Already exists");
             showDialog(Alert.AlertType.INFORMATION,
