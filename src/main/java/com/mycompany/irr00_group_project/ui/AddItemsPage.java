@@ -1,12 +1,12 @@
 package com.mycompany.irr00_group_project.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mycompany.irr00_group_project.controller.AddItemController;
 import com.mycompany.irr00_group_project.model.ClothingCategory;
 import com.mycompany.irr00_group_project.model.Tag;
 import com.mycompany.irr00_group_project.model.TagCategory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -32,6 +32,7 @@ import javafx.scene.text.Text;
  *
  * @author Bhavini Kopparam Ajay
  * @author Arshiya Shaik
+ * @author Tanusri Madhalam
  */
 public class AddItemsPage {
 
