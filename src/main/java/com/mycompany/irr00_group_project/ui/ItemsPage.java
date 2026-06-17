@@ -61,6 +61,12 @@ public class ItemsPage extends BorderPane {
     private final DashboardController dashboardController = new DashboardController();
     private final ViewItemController viewItemController = new ViewItemController();
 
+    /**
+     * Constructs the ItemsPage and initializes the UI. Loads all clothing items
+     * and builds the main layout.
+     *
+     * @param stage the primary stage used for navigation
+     */
     public ItemsPage(Stage stage) {
         this.stage = stage;
         setStyle("-fx-background-color: " + CREAM + ";");
@@ -295,7 +301,6 @@ public class ItemsPage extends BorderPane {
         }
 
         // Helper: rebuilds the chips from selectedTagNames
-
         Runnable refreshChips = () -> {
             currentTagsPane.getChildren().clear();
             for (String tn : new ArrayList<>(selectedTagNames)) {

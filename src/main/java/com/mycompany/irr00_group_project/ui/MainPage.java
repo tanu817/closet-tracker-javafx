@@ -10,6 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -37,7 +38,6 @@ public class MainPage {
      * @param stage the primary stage
      */
     public void start(Stage stage) {
-        BorderPane root = new BorderPane();
 
         Font titleFont = Font.loadFont(
                 getClass().getResourceAsStream("/fonts/YesevaOne-Regular.ttf"), 28);
@@ -126,6 +126,7 @@ public class MainPage {
         cardsRow.setAlignment(Pos.CENTER);
         cardsRow.getChildren().addAll(favoritesCard, mostWornCard, leastWornCard);
 
+        BorderPane root = new BorderPane();
         root.setCenter(cardsRow);
         root.setMargin(cardsRow, new Insets(20, 0, 0, 0));
 
@@ -138,10 +139,11 @@ public class MainPage {
         Label progressTitle = new Label("Wardrobe Usage Overview");
         progressTitle.setFont(cardTitleFont);
 
-        Label progressStats = new Label(wornItems + "/" + totalItems + " items  —  " + percentage + "%");
+        Label progressStats = new Label(wornItems + "/" + totalItems
+                + " items  —  " + percentage + "%");
         progressStats.setFont(buttonFont);
 
-        javafx.scene.control.ProgressBar progressBar = new javafx.scene.control.ProgressBar(progress);
+        ProgressBar progressBar = new ProgressBar(progress);
         progressBar.setPrefWidth(860);
         progressBar.setPrefHeight(10);
         progressBar.setStyle(

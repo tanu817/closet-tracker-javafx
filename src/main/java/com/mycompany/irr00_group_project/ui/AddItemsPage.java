@@ -16,12 +16,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -83,7 +83,7 @@ public class AddItemsPage {
                 + "-fx-border-radius: 15;");
 
         // TOP ROW (back button + item name field)
-        HBox topRow = new HBox(20);
+        
 
         Image backImg = new Image(
                 getClass().getResourceAsStream("/icons/arrow.png"));
@@ -107,6 +107,7 @@ public class AddItemsPage {
         itemName.setMaxHeight(42);
         itemName.setFont(normalFont);
 
+        HBox topRow = new HBox(20);
         topRow.getChildren().addAll(backButton, itemName);
 
         // NOTE LABEL
@@ -165,14 +166,17 @@ public class AddItemsPage {
                 + "-fx-background-radius: 10;");
         saveButton.setOnAction(e -> handleSave());
 
-        Region spacer = new Region();
-        VBox.setVgrow(spacer, Priority.ALWAYS);
-
         HBox saveRow = new HBox();
         saveRow.setAlignment(Pos.CENTER_RIGHT);
         saveRow.getChildren().add(saveButton);
 
-        overlay.getChildren().addAll(
+        // SCROLLABLE CONTENT — everything above the Save row. Wrapping this in
+        // a ScrollPane keeps all fields/tags reachable even when a large
+        // number of tags pushes the natural content height past the overlay's
+        // visible area; the Save row stays outside the ScrollPane so it is
+        // always visible at the bottom of the overlay.
+        VBox scrollContent = new VBox(20);
+        scrollContent.getChildren().addAll(
                 topRow,
                 noteBox,
                 chooseTags,
@@ -181,10 +185,15 @@ public class AddItemsPage {
                 weatherRow,
                 eventRow,
                 detailsRow,
-                otherRow,
-                spacer,
-                saveRow
+                otherRow
         );
+
+        ScrollPane scrollPane = new ScrollPane(scrollContent);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setStyle("-fx-background-color: transparent;");
+        VBox.setVgrow(scrollPane, Priority.ALWAYS);
+
+        overlay.getChildren().addAll(scrollPane, saveRow);
 
         return overlay;
     }
@@ -340,6 +349,12 @@ public class AddItemsPage {
         Label label = new Label(labelText);
         label.setFont(subTitleFont);
         label.setPrefWidth(80);
+
+        // Let the FlowPane claim all remaining horizontal space in the row so
+        // tags wrap using the full available width instead of only part of it.
+        HBox.setHgrow(pane, Priority.ALWAYS);
+        pane.setMaxWidth(Double.MAX_VALUE);
+        pane.prefWrapLengthProperty().bind(pane.widthProperty());
 
         HBox row = new HBox(20);
         row.setAlignment(Pos.CENTER_LEFT);

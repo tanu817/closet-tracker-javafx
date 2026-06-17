@@ -84,6 +84,12 @@ public class SearchPage extends BorderPane {
     private final Font smallFont = Font.loadFont(
             getClass().getResourceAsStream("/fonts/MuktaVaani-Regular.ttf"), 11);
 
+    /**
+     * Constructs the SearchPage UI and initializes filters, search controls,
+     * and results display.
+     *
+     * @param stage the primary application stage used for navigation
+     */
     public SearchPage(Stage stage) {
         this.stage = stage;
         setStyle("-fx-background-color: " + CREAM + ";");
