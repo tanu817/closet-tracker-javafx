@@ -80,7 +80,8 @@ public class DashboardServiceTest extends CsvTestBase {
     }
 
     @Test
-    @DisplayName("getStats() returns correct totalItems, totalWears, totalFavourites and avgWearPerItem")
+    @DisplayName("getStats() returns correct totalItems, totalWears, totalFavourites"
+            + "(and avgWearPerItem)")
     void getStatsCorrect() {
         DashboardService.DashboardStats stats = new DashboardService().getStats();
         assertEquals(6, stats.totalItems);

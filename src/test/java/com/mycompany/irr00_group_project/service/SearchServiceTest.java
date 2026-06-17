@@ -109,7 +109,8 @@ public class SearchServiceTest extends CsvTestBase {
     }
 
     @Test
-    @DisplayName("searchByTagIds() with specific tag returns only item with this tag (2 items with the same tag)")
+    @DisplayName("searchByTagIds() with specific tag returns only item with this tag"
+            + "(2 items with the same tag)")
     void searchByTagIdsMultipleItems() {
         List<ClothingItem> results
                 = new SearchService().searchByTagIds(Collections.singletonList(2));

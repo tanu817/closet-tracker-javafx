@@ -15,7 +15,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Integration tests for the Search Outfit flow
+ * Integration tests for the Search Outfit flow.
  *
  * @author Alexandra Varapai
  */
@@ -41,7 +41,7 @@ public class SearchFlowIntegrationTest extends CsvTestBase {
 
     @Test
     @DisplayName("Search returns only items matching all selected tags")
-    void SearchLogicMatchingAllTags() {
+    void searchLogicMatchingAllTags() {
         AddItemService addService = new AddItemService();
         addService.addItemWithTagNames("Shirt", ClothingCategory.TOP,
                 Collections.emptyList(), Arrays.asList("Casual", "Blue"));
@@ -58,7 +58,7 @@ public class SearchFlowIntegrationTest extends CsvTestBase {
 
     @Test
     @DisplayName("Search with no tags returns all added items")
-    void SearchEmptyNoTags() {
+    void searchEmptyNoTags() {
         AddItemService addService = new AddItemService();
         addService.addItemWithTagNames("Shirt", ClothingCategory.TOP,
                 Collections.emptyList(), Collections.singletonList("Blue"));

@@ -16,7 +16,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Unit tests for {@link DatabaseManager}
+ * Unit tests for {@link DatabaseManager}.
  *
  * @author Alexandra Varapai
  */

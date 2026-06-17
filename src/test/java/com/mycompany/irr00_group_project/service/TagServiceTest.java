@@ -15,7 +15,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Unit tests for tag management in {@link AddItemService}
+ * Unit tests for tag management in {@link AddItemService}.
  *
  * @author Alexandra Varapai
  */

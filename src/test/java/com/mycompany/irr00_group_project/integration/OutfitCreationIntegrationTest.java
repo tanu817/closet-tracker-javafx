@@ -14,7 +14,7 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Integration tests for Outfit Creation
+ * Integration tests for Outfit Creation.
  *
  * @author Alexandra Varapai
  */

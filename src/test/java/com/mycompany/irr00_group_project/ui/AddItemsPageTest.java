@@ -58,7 +58,7 @@ public class AddItemsPageTest {
 
     /**
      * Creates a new tag FlowPane by calling the private createTagSection()
-     * method
+     * method.
      *
      * @return a new FlowPane with tag
      * @throws Exception if fails

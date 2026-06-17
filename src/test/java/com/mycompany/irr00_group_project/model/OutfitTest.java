@@ -69,7 +69,7 @@ public class OutfitTest {
 
     @Test
     @DisplayName("Constructor (id, name, items) stores name and id")
-    void ConstructorStoresnameAndID() {
+    void constructorStoresnameAndID() {
         Set<ClothingItem> items = new HashSet<>();
         items.add(makeItem(1, "Shirt", ClothingCategory.TOP));
         Outfit outfit = new Outfit(42, "Evening", items);

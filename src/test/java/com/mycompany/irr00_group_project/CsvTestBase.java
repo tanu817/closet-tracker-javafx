@@ -80,6 +80,14 @@ public abstract class CsvTestBase {
         }
     }
 
+    /**
+     * Reads the contents of the specified file. Returns an empty string if the
+     * file does not exist.
+     *
+     * @param name the file name
+     * @return the file contents, or an empty string if the file does not exist
+     * @throws IOException if write fails
+     */
     protected String readOrEmpty(String name) throws IOException {
         File f = new File(name);
         if (!f.exists()) {

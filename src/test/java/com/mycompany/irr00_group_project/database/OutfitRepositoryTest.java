@@ -13,7 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Unit tests for {@link OutfitRepository}
+ * Unit tests for {@link OutfitRepository}.
  *
  * @author Alexandra Varapai
  */
@@ -149,7 +149,8 @@ public class OutfitRepositoryTest extends CsvTestBase {
         repo.addItemToOutfit(2, 3, 2);
         repo.deleteOutfit(1);
         assertFalse(repo.getItemIdsForOutfit(2).isEmpty(),
-                "Relationships of outfit 2 with same items should still exist after outfit 1 is deleted");
+                "Relationships of outfit 2 with same items should still exist"
+                + "(after outfit 1 is deleted)");
     }
 
     @Test

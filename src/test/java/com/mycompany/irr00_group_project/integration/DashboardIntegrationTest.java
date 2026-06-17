@@ -15,7 +15,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Integration tests for the Dashboard flow
+ * Integration tests for the Dashboard flow.
  *
  * @author Alexandra Varapai
  */
@@ -41,7 +41,8 @@ public class DashboardIntegrationTest extends CsvTestBase {
     }
 
     @Test
-    @DisplayName("Dashboard statistics reflects amount of items and wears after only adding of items")
+    @DisplayName("Dashboard statistics reflects amount of items and wears"
+            + "(after only adding of items)")
     void dashboardStatsAfterAdding() {
         AddItemService addService = new AddItemService();
         addService.addItem("Shirt", ClothingCategory.TOP,
