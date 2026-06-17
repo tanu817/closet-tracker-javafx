@@ -356,10 +356,31 @@ public class MainPage {
     }
 
     pieChart.getData().clear();
-    pieChart.getData().add(new PieChart.Data("Tops", tops));
-    pieChart.getData().add(new PieChart.Data("Bottoms", bottoms));
-    pieChart.getData().add(new PieChart.Data("Accessories", accessories));
-    pieChart.getData().add(new PieChart.Data("One Piece", onePiece));
+
+    PieChart.Data topsSlice = new PieChart.Data("Tops", tops);
+    PieChart.Data bottomsSlice = new PieChart.Data("Bottoms", bottoms);
+    PieChart.Data accessoriesSlice = new PieChart.Data("Accessories", accessories);
+    PieChart.Data onePieceSlice = new PieChart.Data("One Piece", onePiece);
+
+    pieChart.getData().addAll(topsSlice, bottomsSlice, accessoriesSlice, onePieceSlice);
+
+    // Apply custom colors after chart renders
+    applyPieChartColors();
     
+    }
+    
+    /**
+     * To change colors of the pie chart.
+     */
+    private void applyPieChartColors() {
+        // Delay needed so nodes exist
+        javafx.application.Platform.runLater(() -> {
+            if (pieChart.getData().size() >= 4) {
+                pieChart.getData().get(0).getNode().setStyle("-fx-pie-color: #565448;"); // Tops
+                pieChart.getData().get(1).getNode().setStyle("-fx-pie-color: #D8CFBC;"); // Bottoms
+                pieChart.getData().get(2).getNode().setStyle("-fx-pie-color: #A9A48E;"); // Accessories
+                pieChart.getData().get(3).getNode().setStyle("-fx-pie-color: #EDE6D6;"); // One Piece
+            }
+        });
     }
 }
